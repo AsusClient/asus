@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asus.wtf — Minecraft client for 1.21.11</title>
+<meta name="description" content="asus.wtf is a Fabric client for Minecraft 1.21.11: 109 modules, two menu layouts, 15 themes and a stream-proof overlay. One key, no account, no launcher.">
+<meta name="theme-color" content="#0a0714">
+<meta property="og:title" content="asus.wtf — Minecraft client for 1.21.11">
+<meta property="og:description" content="109 modules. Two layouts. Fifteen themes. One key, no account.">
+<meta property="og:image" content="assets/shots/prism.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="grid-lines"></span>
+</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="asus.wtf home">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+    <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+  </a>
+
+  <nav class="nav-links" id="navLinks" aria-label="Sections">
+    <a href="#features">Features</a>
+    <a href="#modules">Modules</a>
+    <a href="#gallery">Screenshots</a>
+    <a href="#install">Install</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a>
+  </nav>
+
+  <div class="nav-actions">
+    <a class="btn btn-ghost" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
+      Discord
+    </a>
+    <a class="btn btn-primary" href="#install">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow reveal">
+        <span class="pulse"></span>
+        Fabric &middot; 1.21.11 &middot; build 1.0.10
+      </div>
+
+      <h1 class="reveal">
+        Sharper than<br>
+        <span class="grad">the rest.</span>
+      </h1>
+
+      <p class="lede reveal">
+        One hundred and nine modules, two hand-built menu layouts and a stream-proof overlay that
+        refuses to show up on capture. One key unlocks it &mdash; no account, no launcher, no
+        subscription. Drop the jar in, paste the key, press <kbd>Right Shift</kbd>, go.
+      </p>
+
+      <div class="hero-actions reveal">
+        <a class="btn btn-primary btn-lg" href="#install">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Get 1.0.10
+        </a>
+        <a class="btn btn-ghost btn-lg" href="#gallery">Look inside</a>
+      </div>
+
+      <dl class="hero-stats reveal">
+        <div><dt>Modules</dt><dd data-count="109">0</dd></div>
+        <div><dt>Themes</dt><dd data-count="15">0</dd></div>
+        <div><dt>Layouts</dt><dd data-count="2">0</dd></div>
+        <div><dt>Key</dt><dd>1</dd></div>
+      </dl>
+    </div>
+
+    <div class="hero-shot reveal" data-parallax="0.04">
+      <div class="shot-frame">
+        <div class="shot-bar">
+          <span class="shot-dot"></span>
+          <span class="shot-name">Prism &middot; Combat</span>
+          <span class="shot-tag">asus.wtf</span>
+        </div>
+        <img src="assets/shots/prism.png" alt="asus.wtf Prism menu open on the Combat category" width="1920" height="1080" loading="eager">
+      </div>
+      <div class="shot-glow" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ============================ MARQUEE ============================ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>KillAura</span><span>&middot;</span><span>Scaffold</span><span>&middot;</span><span>BedAura</span><span>&middot;</span><span>Speed</span><span>&middot;</span><span>NoFall</span><span>&middot;</span><span>ESP</span><span>&middot;</span><span>AutoTotem</span><span>&middot;</span><span>Disabler</span><span>&middot;</span><span>SMP Finder</span><span>&middot;</span><span>ChestStealer</span><span>&middot;</span>
+      <span>KillAura</span><span>&middot;</span><span>Scaffold</span><span>&middot;</span><span>BedAura</span><span>&middot;</span><span>Speed</span><span>&middot;</span><span>NoFall</span><span>&middot;</span><span>ESP</span><span>&middot;</span><span>AutoTotem</span><span>&middot;</span><span>Disabler</span><span>&middot;</span><span>SMP Finder</span><span>&middot;</span><span>ChestStealer</span><span>&middot;</span>
+    </div>
+  </div>
+
+  <!-- ============================ FEATURES ============================ -->
+  <section class="section" id="features">
+    <div class="section-head">
+      <span class="kicker">01 — What is in the box</span>
+      <h2 class="reveal">Built like a tool,<br>not a paywall.</h2>
+      <p class="section-lede reveal">
+        Everything runs client-side on Fabric. Every screen is drawn on the GPU, every panel is
+        laid out from scratch, and every feature ships enabled from the first launch.
+      </p>
+    </div>
+
+    <div class="cards">
+      <article class="card card-wide reveal">
+        <div class="card-media">
+          <img src="assets/shots/prism-settings.png" alt="Prism layout with a module's settings unfolded inline" loading="lazy" width="1920" height="1080">
+        </div>
+        <div class="card-body">
+          <span class="pill">Layout 01</span>
+          <h3>Prism</h3>
+          <p>
+            One pane. A category column down the left, an accordion list on the right. Click a row
+            to toggle it, click the plus to unfold that module's settings right underneath it &mdash;
+            no side panels, no overlapping windows, nothing covering the list.
+          </p>
+          <ul class="ticks">
+            <li>Inline settings with sliders, modes, colours and keybinds</li>
+            <li>Fuzzy search across every category with <kbd>/</kbd></li>
+            <li>Scroll wheel on the category column flips categories</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card-wide reveal">
+        <div class="card-media">
+          <img src="assets/shots/classic.png" alt="Classic menu with page tabs and category chips" loading="lazy" width="1920" height="1080">
+        </div>
+        <div class="card-body">
+          <span class="pill">Layout 02</span>
+          <h3>Classic Deck</h3>
+          <p>
+            The three-pane window: page tabs across the top, category chips under them, and a card
+            catalog that docks its inspector and drawer beside the window instead of on top of it.
+          </p>
+          <ul class="ticks">
+            <li>Auto-scales to your monitor and remembers its size</li>
+            <li>Configs, friends, macros, scripts and HUD pages</li>
+            <li>Docked panels &mdash; the catalog never gets covered</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11M4 12h7M4 17h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <h3>Stream-proof by default</h3>
+        <p>
+          The SS-Proof overlay draws the menu and HUD on a capture-excluded layer, with its own
+          pointer sized to your display so it never balloons or shrinks. What your viewers see is
+          the game, nothing else.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8c3 2.6 3 13.8 0 16.4M12 3.8c-3 2.6-3 13.8 0 16.4M3.8 12h16.4" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".75"/></svg>
+        </div>
+        <h3>Fifteen themes</h3>
+        <p>
+          Amethyst, Ruby, Emerald, Ocean, Sunset, Rose, Midnight, Gold, Slate, Teal, Catppuccin,
+          Granite, Nero Portoro, Liquid Glass and asus.wtf. Or take the highlight colour and set
+          your own.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="12" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 20h6M12 16.5V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h3>HUD editor</h3>
+        <p>
+          Drag every element where you actually want it &mdash; arraylist, target HUD, armour, potions,
+          keystrokes, watermarks. Per-element fonts, colours and scale, saved per config.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Studio scripting</h3>
+        <p>
+          Write routines in the built-in editor and run them from a macro or a keybind. Loops,
+          conditions, timers, movement primitives and a live log &mdash; no rebuild between runs.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6 5 6.6v5.2c0 4.3 3 7.4 7 8.6 4-1.2 7-4.3 7-8.6V6.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 12 2.2 2.2L15.4 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Configs that behave</h3>
+        <p>
+          Named configs, drag-to-load, per-server auto-load and a shareable file format. Switch
+          between a bedwars set and a lifesteal set without touching a single setting.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11.9 12H21M17.4 12v3.4M20 12v2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h3>One key, one machine</h3>
+        <p>
+          Paste the key once and it binds to that install. The answer is cached, so the client keeps
+          working for 72 hours without reaching the key server &mdash; and a revoked key stops working
+          on the next check. Lost a machine? Ask for a reset in the Discord.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================ MODULES ============================ -->
+  <section class="section section-split" id="modules">
+    <div class="section-head sticky">
+      <span class="kicker">02 — The catalog</span>
+      <h2 class="reveal">109 modules.<br>Eight shelves.</h2>
+      <p class="section-lede reveal">
+        Combat runs the usual suspects plus crystal and mace logic. Automations keep the boring
+        parts of survival on rails. Bedwars and SMP suites exist because generic modules never
+        actually win those games.
+      </p>
+      <a class="btn btn-ghost" href="#gallery">See it in the menu</a>
+    </div>
+
+    <div class="shelf">
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Combat</span>
+        <span class="shelf-count">35</span>
+        <p>KillAura, Criticals, AutoCrystal, MaceAura, Backtrack, Reach, AutoTotem, HitSelect, Velocity&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Render</span>
+        <span class="shelf-count">16</span>
+        <p>ESP, Tracers, TargetESP, DamageNumbers, ProjectileTrails, Xray, Chams, Nametags&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Player</span>
+        <span class="shelf-count">15</span>
+        <p>AutoArmor, AutoTool, ChestStealer, InventoryManager, AutoEat, FastPlace, NoSlow&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Blatant</span>
+        <span class="shelf-count">12</span>
+        <p>Fly, Speed, NoFall, Scaffold, Disabler, AntiVoid, Phase, Jesus&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Bedwars</span>
+        <span class="shelf-count">10</span>
+        <p>BedAura, AutoBuy, Defend, ResourceTracker, SpeedBridge, BridgeAssist&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">SMP</span>
+        <span class="shelf-count">7</span>
+        <p>BaseFinder, ItemESP, StashFinder, AutoTame, SpawnerProtect, ChunkScanner&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Automations</span>
+        <span class="shelf-count">5</span>
+        <p>AutoSell, AutoFish, AutoFarm, ChatSuffix, AutoReconnect&hellip;</p>
+      </div>
+      <div class="shelf-row reveal">
+        <span class="shelf-name">Movement</span>
+        <span class="shelf-count">4</span>
+        <p>SprintReset, Strafe, Step, LongJump&hellip;</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ GALLERY ============================ -->
+  <section class="section" id="gallery">
+    <div class="section-head">
+      <span class="kicker">03 — Screens</span>
+      <h2 class="reveal">Straight from the build.</h2>
+      <p class="section-lede reveal">
+        Every frame below was rendered by the client's own layout code at 1920&times;1080 &mdash; not a
+        mockup, not a figma file.
+      </p>
+    </div>
+
+    <div class="gallery">
+      <button class="shot reveal" data-full="assets/shots/prism.png">
+        <img src="assets/shots/prism.png" alt="Prism menu, Combat category" loading="lazy">
+        <span class="shot-cap">Prism &middot; Combat</span>
+      </button>
+      <button class="shot reveal" data-full="assets/shots/prism-settings.png">
+        <img src="assets/shots/prism-settings.png" alt="Prism menu with inline module settings" loading="lazy">
+        <span class="shot-cap">Inline settings</span>
+      </button>
+      <button class="shot reveal" data-full="assets/shots/themes.png">
+        <img src="assets/shots/themes.png" alt="Theme popover with the full theme grid" loading="lazy">
+        <span class="shot-cap">Theme grid</span>
+      </button>
+      <button class="shot reveal" data-full="assets/shots/ruby.png">
+        <img src="assets/shots/ruby.png" alt="The same menu on the Ruby theme" loading="lazy">
+        <span class="shot-cap">Ruby theme</span>
+      </button>
+      <button class="shot reveal" data-full="assets/shots/classic.png">
+        <img src="assets/shots/classic.png" alt="Classic Deck layout with page tabs" loading="lazy">
+        <span class="shot-cap">Classic Deck</span>
+      </button>
+      <button class="shot reveal" data-full="assets/shots/configs.png">
+        <img src="assets/shots/configs.png" alt="Configs page with saved config cards" loading="lazy">
+        <span class="shot-cap">Configs</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================ INSTALL ============================ -->
+  <section class="section" id="install">
+    <div class="section-head">
+      <span class="kicker">04 — Install</span>
+      <h2 class="reveal">Four steps,<br>one key.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-num">1</span>
+        <h3>Install Fabric</h3>
+        <p>
+          Run the Fabric installer for <strong>Minecraft 1.21.11</strong> and pick loader
+          <code>0.20.1</code>. Launch the profile once so the <code>mods</code> folder exists.
+        </p>
+        <div class="step-tags"><span>1.21.11</span><span>loader 0.20.1</span><span>Java 21+</span></div>
+      </div>
+
+      <div class="step reveal">
+        <span class="step-num">2</span>
+        <h3>Drop the jar</h3>
+        <p>
+          Put <code>asus-wtf-1.0.10.jar</code> into <code>.minecraft/mods</code>. Add
+          <strong>Fabric API</strong>; Cloth Config and Mod Menu are optional but recommended.
+        </p>
+        <div class="step-tags"><span>asus-wtf-1.0.10.jar</span><span>+ Fabric API</span></div>
+      </div>
+
+      <div class="step reveal">
+        <span class="step-num">3</span>
+        <h3>Get a key</h3>
+        <p>
+          Join the Discord and grab a key from the key channel. One key, one machine &mdash; if you
+          switch PCs, ask for a reset instead of buying another.
+        </p>
+        <div class="step-tags"><span>ASUS-XXXXX-XXXXX-XXXXX-XXXXX</span></div>
+        <a class="btn btn-primary step-btn" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
+          Join discord.gg/Ua8qVQ2JU
+        </a>
+      </div>
+
+      <div class="step reveal">
+        <span class="step-num">4</span>
+        <h3>Paste it in-game</h3>
+        <p>
+          Launch, press <kbd>Right Shift</kbd> and the key screen appears before the menu. Paste the
+          key, hit Unlock, and the client binds it to this install. After that the menu opens
+          normally and every setting saves as you change it.
+        </p>
+        <div class="step-tags"><span>Right Shift</span><span>/ search</span><span>Esc close</span></div>
+      </div>
+    </div>
+
+    <div class="dl-panel reveal">
+      <div>
+        <span class="pill">Latest build</span>
+        <h3>asus.wtf 1.0.10</h3>
+        <p>Minecraft 1.21.11 &middot; Fabric 0.20.1 &middot; 13.7 MB</p>
+      </div>
+      <div class="dl-actions">
+        <a class="btn btn-primary btn-lg js-download" href="assets/asus-wtf-1.0.10.jar" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download jar
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
+          Get a key
+        </a>
+        <button class="btn btn-ghost btn-lg" id="copyVersion" data-copy="1.21.11">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 5.5H6.5A1.5 1.5 0 0 0 5 7v8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Copy MC version
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ FAQ ============================ -->
+  <section class="section faq-section" id="faq">
+    <div class="section-head">
+      <span class="kicker">05 — Questions</span>
+      <h2 class="reveal">The short answers.</h2>
+    </div>
+
+    <div class="faq">
+      <details class="reveal" open>
+        <summary>Where do I get a key?</summary>
+        <p>In the <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a> — the key channel. One key unlocks one machine. Resets for a new PC are handled there too.</p>
+      </details>
+      <details class="reveal">
+        <summary>Does it need an account or Discord login in-game?</summary>
+        <p>No. The client only talks to the key server, and only with the key plus a hashed install id. No username, no email, no Discord token ever reaches the client.</p>
+      </details>
+      <details class="reveal">
+        <summary>What happens if the key server is down?</summary>
+        <p>The last successful check is cached for 72 hours, so a temporary outage does not lock you out. Past that, the menu stays closed until a check succeeds.</p>
+      </details>
+      <details class="reveal">
+        <summary>Which versions and loaders?</summary>
+        <p>Minecraft 1.21.11 on Fabric loader 0.20.1, built against Fabric API 0.141.6. It needs Java 21 or newer; Java 25 is what it ships built on.</p>
+      </details>
+      <details class="reveal">
+        <summary>Will it run with Sodium and Iris?</summary>
+        <p>Yes. The renderer is separate from Sodium's chunk pipeline, and shaders work with the menu. Mod Menu and Cloth Config are optional &mdash; the settings also live inside the menu itself.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can servers detect it?</summary>
+        <p>Any client-side movement or combat module changes packets, and any anticheat that watches those packets can flag them. Keep blatant modules off on servers you care about; ghost settings exist for exactly that reason.</p>
+      </details>
+      <details class="reveal">
+        <summary>What does SS-Proof actually do?</summary>
+        <p>It draws the menu and HUD onto an overlay layer that capture APIs skip, then draws its own pointer at the display's real pixel density. Streams and recordings see the game only.</p>
+      </details>
+      <details class="reveal">
+        <summary>Where do configs live?</summary>
+        <p>In <code>.minecraft/config/asus_wtf/</code> as readable files. Copy them between machines, share them, or keep a separate set per server.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ CTA ============================ -->
+  <section class="cta reveal">
+    <div class="cta-inner">
+      <h2>Load it. Bind it. Win.</h2>
+      <p>One jar, 109 modules, two layouts, fifteen themes and a key that takes ten seconds to paste.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary btn-lg" href="#install">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download asus.wtf 1.0.10
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Get a key</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+      <p>Fabric client for Minecraft 1.21.11. Built for private worlds and servers that allow it.</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Client</h4>
+        <a href="#features">Features</a>
+        <a href="#modules">Modules</a>
+        <a href="#install">Install</a>
+        <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord / keys</a>
+      </div>
+      <div>
+        <h4>Media</h4>
+        <a href="#gallery">Screenshots</a>
+        <a href="assets/shots/prism.png" download>Wallpaper</a>
+      </div>
+      <div>
+        <h4>Needs</h4>
+        <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric installer</a>
+        <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a>
+        <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">Mod Menu</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-base">
+    <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+    <span class="footer-build">build 1.0.10 &middot; mc 1.21.11</span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot" hidden>
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <img id="lbImg" alt="">
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/auth.js"></script>
+</body>
+</html>
