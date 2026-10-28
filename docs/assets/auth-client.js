@@ -160,7 +160,11 @@ export async function sendReset(email) {
 export async function resendVerification(email) {
   try {
     const supabase = await init();
-    const { error } = await supabase.auth.resend({ type: "signup", email });
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: absolute("confirm.html") },
+    });
     if (error) throw error;
   } catch (error) {
     throw normalize(error);
