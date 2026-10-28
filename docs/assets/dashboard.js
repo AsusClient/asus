@@ -11,6 +11,15 @@ import {
   signOutNow,
 } from "./auth-client.js";
 import { setBusy, setMessage } from "./auth-ui.js";
+import {
+  forget,
+  formatKeyInput,
+  recall,
+  reasonText,
+  remember,
+  verifyHash,
+  verifyKey,
+} from "./license-client.js";
 
 const core = window.AsusAuthCore;
 const $ = (selector) => document.querySelector(selector);
@@ -34,9 +43,19 @@ const els = {
   changePassword: $("#changePassword"),
   signOut: $("#signOut"),
   signOutMain: $("#signOutMain"),
+  licensePill: $("#licensePill"),
+  fullBadge: $("#fullBadge"),
+  fullStatus: $("#fullStatus"),
+  fullDownload: $("#fullDownload"),
+  keyForm: $("#keyForm"),
+  licenseKey: $("#licenseKey"),
+  redeem: $("#redeem"),
+  keyMsg: $("#keyMsg"),
+  forgetKey: $("#forgetKey"),
 };
 
 let currentUser = null;
+let licenseFor = null;
 
 function paintAvatar(element, user) {
   if (!element) return;
@@ -73,6 +92,65 @@ function paintVerification(user) {
   if (els.resend) els.resend.hidden = Boolean(user.emailVerified);
 }
 
+function licenseExpiryText(expiresAt) {
+  if (!expiresAt) return "lifetime";
+  const date = new Date(expiresAt);
+  if (isNaN(date.getTime())) return "lifetime";
+  return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+function unlockFullBuild(result) {
+  if (els.licensePill) {
+    els.licensePill.textContent = "Full access";
+    els.licensePill.classList.add("pill-ok");
+  }
+  if (els.fullBadge) {
+    els.fullBadge.textContent = "Unlocked";
+    els.fullBadge.className = "pill pill-ok";
+  }
+  if (els.fullStatus) {
+    els.fullStatus.textContent = `Key active · ${
+      result.expiresAt ? `expires ${licenseExpiryText(result.expiresAt)}` : "lifetime"
+    }`;
+  }
+  if (els.fullDownload) els.fullDownload.hidden = false;
+  if (els.keyForm) els.keyForm.hidden = true;
+  if (els.forgetKey) els.forgetKey.hidden = false;
+  if (els.keyMsg) setMessage(els.keyMsg, "");
+}
+
+function lockFullBuild(text) {
+  if (els.licensePill) {
+    els.licensePill.textContent = "Free access";
+    els.licensePill.classList.remove("pill-ok");
+  }
+  if (els.fullBadge) {
+    els.fullBadge.textContent = "Locked";
+    els.fullBadge.className = "pill pill-locked";
+  }
+  if (els.fullStatus) {
+    els.fullStatus.textContent = text || "Enter a working key to unlock the full build.";
+  }
+  if (els.fullDownload) els.fullDownload.hidden = true;
+  if (els.keyForm) els.keyForm.hidden = false;
+  if (els.forgetKey) els.forgetKey.hidden = true;
+}
+
+function restoreLicense(user) {
+  const saved = recall(user.id);
+  if (!saved) {
+    lockFullBuild();
+    return;
+  }
+  const result = verifyHash(saved);
+  if (result.ok) {
+    unlockFullBuild(result);
+    return;
+  }
+  forget(user.id);
+  lockFullBuild(reasonText(result.reason));
+}
+
 function render(user) {
   currentUser = user;
   const name = core.displayName(user);
@@ -89,6 +167,11 @@ function render(user) {
 
   const emailAccount = core.providerName(user) === "Email & password";
   if (els.changePassword) els.changePassword.hidden = !emailAccount;
+
+  if (licenseFor !== user.id) {
+    licenseFor = user.id;
+    restoreLicense(user);
+  }
 
   document.title = `${name} — asus.wtf dashboard`;
 }
@@ -111,6 +194,44 @@ const signOut = async (button) => {
 [els.signOut, els.signOutMain].forEach((button) => {
   if (button) button.addEventListener("click", () => signOut(button));
 });
+
+if (els.licenseKey) {
+  els.licenseKey.addEventListener("input", () => {
+    const formatted = formatKeyInput(els.licenseKey.value);
+    if (formatted !== els.licenseKey.value) els.licenseKey.value = formatted;
+  });
+}
+
+if (els.keyForm) {
+  els.keyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!currentUser) return;
+
+    setMessage(els.keyMsg, "");
+    setBusy(els.redeem, true, "Checking…");
+    try {
+      const result = await verifyKey(els.licenseKey.value);
+      if (!result.ok) {
+        setMessage(els.keyMsg, reasonText(result.reason));
+        return;
+      }
+      remember(currentUser.id, result.hash);
+      els.licenseKey.value = "";
+      unlockFullBuild(result);
+      setMessage(els.keyMsg, "Key accepted — the full build is unlocked.", true);
+    } finally {
+      setBusy(els.redeem, false);
+    }
+  });
+}
+
+if (els.forgetKey) {
+  els.forgetKey.addEventListener("click", () => {
+    if (currentUser) forget(currentUser.id);
+    lockFullBuild();
+    setMessage(els.keyMsg, "Key removed from this browser. The full build is locked again.");
+  });
+}
 
 if (els.resend) {
   els.resend.addEventListener("click", async () => {

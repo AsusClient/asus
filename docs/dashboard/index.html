@@ -59,30 +59,52 @@
 
   <div class="dash-grid">
 
-    <!-- ------------------------------ download ------------------------------ -->
+    <!-- ------------------------------ downloads ----------------------------- -->
     <section class="panel panel-main">
       <div class="panel-head">
         <div>
-          <span class="kicker">Latest build</span>
-          <h2>asus.wtf 1.0.10</h2>
+          <span class="kicker">Downloads</span>
+          <h2>Builds</h2>
         </div>
-        <span class="pill">Stable</span>
+        <span class="pill" id="licensePill">Free access</span>
       </div>
-      <p class="panel-lede">Minecraft 1.21.11 &middot; Fabric 0.20.1 &middot; Java 21 or newer.</p>
+      <p class="panel-lede">The free build is open to every account. The full build unlocks with a working key.</p>
 
-      <div class="dl-row">
-        <div class="dl-meta">
-          <strong>asus-wtf-1.0.10.jar</strong>
-          <span>13.7 MB &middot; drop it in <code>.minecraft/mods</code></span>
+      <div class="build-list">
+        <div class="build-row">
+          <div class="build-info">
+            <span class="pill pill-free">Free</span>
+            <strong>asus-free-1.0.0.jar</strong>
+            <span>1.21.11 &middot; Fabric 0.20.1 &middot; 13.7 MB &mdash; the cut-down build</span>
+          </div>
+          <a class="btn" href="../assets/asus-free-1.0.0.jar" download>Download free</a>
         </div>
-        <a class="btn btn-primary" href="../assets/asus-wtf-1.0.10.jar" download>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download jar
-        </a>
+
+        <div class="build-row">
+          <div class="build-info">
+            <span class="pill pill-locked" id="fullBadge">Locked</span>
+            <strong>asus-wtf-1.0.10.jar</strong>
+            <span id="fullStatus">Enter a working key to unlock the full build.</span>
+          </div>
+          <a class="btn btn-primary" id="fullDownload" href="../assets/asus-wtf-1.0.10.jar" download hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download full
+          </a>
+        </div>
       </div>
+
+      <form class="key-form" id="keyForm" novalidate>
+        <input class="input" id="licenseKey" name="licenseKey" type="text"
+               autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="29"
+               placeholder="ASUS-XXXXX-XXXXX-XXXXX-XXXXX" aria-label="License key">
+        <button class="btn btn-primary" type="submit" id="redeem">Unlock</button>
+      </form>
+      <p class="form-msg key-msg" id="keyMsg" role="status" aria-live="polite"></p>
+      <button class="link-btn" type="button" id="forgetKey" hidden>Use a different key</button>
 
       <ul class="ticks">
-        <li>The client still takes a key &mdash; this account is only for the site.</li>
+        <li>The free build needs no key; the full build asks for one once per account.</li>
+        <li>This download key is the same one the client asks for in game.</li>
         <li>Fabric API is required; Cloth Config and Mod Menu are optional.</li>
         <li>Press <kbd>Right Shift</kbd> in game to reach the key screen and the menu.</li>
       </ul>
@@ -161,6 +183,7 @@
 
 <script src="../assets/auth-core.js"></script>
 <script src="../assets/supabase-config.js"></script>
+<script src="../assets/licenses.js"></script>
 <script type="module" src="../assets/dashboard.js"></script>
 </body>
 </html>

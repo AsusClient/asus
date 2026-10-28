@@ -1809,3 +1809,94 @@ main { position: relative; z-index: 2; }
   .dash-head .pill-live { order: -1; }
 }
 
+/* ------------------------------ builds + key gate ----------------------- */
+
+.build-list {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 18px;
+}
+
+.build-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(6, 4, 13, 0.55);
+}
+
+.build-info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.build-info .pill {
+  justify-self: start;
+  margin-bottom: 2px;
+  padding: 3px 9px;
+  font-size: 0.72rem;
+}
+
+.build-info strong {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.build-info span:last-child {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.pill-free {
+  border-color: var(--line-strong);
+  color: var(--ink-dim);
+}
+
+.pill-locked {
+  border-color: rgba(255, 196, 107, 0.4);
+  color: #ffd9a4;
+  background: rgba(255, 196, 107, 0.08);
+}
+
+.key-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.key-form .input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.key-form .input::placeholder {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.key-form .btn { flex: none; }
+
+.key-msg { min-height: 18px; margin: 8px 0 0; }
+
+#forgetKey { margin-top: 2px; }
+
+@media (max-width: 620px) {
+  .build-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .build-row .btn { width: 100%; }
+  .key-form { flex-direction: column; }
+  .key-form .btn { width: 100%; }
+}
+

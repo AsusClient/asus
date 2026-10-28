@@ -70,13 +70,9 @@ export async function onAuth(callback) {
   }
   const supabase = await init();
 
-  try {
-    const { data } = await supabase.auth.getSession();
-    callback((data && data.session && data.session.user) || null);
-  } catch {
-    callback(null);
-  }
-
+  // Rely on INITIAL_SESSION rather than getSession(): when the page was reached
+  // from a confirmation / recovery / OAuth redirect, the client is still
+  // parsing tokens, and an early null would bounce the visitor to /login.
   const { data } = supabase.auth.onAuthStateChange((_event, session) => {
     callback((session && session.user) || null);
   });

@@ -100,6 +100,32 @@ python -m http.server 8123 --directory docs
 # open http://localhost:8123/register.html
 ```
 
+## Download gate (free vs full)
+
+The dashboard always offers the **free build**. The **full build** button only
+appears after the signed-in account enters an active, unexpired key.
+
+[`assets/licenses.js`](assets/licenses.js) is generated from the local key
+store and contains only SHA-256 fingerprints plus status and expiry — no raw
+keys, no notes. Regenerate it whenever keys are created, revoked or deleted:
+
+```bash
+python tools/publish-site-keys.py
+# writes docs/assets/licenses.js
+
+git add docs/assets/licenses.js
+# commit + push so Pages redeploys
+```
+
+The unlock is remembered per browser and per account in `localStorage`; it is
+re-checked against the published list on every visit, so a revoked key locks
+the button again after the next deploy.
+
+**Limitation:** the full jar is still a static file under `docs/assets/`, so
+this gate is UI-level. Someone who knows the URL can fetch it directly. Real
+protection needs the jar in private storage plus a server-side check (a
+Worker or edge function), not GitHub Pages.
+
 ## What the account does and does not do
 
 - It gates the **dashboard** — the page with the download and install steps.
@@ -129,4 +155,7 @@ python -m http.server 8123 --directory docs
 | `assets/auth.js` | Landing-page account chip |
 | `assets/login.js`, `assets/register.js` | The two forms |
 | `assets/reset.js` | Password reset page |
-| `assets/dashboard.js` | Session guard and dashboard rendering |
+| `assets/dashboard.js` | Session guard, builds and key gate |
+| `assets/licenses.js` | Published SHA-256 key fingerprints (generated) |
+| `assets/license-client.js` | Key format, hashing and unlock state |
+| `tools/publish-site-keys.py` | Regenerates `licenses.js` from the local key store |
