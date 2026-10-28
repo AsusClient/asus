@@ -1024,4 +1024,12 @@ server.listen(cfg.port, () => {
   if (cfg.guildId) console.log(`  guild gate: ${cfg.guildId}${cfg.roleIds.length ? ` roles ${cfg.roleIds.join(", ")}` : ""}`);
   console.log(`  keys: ${cfg.keyStore}`);
   console.log(`  admin: ${cfg.adminPassword ? `/admin as "${cfg.adminUser}"` : "closed (set ADMIN_PASSWORD)"}`);
+
+  // Keys generated before this feature existed (or while the publisher was
+  // failing) are synced the moment the server comes up.
+  if (cfg.publishSite) {
+    getStore()
+      .then((store) => publishSite(store))
+      .catch((error) => console.error(`[site] initial publish failed: ${error.message}`));
+  }
 });
