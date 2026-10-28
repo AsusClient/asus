@@ -49,7 +49,9 @@ email/password still works.
 
 **Project Settings → API**:
 
-- **Project URL** — `https://<ref>.supabase.co`
+- **Project URL** — `https://<ref>.supabase.co`. This is the API origin, **not**
+  the `supabase.com/dashboard/project/...` address from your browser bar; the
+  SDK can't call that one.
 - **anon public** key
 
 Paste them into [`assets/supabase-config.js`](assets/supabase-config.js). You can
