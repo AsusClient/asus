@@ -1,0 +1,17 @@
+# Local key store, accounts and server secrets — never publish these
+site/server/keys.json
+site/server/config.json
+site/server/users.json
+site/server/keys-backups/
+*.env
+
+# Build output
+.gradle/
+build/
+out/
+*.class
+__pycache__/
+*.pyc
+keysmith/.venv/
+keysmith/build/
+keysmith/dist/

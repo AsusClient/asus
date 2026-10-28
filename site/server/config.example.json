@@ -1,0 +1,21 @@
+{
+  "PORT": 3000,
+  "BASE_URL": "http://localhost:3000",
+
+  "DISCORD_CLIENT_ID": "",
+  "DISCORD_CLIENT_SECRET": "",
+  "SESSION_SECRET": "paste-a-long-random-string-here",
+
+  "GUILD_ID": "",
+  "REQUIRED_ROLE_IDS": "",
+  "DISCORD_BOT_TOKEN": "",
+  "INVITE_URL": "https://discord.gg/Ua8qVQ2JU",
+
+  "JAR_PATH": "../assets/asus-wtf-1.0.10.jar",
+  "JAR_NAME": "asus-wtf-1.0.10.jar",
+  "SESSION_DAYS": 14,
+
+  "ADMIN_USER": "admin",
+  "ADMIN_PASSWORD": "Asus.wtf/admin1234",
+  "KEY_STORE": "keys.json"
+}

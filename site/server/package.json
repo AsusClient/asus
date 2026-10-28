@@ -1,0 +1,14 @@
+{
+  "name": "asus-wtf-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "asus.wtf site + Discord OAuth2 gate. Zero dependencies.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  }
+}
