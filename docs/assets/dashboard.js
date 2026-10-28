@@ -11,7 +11,7 @@ import {
   signOutNow,
 } from "./auth-client.js";
 import { setBusy, setMessage } from "./auth-ui.js";
-import * as license from "./license-client.js?v=20261028";
+import * as license from "./license-client.js?v=20261028c";
 
 // Namespace access, not named imports: a browser holding a cached older
 // license-client.js would otherwise fail to link the whole module.

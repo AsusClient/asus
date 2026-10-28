@@ -51,7 +51,8 @@ function freshness(database) {
 }
 
 /** Load the newest fingerprint list available, regardless of which CDN lags. */
-export async function refreshLicenses() {
+export async function refreshLicenses(force = false) {
+  if (force) listPromise = null;
   if (listPromise) return listPromise;
   listPromise = (async () => {
     const stamp = Date.now().toString(36);
@@ -127,8 +128,16 @@ export async function verifyKey(raw) {
   const hash = await sha256Hex(key);
   if (!hash) return { ok: false, reason: "unavailable" };
 
-  await refreshLicenses();
-  const result = verifyHash(hash);
+  // Fetch fresh on every attempt, and give a just-generated key a few seconds
+  // for whichever cache the site reads to catch up.
+  let result = { ok: false, reason: "unknown" };
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await refreshLicenses(true);
+    result = verifyHash(hash);
+    if (result.ok || result.reason !== "unknown" || attempt === 2) break;
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+  }
+
   if (!result.ok) return result;
   return { ...result, hash };
 }
@@ -144,7 +153,7 @@ export function reasonText(reason) {
     case "malformed":
       return "That doesn't look like an ASUS key — it should be ASUS-XXXXX-XXXXX-XXXXX-XXXXX.";
     case "unknown":
-      return "That key isn't on the list. Check for a typo and try again.";
+      return "That key isn't on the list — it may have been deleted, or it was generated after the site's last update. Check for a typo, then try again in a few seconds.";
     case "revoked":
       return "That key has been revoked.";
     case "expired":
