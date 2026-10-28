@@ -16,16 +16,24 @@ Everything is already wired. The only missing piece is your Supabase project.
 3. Let it finish provisioning (a minute or two). The database password it asks
    for is not used by the site — store it somewhere safe anyway.
 
-## 2. Email + password
+## 2. Email + password (no confirmation mail)
 
 **Authentication → Providers → Email** is on by default.
 
-- Keep **Confirm email** on for real use: new accounts get a confirmation mail
-  and cannot sign in until they click it.
-- Turn it off while testing if you want sign-up to land straight on the
-  dashboard.
-- Emails come from Supabase's default templates; edit them under
-  **Authentication → Email Templates** (sender, subject, wording).
+This project runs with **Confirm email off**: creating an account signs you in
+immediately and lands on the dashboard, with no mail to click. The site already
+handles both modes, so this is only the project switch.
+
+To set it (or undo it): **Authentication → Sign In / Providers → Email →
+Confirm email** → off → **Save**. There is no API call the site can make to flip
+this; it is a project auth setting.
+
+- Trade-off: with confirmation off, Supabase never proves the address belongs to
+  the person registering. That is normal for a download site, but it also means
+  password-reset mail is the only thing that verifies ownership later.
+- Old confirmation links (sent before the switch) still resolve through
+  [`confirm.html`](confirm.html).
+- Mail wording and sender live under **Authentication → Email Templates**.
 
 ## 3. Google sign-in
 
@@ -79,9 +87,10 @@ folder**; it bypasses RLS.
   - `https://asusclient.github.io/asus/**`
   - `http://localhost:8123/**` (only needed for local testing)
 
-Confirmation links, password-reset links and the return from Google all check
-this list. Without it you get "requested path is invalid" after clicking a mail
-link.
+Password-reset links and the return from Google check this list. Confirmation
+mail is off, but keep the values in place anyway — turning it back on later
+should not require a second visit. Without it you get "requested path is
+invalid" after clicking a mail link.
 
 > **This step is not optional.** A fresh Supabase project ships with
 > **Site URL = `http://localhost:3000`**. If that is left in place, Supabase
@@ -94,7 +103,8 @@ link.
 ## 6. Try it
 
 1. Open <https://asusclient.github.io/asus/register.html>.
-2. Register with an email (confirm it if Confirm email is on), or use Google.
+2. Register with an email — confirmation is off, so there is no mail step — or
+   use Google.
 3. You land on `/asus/dashboard/`; the landing-page nav chip now shows your name.
 4. Use **Forgot password?** on the login page — the link opens `/asus/reset.html`.
 5. Open `/asus/dashboard/` while signed out; it redirects to sign-in.
