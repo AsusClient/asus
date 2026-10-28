@@ -12,6 +12,6 @@
    ========================================================================= */
 
 window.ASUS_SUPABASE_CONFIG = {
-  url: "",
-  anonKey: "",
+  url: "https://supabase.com/dashboard/project/edgmirpscrwqniddciwh",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkZ21pcnBzY3J3cW5pZGRjaXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyMjQwNTYsImV4cCI6MjEwODgwMDA1Nn0.CWkV7Eqd9fsPxfbKH_5unu4aZXBlG3rulANxxzCnxZ4",
 };
