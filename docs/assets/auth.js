@@ -1,92 +1,95 @@
 /* =========================================================================
-   asus.wtf — auth chip + gated download wiring
-   Loads after app.js. Fails silent when the site is opened from disk.
+   asus.wtf — account chip on the landing page
+
+   Loads after app.js. Adds "Sign in" to the nav, or the signed-in visitor's
+   chip linking to the dashboard. With an empty firebase-config.js it simply
+   stays on the signed-out state — no errors, no dead script tags.
    ========================================================================= */
 
-(() => {
-  "use strict";
+import { onAuth } from "./auth-client.js";
 
-  const navActions = document.querySelector(".nav-actions");
-  if (!navActions) return;
+const actions = document.querySelector(".nav-actions");
+if (actions) {
+  const core = window.AsusAuthCore;
+  const navLinks = document.querySelector("#navLinks");
 
-  const state = { authEnabled: false, user: null };
+  const signIn = document.createElement("a");
+  signIn.className = "btn btn-ghost";
+  signIn.href = "login.html";
+  signIn.textContent = "Sign in";
 
-  const chip = document.createElement("div");
-  chip.className = "auth-chip";
-  chip.hidden = true;
+  actions.insertBefore(signIn, actions.querySelector(".btn-primary"));
 
-  const avatar = document.createElement("img");
-  avatar.alt = "";
-  avatar.width = 22;
-  avatar.height = 22;
-  avatar.loading = "lazy";
+  // The ghost buttons are hidden on phones; the account entry rides in the menu instead.
+  let mobileAccount = null;
+  if (navLinks && navLinks.lastElementChild) {
+    mobileAccount = document.createElement("a");
+    mobileAccount.className = "nav-account-link";
+    mobileAccount.href = "login.html";
+    mobileAccount.textContent = "Sign in";
+    navLinks.insertBefore(mobileAccount, navLinks.lastElementChild);
+  }
 
-  const label = document.createElement("span");
-  label.className = "auth-name";
+  const chipFor = (user) => {
+    const chip = document.createElement("a");
+    chip.className = "auth-chip";
+    chip.href = "dashboard/";
+    chip.title = "Open your dashboard";
 
-  const act = document.createElement("button");
-  act.className = "auth-action";
-  act.type = "button";
-
-  chip.append(avatar, label, act);
-
-  const render = () => {
-    if (!state.authEnabled) return;
-    chip.hidden = false;
-
-    if (state.user) {
-      const name = state.user.globalName || state.user.username || "account";
-      label.textContent = name;
-      avatar.src = state.user.avatar
-        ? `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png?size=64`
-        : `https://cdn.discordapp.com/embed/avatars/${Number(state.user.id.slice(-1)) % 5}.png`;
-      avatar.alt = `${name} avatar`;
-      act.textContent = "Sign out";
-      act.onclick = () => {
-        window.location.href = "/auth/logout";
-      };
+    const photo = user && user.photoURL;
+    if (photo) {
+      const img = document.createElement("img");
+      img.src = photo;
+      img.alt = "";
+      img.referrerPolicy = "no-referrer";
+      img.addEventListener("error", () => {
+        img.replaceWith(initialsNode(user));
+      });
+      chip.append(img);
     } else {
-      label.textContent = "Guest";
-      avatar.removeAttribute("src");
-      avatar.style.visibility = "hidden";
-      act.textContent = "Sign in";
-      act.onclick = () => {
-        window.location.href = `/auth/discord?next=${encodeURIComponent(location.pathname)}`;
-      };
+      chip.append(initialsNode(user));
     }
+
+    const name = document.createElement("span");
+    name.className = "auth-name";
+    name.textContent = core.displayName(user);
+    chip.append(name);
+
+    const open = document.createElement("span");
+    open.className = "auth-open";
+    open.textContent = "Dashboard";
+    chip.append(open);
+
+    return chip;
   };
 
-  // insert before the primary download button so it reads: [chip] [Fabric API] [Download]
-  const firstBtn = navActions.querySelector(".btn-primary");
-  navActions.insertBefore(chip, firstBtn || null);
-
-  const rewriteDownloads = () => {
-    if (!state.authEnabled) return;
-    document.querySelectorAll("a[href$='.jar']").forEach((a) => {
-      a.setAttribute("href", "/download");
-      a.removeAttribute("download");
-    });
+  const initialsNode = (user) => {
+    const span = document.createElement("span");
+    span.className = "auth-initials";
+    span.textContent = core.initials(user);
+    return span;
   };
 
-  const load = async () => {
-    try {
-      const cfg = await fetch("/api/config", { headers: { Accept: "application/json" } });
-      if (!cfg.ok) return;
-      const info = await cfg.json();
-      state.authEnabled = Boolean(info.authEnabled);
-      if (!state.authEnabled) return;
-
-      const me = await fetch("/api/me", { headers: { Accept: "application/json" } });
-      if (me.ok) {
-        const data = await me.json();
-        state.user = data.user || null;
+  onAuth((user) => {
+    if (!user) {
+      signIn.hidden = false;
+      if (mobileAccount) {
+        mobileAccount.href = "login.html";
+        mobileAccount.textContent = "Sign in";
       }
-      render();
-      rewriteDownloads();
-    } catch {
-      /* opened as a file, or the API is not mounted — leave the static site alone */
+      const existing = actions.querySelector(".auth-chip");
+      if (existing) existing.remove();
+      return;
     }
-  };
-
-  load();
-})();
+    signIn.hidden = true;
+    if (mobileAccount) {
+      mobileAccount.href = "dashboard/";
+      mobileAccount.textContent = "Dashboard";
+    }
+    const existing = actions.querySelector(".auth-chip");
+    if (existing) existing.remove();
+    actions.insertBefore(chipFor(user), actions.querySelector(".btn-primary"));
+  }).catch(() => {
+    /* an offline SDK import leaves the static Sign in link in place */
+  });
+}

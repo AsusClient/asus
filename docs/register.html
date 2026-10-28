@@ -3,71 +3,127 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Register - asus.wtf</title>
+<title>Create an account — asus.wtf</title>
+<meta name="description" content="Create an asus.wtf account to reach the download dashboard.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0714">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{color-scheme:dark}
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(1200px 800px at 50% -10%,rgba(167,139,250,.18),transparent),#06040d;color:#f5f2ff;font:16px/1.6 Inter,system-ui,sans-serif;padding:24px}
-  .card{width:min(420px,100%);border:1px solid rgba(255,255,255,.1);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));backdrop-filter:blur(18px);box-shadow:0 60px 120px -80px rgba(124,92,255,.9);overflow:hidden}
-  .head{padding:28px 28px 18px;text-align:center}
-  .brand{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:inherit}
-  .brand-mark{width:26px;height:26px;color:#a78bfa}
-  .brand-text{font-weight:800;letter-spacing:-.02em;font-size:1.1rem}
-  .dot{color:#a78bfa}
-  h1{margin:14px 0 6px;font-size:1.6rem;letter-spacing:-.03em}
-  p{margin:0;color:#c3bcdd}
-  form{display:grid;gap:12px;padding:0 28px 28px}
-  label{display:grid;gap:6px;font-size:.9rem;color:#c3bcdd}
-  input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(8,6,16,.8);color:#f5f2ff;font:inherit}
-  input:focus{outline:none;border-color:rgba(167,139,250,.8);box-shadow:0 0 0 4px rgba(167,139,250,.14)}
-  .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid transparent;background:linear-gradient(135deg,#b49bff,#7c5cff);color:#0a0614;font-weight:600;text-decoration:none;cursor:pointer}
-  .btn-ghost{background:transparent;color:#f5f2ff;border-color:rgba(255,255,255,.14)}
-  .row{display:flex;justify-content:space-between;align-items:center}
-  .link{color:#b9a6ff;text-decoration:none}
-  .divider{display:flex;align-items:center;gap:12px;color:#8f87b3;font-size:.9rem;padding:0 28px}
-  .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
-  .alt{display:grid;gap:10px;padding:18px 28px 28px}
-  .msg{padding:0 28px;color:#ff8fa3;min-height:20px}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-  <div class="card">
-    <div class="head">
-      <a class="brand" href="/"><svg class="brand-mark" viewBox="0 0 32 32"><path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg><span class="brand-text">asus<span class="dot">.</span>wtf</span></a>
-      <h1>Create account</h1>
-      <p>Register to access the dashboard</p>
+<body class="auth-page">
+
+<div class="aurora" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="grid-lines"></span>
+</div>
+
+<header class="auth-bar">
+  <a class="brand" href="index.html" aria-label="asus.wtf home">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+    <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+  </a>
+  <a class="btn btn-ghost" href="index.html">Back to site</a>
+</header>
+
+<main class="auth-shell">
+  <aside class="auth-side">
+    <span class="kicker">asus.wtf account</span>
+    <h1>Make an account.<br><span class="grad">Keep the build.</span></h1>
+    <p class="auth-lede">
+      Registration takes about ten seconds. After that the dashboard keeps the current jar and the
+      install steps one click away.
+    </p>
+    <ul class="ticks">
+      <li>Email and password, or one tap with Google</li>
+      <li>Download links that never go stale</li>
+      <li>Your site account is separate from your client key</li>
+    </ul>
+    <div class="auth-build">
+      <span class="pill">Latest</span>
+      <div>
+        <strong>asus.wtf 1.0.10</strong>
+        <span>Minecraft 1.21.11 &middot; Fabric 0.20.1</span>
+      </div>
     </div>
-    <form id="regForm">
-      <label>Email<input type="email" name="email" required autocomplete="email"></label>
-      <label>Username<input type="text" name="name" required></label>
-      <label>Password<input type="password" name="password" required minlength="6" autocomplete="new-password"></label>
-      <button class="btn" type="submit">Create account</button>
+  </aside>
+
+  <section class="auth-card" aria-labelledby="authTitle">
+    <span class="kicker">First time</span>
+    <h2 id="authTitle">Create an account</h2>
+    <p class="auth-sub">All we need is an email and a password you'll remember.</p>
+
+    <div class="auth-notice" id="configNotice" hidden></div>
+
+    <form id="registerForm" novalidate>
+      <div class="field">
+        <div class="field-row"><label for="name">Name <span class="field-opt">optional</span></label></div>
+        <input class="input" id="name" name="name" type="text" autocomplete="nickname"
+               placeholder="What should we call you?" maxlength="60">
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label for="email">Email</label></div>
+        <input class="input" id="email" name="email" type="email" inputmode="email"
+               autocomplete="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label for="password">Password</label></div>
+        <div class="input-wrap">
+          <input class="input" id="password" name="password" type="password"
+                 autocomplete="new-password" placeholder="At least 8 characters" required>
+          <button class="field-eye" type="button" data-eye="password" aria-label="Show password">Show</button>
+        </div>
+        <div class="pw-meter" id="pwMeter" data-score="0" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <p class="field-hint" id="pwHint">Use 8 or more characters — a passphrase works well.</p>
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label for="confirm">Confirm password</label></div>
+        <div class="input-wrap">
+          <input class="input" id="confirm" name="confirm" type="password"
+                 autocomplete="new-password" placeholder="Repeat it" required>
+          <button class="field-eye" type="button" data-eye="confirm" aria-label="Show password">Show</button>
+        </div>
+      </div>
+
+      <p class="form-msg" id="msg" role="alert" aria-live="polite"></p>
+
+      <button class="btn btn-primary btn-block" type="submit" id="submit">Create account</button>
     </form>
-    <div class="msg" id="msg"></div>
-    <div class="divider">or</div>
-    <div class="alt">
-      <a class="btn btn-ghost" href="/auth/google">Continue with Google</a>
-      <div class="row"><span style="color:#c3bcdd">Already have an account?</span><a class="link" href="/login.html">Sign in</a></div>
-    </div>
-  </div>
-<script>
-const form=document.getElementById('regForm');
-const msg=document.getElementById('msg');
-form.addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  msg.textContent='';
-  const data=new FormData(form);
-  const body={email:data.get('email'),name:data.get('name'),password:data.get('password')};
-  try{
-    const res=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const json=await res.json();
-    if(!res.ok){msg.textContent=json.error||'Registration failed';return;}
-    window.location.href='/dashboard';
-  }catch(err){msg.textContent='Network error';}
-});
-</script>
+
+    <div class="auth-divider"><span>or</span></div>
+
+    <button class="btn btn-google btn-block" type="button" id="google">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.4Z" fill="#4285F4"/>
+        <path d="M12 22c2.7 0 4.9-.9 6.6-2.4l-3.2-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22Z" fill="#34A853"/>
+        <path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9l3.3-2.6Z" fill="#FBBC05"/>
+        <path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.7 9.4 6 12 6Z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <p class="auth-foot">Already registered? <a class="link" href="login.html">Sign in</a></p>
+  </section>
+</main>
+
+<footer class="auth-foot-bar">
+  <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+</footer>
+
+<script src="assets/auth-core.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script type="module" src="assets/register.js"></script>
 </body>
 </html>

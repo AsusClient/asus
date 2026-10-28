@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — asus.wtf</title>
+<meta name="description" content="Your asus.wtf account, the current build and the install steps.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0714">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="grid-lines"></span>
+</div>
+
+<header class="nav is-scrolled dash-nav">
+  <a class="brand" href="../index.html" aria-label="asus.wtf home">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+    <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Sections">
+    <a class="is-active" href="./">Dashboard</a>
+    <a href="../index.html#install">Install</a>
+    <a href="../index.html#modules">Modules</a>
+    <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a>
+  </nav>
+
+  <div class="nav-actions">
+    <a class="user-chip" href="./" id="navChip" title="Your account">
+      <span class="user-chip-avatar" id="navAvatar" aria-hidden="true">A</span>
+      <span id="navName">Account</span>
+    </a>
+    <button class="btn btn-ghost" type="button" id="signOut">Sign out</button>
+  </div>
+</header>
+
+<main class="dash">
+  <div class="dash-head">
+    <div>
+      <span class="kicker">Dashboard</span>
+      <h1>Welcome back, <span class="grad" id="dashName">account</span></h1>
+      <p class="dash-sub">Your account, the current build and everything you need to get it running.</p>
+    </div>
+    <span class="pill pill-live" id="authPill"><span class="dot-live"></span>Signed in</span>
+  </div>
+
+  <div class="dash-grid">
+
+    <!-- ------------------------------ download ------------------------------ -->
+    <section class="panel panel-main">
+      <div class="panel-head">
+        <div>
+          <span class="kicker">Latest build</span>
+          <h2>asus.wtf 1.0.10</h2>
+        </div>
+        <span class="pill">Stable</span>
+      </div>
+      <p class="panel-lede">Minecraft 1.21.11 &middot; Fabric 0.20.1 &middot; Java 21 or newer.</p>
+
+      <div class="dl-row">
+        <div class="dl-meta">
+          <strong>asus-wtf-1.0.10.jar</strong>
+          <span>13.7 MB &middot; drop it in <code>.minecraft/mods</code></span>
+        </div>
+        <a class="btn btn-primary" href="../assets/asus-wtf-1.0.10.jar" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download jar
+        </a>
+      </div>
+
+      <ul class="ticks">
+        <li>The client still takes a key &mdash; this account is only for the site.</li>
+        <li>Fabric API is required; Cloth Config and Mod Menu are optional.</li>
+        <li>Press <kbd>Right Shift</kbd> in game to reach the key screen and the menu.</li>
+      </ul>
+    </section>
+
+    <!-- ------------------------------ account ------------------------------- -->
+    <aside class="panel panel-account" aria-labelledby="accountHeading">
+      <div class="panel-head">
+        <div>
+          <span class="kicker">Account</span>
+          <h2 id="accountHeading">You</h2>
+        </div>
+      </div>
+
+      <div class="account-id">
+        <span class="account-avatar" id="accountAvatar" aria-hidden="true">A</span>
+        <div>
+          <strong id="accountName">&hellip;</strong>
+          <span id="accountEmail">&hellip;</span>
+        </div>
+      </div>
+
+      <dl class="meta-list">
+        <div><dt>Signed in with</dt><dd id="accountProvider">&hellip;</dd></div>
+        <div><dt>Email</dt><dd id="accountVerified">&hellip;</dd></div>
+        <div><dt>Member since</dt><dd id="accountSince">&hellip;</dd></div>
+      </dl>
+
+      <div class="account-actions">
+        <button class="btn btn-ghost" type="button" id="resend" hidden>Resend verification</button>
+        <button class="btn btn-ghost" type="button" id="changePassword" hidden>Change password</button>
+        <button class="btn btn-ghost" type="button" id="signOutMain">Sign out</button>
+      </div>
+
+      <p class="panel-note" id="accountMsg" role="status" aria-live="polite"></p>
+    </aside>
+
+    <!-- ------------------------------- install ------------------------------ -->
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <span class="kicker">Install</span>
+          <h2>Three steps</h2>
+        </div>
+        <a class="btn btn-ghost" href="../index.html#install">Full guide</a>
+      </div>
+
+      <div class="steps-inline">
+        <div class="step-mini">
+          <span class="n">01</span>
+          <strong>Install Fabric</strong>
+          <p>Run the Fabric installer for 1.21.11 with loader 0.20.1, then launch once so the mods folder exists.</p>
+        </div>
+        <div class="step-mini">
+          <span class="n">02</span>
+          <strong>Drop the jar</strong>
+          <p>Put the jar above into <code>.minecraft/mods</code> next to Fabric API, then start the game.</p>
+        </div>
+        <div class="step-mini">
+          <span class="n">03</span>
+          <strong>Paste your key</strong>
+          <p>Press <kbd>Right Shift</kbd>, paste the key and hit Unlock. After that the menu opens normally.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-base">
+    <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+    <span class="footer-build">build 1.0.10 &middot; mc 1.21.11</span>
+  </div>
+</footer>
+
+<script src="../assets/auth-core.js"></script>
+<script src="../assets/firebase-config.js"></script>
+<script type="module" src="../assets/dashboard.js"></script>
+</body>
+</html>

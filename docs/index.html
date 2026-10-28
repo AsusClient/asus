@@ -74,8 +74,8 @@
 
       <p class="lede reveal">
         One hundred and nine modules, two hand-built menu layouts and a stream-proof overlay that
-        refuses to show up on capture. One key unlocks it &mdash; no account, no launcher, no
-        subscription. Drop the jar in, paste the key, press <kbd>Right Shift</kbd>, go.
+        refuses to show up on capture. One key unlocks it &mdash; no launcher, no subscription.
+        Drop the jar in, paste the key, press <kbd>Right Shift</kbd>, go.
       </p>
 
       <div class="hero-actions reveal">
@@ -427,6 +427,10 @@
         <p>No. The client only talks to the key server, and only with the key plus a hashed install id. No username, no email, no Discord token ever reaches the client.</p>
       </details>
       <details class="reveal">
+        <summary>What is the site account for?</summary>
+        <p>The <a href="login.html">account</a> only opens the dashboard, which keeps the current jar and the install steps in one place. It is not a licence and it is not required to download &mdash; the client still takes a key.</p>
+      </details>
+      <details class="reveal">
         <summary>What happens if the key server is down?</summary>
         <p>The last successful check is cached for 72 hours, so a temporary outage does not lock you out. Past that, the menu stays closed until a check succeeds.</p>
       </details>
@@ -481,6 +485,7 @@
         <a href="#features">Features</a>
         <a href="#modules">Modules</a>
         <a href="#install">Install</a>
+        <a href="login.html">Account</a>
         <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord / keys</a>
       </div>
       <div>
@@ -508,6 +513,8 @@
 </div>
 
 <script src="assets/app.js"></script>
-<script src="assets/auth.js"></script>
+<script src="assets/auth-core.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script type="module" src="assets/auth.js"></script>
 </body>
 </html>
