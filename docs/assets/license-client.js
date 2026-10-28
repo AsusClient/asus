@@ -15,6 +15,13 @@
 const KEY_RE = /^ASUS-[A-HJ-NP-Z2-9]{5}(-[A-HJ-NP-Z2-9]{5}){3}$/;
 const STORAGE_PREFIX = "asus.license.";
 
+// The server pushes the list the moment a key changes; GitHub Pages then takes
+// up to a minute (sometimes more) to rebuild. Read the raw repo file first so a
+// fresh key is usable right away, and fall back to the deployed copy if raw is
+// blocked or offline.
+const RAW_LICENSE_URL =
+  "https://raw.githubusercontent.com/AsusClient/asus/main/docs/assets/licenses.json";
+
 let freshDatabase = null;
 let listPromise = null;
 
@@ -26,15 +33,26 @@ function currentDatabase() {
 export async function refreshLicenses() {
   if (listPromise) return listPromise;
   listPromise = (async () => {
-    try {
-      const url = new URL("licenses.json", import.meta.url);
-      url.searchParams.set("t", Date.now().toString(36));
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) return currentDatabase();
-      const data = await response.json();
-      if (data && data.keys) freshDatabase = data;
-    } catch {
-      /* offline or blocked: the script tag copy still works */
+    const sources = [
+      `${RAW_LICENSE_URL}?t=${Date.now().toString(36)}`,
+      (() => {
+        const url = new URL("licenses.json", import.meta.url);
+        url.searchParams.set("t", Date.now().toString(36));
+        return url.href;
+      })(),
+    ];
+    for (const source of sources) {
+      try {
+        const response = await fetch(source, { cache: "no-store" });
+        if (!response.ok) continue;
+        const data = await response.json();
+        if (data && data.keys) {
+          freshDatabase = data;
+          break;
+        }
+      } catch {
+        /* try the next source */
+      }
     }
     return currentDatabase();
   })();
