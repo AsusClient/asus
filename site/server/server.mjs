@@ -589,6 +589,7 @@ function siteSnapshot(store) {
   }
   return {
     generatedAt: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+    revision: Date.now(),
     keys: fingerprints,
   };
 }

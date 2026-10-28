@@ -15,10 +15,9 @@
 const KEY_RE = /^ASUS-[A-HJ-NP-Z2-9]{5}(-[A-HJ-NP-Z2-9]{5}){3}$/;
 const STORAGE_PREFIX = "asus.license.";
 
-// The server pushes the list the moment a key changes; GitHub Pages then takes
-// up to a minute (sometimes more) to rebuild. Read the raw repo file first so a
-// fresh key is usable right away, and fall back to the deployed copy if raw is
-// blocked or offline.
+// The server pushes the list the moment a key changes, but both GitHub Pages
+// and raw.githubusercontent.com cache it. Read both and keep whichever is
+// newer: a lagging CDN must never miss a new key or resurrect a deleted one.
 const RAW_LICENSE_URL =
   "https://raw.githubusercontent.com/AsusClient/asus/main/docs/assets/licenses.json";
 
@@ -29,31 +28,41 @@ function currentDatabase() {
   return freshDatabase || window.ASUS_SITE_LICENSES;
 }
 
-/** Load the fingerprint list without letting the CDN cache serve a stale one. */
+async function fetchList(url) {
+  try {
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data && data.keys ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+function freshness(database) {
+  if (!database) return -1;
+  if (typeof database.revision === "number") return database.revision;
+  const stamp = Date.parse(database.generatedAt || "");
+  return Number.isFinite(stamp) ? stamp : -1;
+}
+
+/** Load the newest fingerprint list available, regardless of which CDN lags. */
 export async function refreshLicenses() {
   if (listPromise) return listPromise;
   listPromise = (async () => {
-    const sources = [
-      `${RAW_LICENSE_URL}?t=${Date.now().toString(36)}`,
-      (() => {
-        const url = new URL("licenses.json", import.meta.url);
-        url.searchParams.set("t", Date.now().toString(36));
-        return url.href;
-      })(),
-    ];
-    for (const source of sources) {
-      try {
-        const response = await fetch(source, { cache: "no-store" });
-        if (!response.ok) continue;
-        const data = await response.json();
-        if (data && data.keys) {
-          freshDatabase = data;
-          break;
-        }
-      } catch {
-        /* try the next source */
-      }
+    const stamp = Date.now().toString(36);
+    const local = new URL("licenses.json", import.meta.url);
+    local.searchParams.set("t", stamp);
+    const copies = await Promise.all([
+      fetchList(`${RAW_LICENSE_URL}?t=${stamp}`),
+      fetchList(local.href),
+    ]);
+
+    let best = null;
+    for (const copy of copies) {
+      if (copy && (!best || freshness(copy) > freshness(best))) best = copy;
     }
+    if (best) freshDatabase = best;
     return currentDatabase();
   })();
   return listPromise;

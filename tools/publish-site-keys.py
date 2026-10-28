@@ -107,6 +107,7 @@ def main() -> int:
         "   ========================================================================= */\n\n"
         f"window.ASUS_SITE_LICENSES = {{\n"
         f'  generatedAt: "{stamp}",\n'
+        f"  revision: {int(now_ms)},\n"
         f"  keys: {body},\n"
         "};\n",
         encoding="utf-8",
@@ -116,7 +117,12 @@ def main() -> int:
     # visible immediately instead of after GitHub Pages' 10-minute cache.
     json_path = out_path.with_suffix(".json")
     json_path.write_text(
-        json.dumps({"generatedAt": stamp, "keys": published}, indent=2, sort_keys=True) + "\n",
+        json.dumps(
+            {"generatedAt": stamp, "revision": int(now_ms), "keys": published},
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
         encoding="utf-8",
     )
 
