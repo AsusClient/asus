@@ -29,13 +29,17 @@ function currentDatabase() {
 }
 
 async function fetchList(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4500);
   try {
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url, { cache: "no-store", signal: controller.signal });
     if (!response.ok) return null;
     const data = await response.json();
     return data && data.keys ? data : null;
   } catch {
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
