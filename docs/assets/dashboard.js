@@ -11,15 +11,13 @@ import {
   signOutNow,
 } from "./auth-client.js";
 import { setBusy, setMessage } from "./auth-ui.js";
-import {
-  forget,
-  formatKeyInput,
-  recall,
-  reasonText,
-  remember,
-  verifyKey,
-  verifyStoredHash,
-} from "./license-client.js";
+import * as license from "./license-client.js";
+
+// Namespace access, not named imports: a browser holding a cached older
+// license-client.js would otherwise fail to link the whole module.
+const { forget, formatKeyInput, recall, reasonText, remember, verifyKey } = license;
+const verifyStoredHash =
+  license.verifyStoredHash || (async (hash) => license.verifyHash(hash));
 
 const core = window.AsusAuthCore;
 const $ = (selector) => document.querySelector(selector);

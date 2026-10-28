@@ -562,8 +562,10 @@ function persist() {
 /* --------------------- publish fingerprints to the site ----------------- */
 
 const REPO_ROOT = resolve(SITE, "..");
-const SITE_LICENSES_JS = join(REPO_ROOT, "docs", "assets", "licenses.js");
-const SITE_LICENSES_JSON = join(REPO_ROOT, "docs", "assets", "licenses.json");
+const PUBLISH_DIR = resolve(HERE, ".site-publish");
+const SITE_LICENSES_JS = join(PUBLISH_DIR, "docs", "assets", "licenses.js");
+const SITE_LICENSES_JSON = join(PUBLISH_DIR, "docs", "assets", "licenses.json");
+const DEFAULT_REMOTE = "https://github.com/AsusClient/asus.git";
 const PUBLISH_ENABLED = String(process.env.PUBLISH_SITE ?? "1") !== "0";
 
 let publishQueue = Promise.resolve();
@@ -590,9 +592,9 @@ function siteSnapshot(store) {
   };
 }
 
-function runGit(args) {
+function runGit(args, cwd = PUBLISH_DIR) {
   return new Promise((resolvePromise, reject) => {
-    const child = spawn("git", args, { cwd: REPO_ROOT, stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn("git", args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     const timer = setTimeout(() => child.kill(), 30_000);
     child.stdout.on("data", (chunk) => (output += chunk));
@@ -606,9 +608,33 @@ function runGit(args) {
   });
 }
 
+async function ensurePublishClone() {
+  try {
+    await stat(join(PUBLISH_DIR, ".git"));
+    return;
+  } catch {
+    /* first publish */
+  }
+
+  let remote = DEFAULT_REMOTE;
+  try {
+    remote = (await runGit(["remote", "get-url", "origin"], REPO_ROOT)).trim() || remote;
+  } catch {
+    /* the checkout has no origin; use the public repo */
+  }
+  await rm(PUBLISH_DIR, { recursive: true, force: true });
+  await runGit(["clone", "--depth", "1", "--branch", "main", remote, PUBLISH_DIR], HERE);
+}
+
 async function publishSiteNow(store) {
   if (!PUBLISH_ENABLED) return;
   try {
+    await ensurePublishClone();
+    // Always publish on top of the latest site, never on a stale local branch.
+    await runGit(["fetch", "--depth", "1", "origin", "+refs/heads/main:refs/remotes/origin/main"]);
+    await runGit(["reset", "--hard"]);
+    await runGit(["checkout", "-B", "main", "origin/main"]);
+
     const payload = siteSnapshot(store);
     const count = Object.keys(payload.keys).length;
     const active = Object.values(payload.keys).filter((entry) => entry.status === "active").length;
@@ -661,8 +687,7 @@ async function publishSiteNow(store) {
       identity = ["-c", "user.name=asus.wtf", "-c", "user.email=keys@asus.wtf"];
     }
     await runGit([...identity, "commit", "-m", "update site keys"]);
-    const branch = (await runGit(["rev-parse", "--abbrev-ref", "HEAD"])).trim();
-    await runGit(branch && branch !== "HEAD" ? ["push", "origin", branch] : ["push"]);
+    await runGit(["push", "origin", "main"]);
     console.log(`[site] published ${count} fingerprint(s) (${active} active) and pushed`);
   } catch (error) {
     console.error(`[site] publish failed: ${error.message}`);

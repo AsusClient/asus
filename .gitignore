@@ -3,6 +3,7 @@ site/server/keys.json
 site/server/config.json
 site/server/users.json
 site/server/keys-backups/
+site/server/.site-publish/
 *.env
 
 # Build output
