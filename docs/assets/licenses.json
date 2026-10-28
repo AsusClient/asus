@@ -1,6 +1,14 @@
 {
-  "generatedAt": "2026-10-28T23:51:14Z",
+  "generatedAt": "2026-10-28T23:54:50Z",
   "keys": {
+    "a44824b6126ab223b02632f065bb7bf114a7260c654b537aaa1a5467c72bbba1": {
+      "expiresAt": null,
+      "status": "active"
+    },
+    "f16dc4e9c13ff5b253fa0fa7cbcec00a4bdb106b4e0b2d81089dad9b2b7ad6c3": {
+      "expiresAt": null,
+      "status": "active"
+    },
     "8633aeadfd3a3f767a005b7171d5c91a97d74c5043bfd9ab02062d6107417633": {
       "expiresAt": 1793234842579,
       "status": "revoked"
