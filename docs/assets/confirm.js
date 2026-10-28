@@ -5,7 +5,7 @@
    soon as the session is live the visitor is forwarded to the dashboard.
    ========================================================================= */
 
-import { configured, onAuth } from "./auth-client.js";
+import { configured, currentSession, onAuth } from "./auth-client.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -130,4 +130,11 @@ if (!configured) {
       ]
     );
   });
+
+  // Belt and braces: a redirect hash can be parsed after the initial event.
+  window.setTimeout(async () => {
+    if (settled) return;
+    const session = await currentSession();
+    if (session && session.user) success();
+  }, 700);
 }

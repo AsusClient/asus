@@ -171,6 +171,17 @@ export async function resendVerification(email) {
   }
 }
 
+/** Current session, waiting for the SDK to finish parsing a redirect hash. */
+export async function currentSession() {
+  try {
+    const supabase = await init();
+    const { data } = await supabase.auth.getSession();
+    return (data && data.session) || null;
+  } catch {
+    return null;
+  }
+}
+
 /** Fresh user record (used to notice a just-clicked confirmation link). */
 export async function reloadUser() {
   try {
