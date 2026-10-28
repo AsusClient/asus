@@ -2,7 +2,7 @@
    asus.wtf — account chip on the landing page
 
    Loads after app.js. Adds "Sign in" to the nav, or the signed-in visitor's
-   chip linking to the dashboard. With an empty firebase-config.js it simply
+   chip linking to the dashboard. With an empty supabase-config.js it simply
    stays on the signed-out state — no errors, no dead script tags.
    ========================================================================= */
 

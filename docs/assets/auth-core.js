@@ -1,5 +1,5 @@
 /* =========================================================================
-   asus.wtf — account helpers shared by login / register / dashboard.
+   asus.wtf — account helpers shared by login / register / reset / dashboard.
 
    Classic script: defines window.AsusAuthCore (and module.exports under Node,
    which is how the checks in tools/ get at it). No dependencies.
@@ -15,17 +15,14 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var MIN_PASSWORD = 8;
 
-  /** True once firebase-config.js holds real project values. */
+  /** True once supabase-config.js holds a project URL and public key. */
   function isConfigured(cfg) {
     if (!cfg || typeof cfg !== "object") return false;
-    return ["apiKey", "authDomain", "projectId", "appId"].every(function (key) {
-      var value = cfg[key];
-      return (
-        typeof value === "string" &&
-        value.trim().length > 0 &&
-        !/^paste/i.test(value.trim())
-      );
-    });
+    var url = typeof cfg.url === "string" ? cfg.url.trim() : "";
+    var key = typeof cfg.anonKey === "string" ? cfg.anonKey.trim() : "";
+    if (!/^https?:\/\/[^\s]+$/i.test(url)) return false;
+    if (key.length < 20) return false;
+    return !/^paste/i.test(key);
   }
 
   function emailProblem(email) {
@@ -58,72 +55,65 @@
     return ["empty", "weak", "fair", "good", "strong"][score] || "weak";
   }
 
-  /** Firebase error codes -> a sentence a visitor can act on. */
+  /** Supabase auth errors -> a sentence a visitor can act on. */
   function friendlyError(error) {
-    var code =
-      (error && (error.code || error.message)) ||
-      (typeof error === "string" ? error : "") ||
-      "";
+    var code = String((error && error.code) || "").toLowerCase();
+    var message = String((error && error.message) || (typeof error === "string" ? error : "")).trim();
+    var probe = (code + " " + message).toLowerCase();
 
-    if (/^auth\/(invalid-api-key|api-key-not-valid)/.test(code)) {
-      return "That Firebase API key isn't valid — re-copy the web config from Project settings → Your apps.";
+    if (code === "app/not-configured") {
+      return "Accounts aren't connected yet — the site owner needs to finish the Supabase setup.";
     }
-
-    var raw =
-      error && typeof error.message === "string" ? error.message.trim() : "";
-    var fallback =
-      !raw || /^Firebase:\s*Error/i.test(raw) || /^auth\//.test(raw)
-        ? "Something went wrong. Try again."
-        : raw;
-
-    switch (code) {
-      case "app/not-configured":
-        return "Accounts aren't connected yet — the site owner needs to finish the Firebase setup.";
-      case "auth/invalid-email":
-        return "That email address isn't valid.";
-      case "auth/missing-email":
-        return "Enter your email address.";
-      case "auth/invalid-credential":
-      case "auth/invalid-login-credentials":
-      case "auth/wrong-password":
-      case "auth/user-not-found":
-        return "Email or password is incorrect.";
-      case "auth/missing-password":
-        return "Enter your password.";
-      case "auth/user-disabled":
-        return "That account has been disabled.";
-      case "auth/email-already-in-use":
-        return "An account already uses that email. Sign in instead.";
-      case "auth/weak-password":
-        return "That password is too weak — use at least " + MIN_PASSWORD + " characters.";
-      case "auth/too-many-requests":
-        return "Too many attempts. Wait a minute and try again.";
-      case "auth/network-request-failed":
-        return "Network error — check your connection and try again.";
-      case "auth/popup-closed-by-user":
-      case "auth/cancelled-popup-request":
-        return "Google sign-in was cancelled.";
-      case "auth/popup-blocked":
-        return "Your browser blocked the Google popup. Allow popups for this site and try again.";
-      case "auth/unauthorized-domain":
-        return "This domain isn't authorised for sign-in yet. Add it under Firebase → Authentication → Settings → Authorized domains.";
-      case "auth/operation-not-allowed":
-        return "That sign-in method is switched off in the Firebase console.";
-      case "auth/account-exists-with-different-credential":
-        return "That email already has an account with another sign-in method. Use that one instead.";
-      case "auth/requires-recent-login":
-        return "For security, sign in again before doing that.";
-      case "auth/internal-error":
-        return "The account service hiccuped. Try again in a moment.";
-      default:
-        return fallback;
+    if (/invalid login credentials|invalid_credentials/.test(probe)) {
+      return "Email or password is incorrect.";
     }
+    if (/email not confirmed|email_not_confirmed/.test(probe)) {
+      return "Confirm your email first — the link is in your inbox.";
+    }
+    if (/user already registered|already been registered|user_already_exists/.test(probe)) {
+      return "An account already uses that email. Sign in instead.";
+    }
+    if (/password should be at least|weak_password/.test(probe)) {
+      return "That password is too weak — use at least " + MIN_PASSWORD + " characters.";
+    }
+    if (/email rate limit|over_email_send_rate_limit|over_request_rate_limit|too many requests/.test(probe)) {
+      return "Too many attempts. Wait a minute and try again.";
+    }
+    if (/provider is not enabled|provider_disabled|unsupported provider/.test(probe)) {
+      return "Google sign-in isn't switched on for this project yet.";
+    }
+    if (/signups? not allowed|signup_disabled/.test(probe)) {
+      return "New sign-ups are switched off for this project.";
+    }
+    if (/invalid email|email_address_invalid|validation_failed/.test(probe)) {
+      return "That email address isn't valid.";
+    }
+    if (/auth session missing|session_not_found|refresh token not found/.test(probe)) {
+      return "Your session expired. Sign in again.";
+    }
+    if (/otp.*expired|token.*expired|link is invalid or has expired/.test(probe)) {
+      return "That link has expired. Request a new email.";
+    }
+    if (/new password should be different|same_password/.test(probe)) {
+      return "Pick a password you haven't used here before.";
+    }
+    if (/invalid api key|invalid apikey|no api key/.test(probe)) {
+      return "That Supabase key isn't valid — re-copy the anon public key from Project Settings → API.";
+    }
+    if (/failed to fetch|networkerror|network request failed/.test(probe)) {
+      return "Network error — check your connection and try again.";
+    }
+    if (message && !/^(error|auth)/i.test(message) && message.length < 160) return message;
+    return "Something went wrong. Try again.";
   }
 
   function displayName(user) {
     if (!user) return "Guest";
-    var named = typeof user.displayName === "string" ? user.displayName.trim() : "";
-    if (named) return named;
+    var meta = user.user_metadata || {};
+    var candidates = [meta.full_name, meta.name, meta.display_name, user.name, user.displayName];
+    for (var i = 0; i < candidates.length; i += 1) {
+      if (typeof candidates[i] === "string" && candidates[i].trim()) return candidates[i].trim();
+    }
     var email = typeof user.email === "string" ? user.email.trim() : "";
     if (email) return email.split("@")[0];
     return "Account";
@@ -138,16 +128,17 @@
   }
 
   function providerName(user) {
-    var entry =
-      user && user.providerData && user.providerData.length ? user.providerData[0] : null;
-    var id = entry && entry.providerId ? entry.providerId : "";
-    if (id === "google.com") return "Google";
-    if (id === "password") return "Email & password";
+    var provider =
+      (user && user.app_metadata && user.app_metadata.provider) ||
+      (user && user.provider) ||
+      "";
+    if (provider === "google") return "Google";
+    if (provider === "email") return "Email & password";
     return "Account";
   }
 
   function memberSince(user) {
-    var raw = user && user.metadata && user.metadata.creationTime;
+    var raw = user && (user.created_at || user.createdAt);
     if (!raw) return "—";
     var date = new Date(raw);
     if (isNaN(date.getTime())) return "—";

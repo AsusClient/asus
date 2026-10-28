@@ -1,21 +1,22 @@
 /* =========================================================================
-   asus.wtf — Firebase Auth client
+   asus.wtf — Supabase Auth client
 
    ES module. The SDK is imported lazily, so a site with an empty
-   firebase-config.js makes no network calls to gstatic at all.
+   supabase-config.js makes no network calls to the CDN at all.
 
    Exports: configured, onAuth, signUpEmail, signInEmail, signInGoogle,
-            signOutNow, sendReset, resendVerification
+            signOutNow, sendReset, resendVerification, reloadUser,
+            updatePassword
    ========================================================================= */
 
-const SDK = "https://www.gstatic.com/firebasejs/13.1.0";
+const SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm";
 
 const core = window.AsusAuthCore;
-const config = window.ASUS_FIREBASE_CONFIG || {};
+const config = window.ASUS_SUPABASE_CONFIG || {};
 
 export const configured = Boolean(core && core.isConfigured(config));
 
-let session = null;
+let client = null;
 
 function codedError(code, message) {
   const error = new Error(message || code);
@@ -24,43 +25,41 @@ function codedError(code, message) {
 }
 
 function normalize(error) {
-  if (error && typeof error.code === "string" && error.code) return error;
-  return codedError("app/unknown", (error && error.message) || "Something went wrong.");
+  if (!error) return codedError("unknown", "Something went wrong.");
+  const normalized = new Error(error.message || "Something went wrong.");
+  normalized.code = error.code || "unknown";
+  normalized.status = error.status;
+  return normalized;
+}
+
+/** Absolute URL inside this deployment (works from /asus/ on GitHub Pages). */
+function absolute(path) {
+  return new URL(path, document.baseURI).href;
 }
 
 async function init() {
   if (!configured) throw codedError("app/not-configured");
-  if (!session) {
-    session = (async () => {
-      const [appModule, authModule] = await Promise.all([
-        import(`${SDK}/firebase-app.js`),
-        import(`${SDK}/firebase-auth.js`),
-      ]);
-      const app = appModule.initializeApp({
-        apiKey: config.apiKey,
-        authDomain: config.authDomain,
-        projectId: config.projectId,
-        storageBucket: config.storageBucket || undefined,
-        messagingSenderId: config.messagingSenderId || undefined,
-        appId: config.appId,
+  if (!client) {
+    client = import(SDK)
+      .then(({ createClient }) =>
+        createClient(config.url.trim(), config.anonKey.trim(), {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          },
+        })
+      )
+      .catch((error) => {
+        client = null;
+        throw normalize(error);
       });
-      const auth = authModule.getAuth(app);
-      try {
-        await authModule.setPersistence(auth, authModule.browserLocalPersistence);
-      } catch {
-        /* persistence is best-effort; the session still works for this tab */
-      }
-      return { auth, m: authModule };
-    })().catch((error) => {
-      session = null;
-      throw error;
-    });
   }
-  return session;
+  return client;
 }
 
 /**
- * Subscribe to the signed-in user. Calls back once with null immediately when
+ * Subscribe to the signed-in user. Calls back once immediately with null when
  * accounts are not configured, so callers never wait on a promise that can't
  * resolve.
  */
@@ -69,28 +68,45 @@ export async function onAuth(callback) {
     callback(null);
     return () => {};
   }
-  const { auth, m } = await init();
-  return m.onAuthStateChanged(auth, (user) => callback(user || null));
+  const supabase = await init();
+
+  try {
+    const { data } = await supabase.auth.getSession();
+    callback((data && data.session && data.session.user) || null);
+  } catch {
+    callback(null);
+  }
+
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback((session && session.user) || null);
+  });
+  return () => {
+    if (data && data.subscription) data.subscription.unsubscribe();
+  };
 }
 
+/**
+ * Creates the account. Returns { user, needsConfirmation }; when the project
+ * requires email confirmation there is no session yet.
+ */
 export async function signUpEmail({ name, email, password }) {
   try {
-    const { auth, m } = await init();
-    const credential = await m.createUserWithEmailAndPassword(auth, email, password);
-    const cleanName = String(name || "").trim();
-    if (cleanName) {
-      try {
-        await m.updateProfile(credential.user, { displayName: cleanName });
-      } catch {
-        /* a missing display name falls back to the email local part */
-      }
-    }
-    try {
-      await m.sendEmailVerification(credential.user);
-    } catch {
-      /* verification mail is a courtesy; the dashboard can resend it */
-    }
-    return credential.user;
+    const supabase = await init();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: name ? { full_name: name } : {},
+        emailRedirectTo: absolute("dashboard/"),
+      },
+    });
+    if (error) throw error;
+
+    const user = (data && data.user) || null;
+    const session = (data && data.session) || null;
+    // Supabase hides whether the address already existed, so both a fresh
+    // sign-up and a duplicate land here with no session.
+    return { user, needsConfirmation: !session };
   } catch (error) {
     throw normalize(error);
   }
@@ -98,21 +114,25 @@ export async function signUpEmail({ name, email, password }) {
 
 export async function signInEmail({ email, password }) {
   try {
-    const { auth, m } = await init();
-    const credential = await m.signInWithEmailAndPassword(auth, email, password);
-    return credential.user;
+    const supabase = await init();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return (data && data.user) || null;
   } catch (error) {
     throw normalize(error);
   }
 }
 
+/** Starts the hosted Google flow; the browser leaves this page. */
 export async function signInGoogle() {
   try {
-    const { auth, m } = await init();
-    const provider = new m.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
-    const credential = await m.signInWithPopup(auth, provider);
-    return credential.user;
+    const supabase = await init();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: absolute("dashboard/") },
+    });
+    if (error) throw error;
+    return (data && data.url) || null;
   } catch (error) {
     throw normalize(error);
   }
@@ -120,8 +140,9 @@ export async function signInGoogle() {
 
 export async function signOutNow() {
   try {
-    const { auth, m } = await init();
-    await m.signOut(auth);
+    const supabase = await init();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   } catch (error) {
     throw normalize(error);
   }
@@ -130,32 +151,46 @@ export async function signOutNow() {
 /** Sends a reset link. Resolves even for unknown addresses (no account probing). */
 export async function sendReset(email) {
   try {
-    const { auth, m } = await init();
-    await m.sendPasswordResetEmail(auth, email);
+    const supabase = await init();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: absolute("reset.html"),
+    });
+    if (error) throw error;
   } catch (error) {
-    const code = error && error.code;
-    if (code === "auth/user-not-found") return;
     throw normalize(error);
   }
 }
 
-export async function resendVerification() {
+export async function resendVerification(email) {
   try {
-    const { auth, m } = await init();
-    if (!auth.currentUser) throw codedError("auth/user-not-found");
-    await m.sendEmailVerification(auth.currentUser);
+    const supabase = await init();
+    const { error } = await supabase.auth.resend({ type: "signup", email });
+    if (error) throw error;
   } catch (error) {
     throw normalize(error);
   }
 }
 
-/** Force a refresh of emailVerified after the visitor clicks the mail link. */
+/** Fresh user record (used to notice a just-clicked confirmation link). */
 export async function reloadUser() {
   try {
-    const { auth, m } = await init();
-    if (auth.currentUser) await auth.currentUser.reload();
-    return auth.currentUser || null;
+    const supabase = await init();
+    const { data, error } = await supabase.auth.getUser();
+    if (error) return null;
+    return (data && data.user) || null;
   } catch {
     return null;
+  }
+}
+
+/** Sets a new password for the session created by a recovery link. */
+export async function updatePassword(password) {
+  try {
+    const supabase = await init();
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    return (data && data.user) || null;
+  } catch (error) {
+    throw normalize(error);
   }
 }

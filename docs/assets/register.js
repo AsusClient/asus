@@ -85,7 +85,19 @@ form.addEventListener("submit", async (event) => {
   setMessage(message, "");
   setBusy(submit, true, "Creating account…");
   try {
-    await signUpEmail({ name, email, password });
+    const result = await signUpEmail({ name, email, password });
+    if (result && result.needsConfirmation) {
+      setMessage(
+        message,
+        `Check ${email} for the confirmation link, then sign in. If that address already has an account, use Sign in instead.`,
+        true
+      );
+      passwordInput.value = "";
+      confirmInput.value = "";
+      paintStrength();
+      setBusy(submit, false);
+      return;
+    }
     location.replace(next);
   } catch (error) {
     setMessage(message, core.friendlyError(error));
@@ -96,10 +108,10 @@ form.addEventListener("submit", async (event) => {
 google.addEventListener("click", async () => {
   if (!configured) return;
   setMessage(message, "");
-  setBusy(google, true, "Opening Google…");
+  setBusy(google, true, "Redirecting to Google…");
   try {
+    // Supabase sends the browser to Google and back; do not navigate here.
     await signInGoogle();
-    location.replace(next);
   } catch (error) {
     setMessage(message, core.friendlyError(error));
     setBusy(google, false);

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set a new password — asus.wtf</title>
+<meta name="description" content="Choose a new password for your asus.wtf account.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0714">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="auth-page">
+
+<div class="aurora" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="grid-lines"></span>
+</div>
+
+<header class="auth-bar">
+  <a class="brand" href="index.html" aria-label="asus.wtf home">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+    <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+  </a>
+  <a class="btn btn-ghost" href="login.html">Back to sign in</a>
+</header>
+
+<main class="auth-shell">
+  <aside class="auth-side">
+    <span class="kicker">asus.wtf account</span>
+    <h1>New password.<br><span class="grad">Same account.</span></h1>
+    <p class="auth-lede">
+      This page only works from the reset link in your inbox. Once the password changes, the
+      dashboard opens straight away.
+    </p>
+    <ul class="ticks">
+      <li>Eight characters or more</li>
+      <li>Your download history stays untouched</li>
+      <li>Any other signed-in device is closed out</li>
+    </ul>
+  </aside>
+
+  <section class="auth-card" aria-labelledby="authTitle">
+    <span class="kicker">Password reset</span>
+    <h2 id="authTitle">Choose a new password</h2>
+    <p class="auth-sub">Type it twice and you're back in.</p>
+
+    <div class="auth-notice" id="configNotice" hidden></div>
+    <div class="auth-notice" id="linkNotice" hidden></div>
+
+    <form id="resetForm" novalidate>
+      <div class="field">
+        <div class="field-row"><label for="password">New password</label></div>
+        <div class="input-wrap">
+          <input class="input" id="password" name="password" type="password"
+                 autocomplete="new-password" placeholder="At least 8 characters" required>
+          <button class="field-eye" type="button" data-eye="password" aria-label="Show password">Show</button>
+        </div>
+        <div class="pw-meter" id="pwMeter" data-score="0" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <p class="field-hint" id="pwHint">Use 8 or more characters — a passphrase works well.</p>
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label for="confirm">Confirm password</label></div>
+        <div class="input-wrap">
+          <input class="input" id="confirm" name="confirm" type="password"
+                 autocomplete="new-password" placeholder="Repeat it" required>
+          <button class="field-eye" type="button" data-eye="confirm" aria-label="Show password">Show</button>
+        </div>
+      </div>
+
+      <p class="form-msg" id="msg" role="alert" aria-live="polite"></p>
+
+      <button class="btn btn-primary btn-block" type="submit" id="submit">Save new password</button>
+    </form>
+
+    <p class="auth-foot">Link expired? <a class="link" href="login.html">Request a new one</a></p>
+  </section>
+</main>
+
+<footer class="auth-foot-bar">
+  <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+</footer>
+
+<script src="assets/auth-core.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script type="module" src="assets/reset.js"></script>
+</body>
+</html>

@@ -11,9 +11,9 @@ export function mountConfigNotice(element) {
   title.textContent = "Accounts aren't connected yet.";
 
   const body = document.createElement("p");
-  body.append("Add the Firebase web keys to ");
+  body.append("Add the Supabase project URL and anon key to ");
   const file = document.createElement("code");
-  file.textContent = "assets/firebase-config.js";
+  file.textContent = "assets/supabase-config.js";
   body.append(file, ". Every step is in ");
   const link = document.createElement("a");
   link.className = "link";
@@ -25,7 +25,7 @@ export function mountConfigNotice(element) {
 
   const edit = document.createElement("a");
   edit.className = "link auth-notice-edit";
-  edit.href = "https://github.com/AsusClient/asus/edit/main/docs/assets/firebase-config.js";
+  edit.href = "https://github.com/AsusClient/asus/edit/main/docs/assets/supabase-config.js";
   edit.target = "_blank";
   edit.rel = "noopener";
   edit.textContent = "Edit the config on GitHub →";

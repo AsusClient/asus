@@ -70,10 +70,10 @@ form.addEventListener("submit", async (event) => {
 google.addEventListener("click", async () => {
   if (!configured) return;
   setMessage(message, "");
-  setBusy(google, true, "Opening Google…");
+  setBusy(google, true, "Redirecting to Google…");
   try {
+    // Supabase sends the browser to Google and back; do not navigate here.
     await signInGoogle();
-    location.replace(next);
   } catch (error) {
     setMessage(message, core.friendlyError(error));
     setBusy(google, false);

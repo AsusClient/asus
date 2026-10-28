@@ -118,7 +118,7 @@ if (els.resend) {
     setMessage(els.accountMsg, "");
     setBusy(els.resend, true, "Sending…");
     try {
-      await resendVerification();
+      await resendVerification(currentUser.email);
       setMessage(els.accountMsg, `Verification email sent to ${currentUser.email}.`, true);
     } catch (error) {
       setMessage(els.accountMsg, core.friendlyError(error));
@@ -151,16 +151,16 @@ onAuth((user) => {
   }
   render(user);
   renderAvatarOnly(user);
-
-  // Pick up "I clicked the verification mail" without a full page reload.
-  document.addEventListener("visibilitychange", async () => {
-    if (document.visibilityState !== "visible" || !currentUser) return;
-    const fresh = await reloadUser();
-    if (fresh) {
-      render(fresh);
-      renderAvatarOnly(fresh);
-    }
-  });
 }).catch(() => {
   location.replace("../login.html");
+});
+
+// Pick up "I clicked the confirmation mail" without a full page reload.
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState !== "visible" || !currentUser) return;
+  const fresh = await reloadUser();
+  if (fresh) {
+    render(fresh);
+    renderAvatarOnly(fresh);
+  }
 });
