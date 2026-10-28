@@ -1,16 +1,45 @@
 /* =========================================================================
    asus.wtf — download gate
 
-   Keys are checked against SHA-256 fingerprints published in licenses.js
-   (generated from the key store by tools/publish-site-keys.py). The raw key
-   never leaves the browser, and the published file contains no usable key.
+   Keys are checked against SHA-256 fingerprints published in licenses.js /
+   licenses.json (written by the key server on every generate/revoke). The raw
+   key never leaves the browser, and the published file contains no usable key.
 
-   Exports: normalizeKey, formatKeyInput, verifyKey, verifyHash, reasonText,
-            remember, recall, forget
+   licenses.json is fetched with cache: "no-store" so a revocation is seen on
+   the next page load instead of waiting out GitHub Pages' 10-minute cache.
+
+   Exports: normalizeKey, formatKeyInput, verifyKey, verifyHash,
+            verifyStoredHash, reasonText, remember, recall, forget
    ========================================================================= */
 
 const KEY_RE = /^ASUS-[A-HJ-NP-Z2-9]{5}(-[A-HJ-NP-Z2-9]{5}){3}$/;
 const STORAGE_PREFIX = "asus.license.";
+
+let freshDatabase = null;
+let listPromise = null;
+
+function currentDatabase() {
+  return freshDatabase || window.ASUS_SITE_LICENSES;
+}
+
+/** Load the fingerprint list without letting the CDN cache serve a stale one. */
+export async function refreshLicenses() {
+  if (listPromise) return listPromise;
+  listPromise = (async () => {
+    try {
+      const url = new URL("licenses.json", import.meta.url);
+      url.searchParams.set("t", Date.now().toString(36));
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) return currentDatabase();
+      const data = await response.json();
+      if (data && data.keys) freshDatabase = data;
+    } catch {
+      /* offline or blocked: the script tag copy still works */
+    }
+    return currentDatabase();
+  })();
+  return listPromise;
+}
 
 export function normalizeKey(raw) {
   const cleaned = String(raw == null ? "" : raw)
@@ -47,7 +76,7 @@ async function sha256Hex(text) {
 
 /** Checks a stored fingerprint; used when restoring the unlocked state. */
 export function verifyHash(hash) {
-  const database = window.ASUS_SITE_LICENSES;
+  const database = currentDatabase();
   if (!database || !database.keys) return { ok: false, reason: "unconfigured" };
   if (!hash) return { ok: false, reason: "unknown" };
 
@@ -67,9 +96,16 @@ export async function verifyKey(raw) {
   const hash = await sha256Hex(key);
   if (!hash) return { ok: false, reason: "unavailable" };
 
+  await refreshLicenses();
   const result = verifyHash(hash);
   if (!result.ok) return result;
   return { ...result, hash };
+}
+
+/** Re-checks a remembered unlock against the freshest published list. */
+export async function verifyStoredHash(hash) {
+  await refreshLicenses();
+  return verifyHash(hash);
 }
 
 export function reasonText(reason) {

@@ -112,7 +112,16 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # The site fetches this copy with cache: "no-store" so a fresh publish is
+    # visible immediately instead of after GitHub Pages' 10-minute cache.
+    json_path = out_path.with_suffix(".json")
+    json_path.write_text(
+        json.dumps({"generatedAt": stamp, "keys": published}, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
     print(f"wrote {out_path.relative_to(ROOT)}")
+    print(f"wrote {json_path.relative_to(ROOT)}")
     print(f"{len(published)} keys ({active} active), {skipped} skipped")
     return 0
 

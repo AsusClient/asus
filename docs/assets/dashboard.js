@@ -17,8 +17,8 @@ import {
   recall,
   reasonText,
   remember,
-  verifyHash,
   verifyKey,
+  verifyStoredHash,
 } from "./license-client.js";
 
 const core = window.AsusAuthCore;
@@ -136,13 +136,15 @@ function lockFullBuild(text) {
   if (els.forgetKey) els.forgetKey.hidden = true;
 }
 
-function restoreLicense(user) {
+async function restoreLicense(user) {
   const saved = recall(user.id);
   if (!saved) {
     lockFullBuild();
     return;
   }
-  const result = verifyHash(saved);
+  // Always re-check against the freshest list: a key revoked since the last
+  // visit must lock the build again, not stay unlocked from a cached file.
+  const result = await verifyStoredHash(saved);
   if (result.ok) {
     unlockFullBuild(result);
     return;
