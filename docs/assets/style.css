@@ -1281,6 +1281,13 @@ main { position: relative; z-index: 2; }
 
 .auth-notice .link { color: #ffd9a4; text-decoration: underline; }
 
+.auth-notice-edit {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
 .field { margin-bottom: 14px; }
 
 .field-row {

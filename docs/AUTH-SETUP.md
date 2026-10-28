@@ -33,7 +33,10 @@ In the left sidebar: **Build → Authentication → Get started**.
 3. Register the app (nickname `asus-wtf-web`; do **not** tick Firebase Hosting).
 4. Copy the `firebaseConfig` object it shows.
 
-Paste the values into [`assets/firebase-config.js`](assets/firebase-config.js):
+Paste the values into [`assets/firebase-config.js`](assets/firebase-config.js) —
+you can do it right in the browser with
+[this edit link](https://github.com/AsusClient/asus/edit/main/docs/assets/firebase-config.js),
+then commit to `main` and Pages redeploys by itself:
 
 ```js
 window.ASUS_FIREBASE_CONFIG = {

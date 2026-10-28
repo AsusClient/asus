@@ -14,7 +14,7 @@ export function mountConfigNotice(element) {
   body.append("Add the Firebase web keys to ");
   const file = document.createElement("code");
   file.textContent = "assets/firebase-config.js";
-  body.append(file, " — every step is in ");
+  body.append(file, ". Every step is in ");
   const link = document.createElement("a");
   link.className = "link";
   link.href = "AUTH-SETUP.md";
@@ -23,7 +23,14 @@ export function mountConfigNotice(element) {
   link.textContent = "the setup guide";
   body.append(link, ".");
 
-  element.append(title, body);
+  const edit = document.createElement("a");
+  edit.className = "link auth-notice-edit";
+  edit.href = "https://github.com/AsusClient/asus/edit/main/docs/assets/firebase-config.js";
+  edit.target = "_blank";
+  edit.rel = "noopener";
+  edit.textContent = "Edit the config on GitHub →";
+
+  element.append(title, body, edit);
   element.hidden = false;
 }
 
