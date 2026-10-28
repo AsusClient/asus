@@ -38,20 +38,37 @@ this; it is a project auth setting.
 ## 3. Google sign-in
 
 Supabase has no shared Google credentials, so this needs a Google Cloud OAuth
-client once (this is true for every non-Firebase provider):
+client once (true for every non-Firebase provider). The site button is already
+wired — only these dashboards are missing.
 
-1. <https://console.cloud.google.com> → **APIs & Services → OAuth consent
-   screen** → External → app name `asus.wtf`, support email, save.
-2. **Credentials → Create credentials → OAuth client ID → Web application**.
-3. Authorized JavaScript origins: `https://asusclient.github.io`
-4. Authorized redirect URI:
-   `https://<your-project-ref>.supabase.co/auth/v1/callback`
-5. Copy the **Client ID** and **Client secret**.
-6. Supabase → **Authentication → Providers → Google** → enable, paste both,
-   **Save**.
+**Before anything else:** step 5 below (Site URL + Redirect URLs). If Supabase's
+URL configuration still points at localhost, Google signs the user in and then
+drops them on `localhost:3000` with no session.
 
-Without this step the Google button reports that the provider isn't enabled;
-email/password still works.
+1. <https://console.cloud.google.com> → create/select the `asus-wtf` project.
+2. **Google Auth Platform → Branding** (older console: *APIs & Services → OAuth
+   consent screen*): app name `asus.wtf`, user support email, developer contact,
+   **Audience: External**. Save.
+3. **Google Auth Platform → Data Access** (older: *Scopes*): the basic
+   `.../auth/userinfo.email` and `.../auth/userinfo.profile` are there by
+   default; **add `openid` manually**. Without it the flow fails at Google.
+4. **Google Auth Platform → Clients → Create client → Web application**:
+   - Authorized JavaScript origins: `https://asusclient.github.io`
+   - Authorized redirect URI:
+     `https://edgmirpscrwqniddciwh.supabase.co/auth/v1/callback`
+   - Create, then copy the **Client ID** and **Client secret**.
+5. **Supabase → Authentication → Sign In / Providers → Google** → enable, paste
+   both values, **Save**. The same panel shows the callback URL — it must match
+   the Google console exactly, character for character.
+6. **Supabase → Authentication → URL Configuration**: Site URL
+   `https://asusclient.github.io/asus/`, Redirect URLs add
+   `https://asusclient.github.io/asus/**`.
+
+If the Google app is in **Testing**, only accounts listed under **Audience →
+Test users** can sign in — add your own, or publish the app (no sensitive scopes
+are requested, so publishing is quick). The dashboard records these as provider
+`Google`, and Google has already verified the address, so the email-confirmation
+switch does not apply to them.
 
 ## 4. Copy the two public values
 
