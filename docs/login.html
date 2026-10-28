@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login - asus.wtf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(1200px 800px at 50% -10%,rgba(167,139,250,.18),transparent),#06040d;color:#f5f2ff;font:16px/1.6 Inter,system-ui,sans-serif;padding:24px}
+  .card{width:min(420px,100%);border:1px solid rgba(255,255,255,.1);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));backdrop-filter:blur(18px);box-shadow:0 60px 120px -80px rgba(124,92,255,.9);overflow:hidden}
+  .head{padding:28px 28px 18px;text-align:center}
+  .brand{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:inherit}
+  .brand-mark{width:26px;height:26px;color:#a78bfa}
+  .brand-text{font-weight:800;letter-spacing:-.02em;font-size:1.1rem}
+  .dot{color:#a78bfa}
+  h1{margin:14px 0 6px;font-size:1.6rem;letter-spacing:-.03em}
+  p{margin:0;color:#c3bcdd}
+  form{display:grid;gap:12px;padding:0 28px 28px}
+  label{display:grid;gap:6px;font-size:.9rem;color:#c3bcdd}
+  input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(8,6,16,.8);color:#f5f2ff;font:inherit}
+  input:focus{outline:none;border-color:rgba(167,139,250,.8);box-shadow:0 0 0 4px rgba(167,139,250,.14)}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid transparent;background:linear-gradient(135deg,#b49bff,#7c5cff);color:#0a0614;font-weight:600;text-decoration:none;cursor:pointer}
+  .btn-ghost{background:transparent;color:#f5f2ff;border-color:rgba(255,255,255,.14)}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .link{color:#b9a6ff;text-decoration:none}
+  .divider{display:flex;align-items:center;gap:12px;color:#8f87b3;font-size:.9rem;padding:0 28px}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
+  .alt{display:grid;gap:10px;padding:18px 28px 28px}
+  .msg{padding:0 28px;color:#ff8fa3;min-height:20px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <a class="brand" href="/"><svg class="brand-mark" viewBox="0 0 32 32"><path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg><span class="brand-text">asus<span class="dot">.</span>wtf</span></a>
+      <h1>Sign in</h1>
+      <p>Access your dashboard and downloads</p>
+    </div>
+    <form id="loginForm">
+      <label>Email<input type="email" name="email" required autocomplete="email"></label>
+      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <button class="btn" type="submit">Sign in</button>
+    </form>
+    <div class="msg" id="msg"></div>
+    <div class="divider">or</div>
+    <div class="alt">
+      <a class="btn btn-ghost" href="/auth/google">Continue with Google</a>
+      <div class="row"><span style="color:#c3bcdd">Don't have an account?</span><a class="link" href="/register.html">Create one</a></div>
+    </div>
+  </div>
+<script>
+const form=document.getElementById('loginForm');
+const msg=document.getElementById('msg');
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  msg.textContent='';
+  const data=new FormData(form);
+  const body={email:data.get('email'),password:data.get('password')};
+  try{
+    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const json=await res.json();
+    if(!res.ok){msg.textContent=json.error||'Login failed';return;}
+    window.location.href='/dashboard';
+  }catch(err){msg.textContent='Network error';}
+});
+</script>
+</body>
+</html>
