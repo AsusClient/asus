@@ -8,6 +8,15 @@
 
 import { onAuth } from "./auth-client.js";
 
+// If Supabase falls back to the site root (redirect URL not allow-listed yet),
+// the token fragment lands here. Forward it to the page that can finish it.
+const fragment = new URLSearchParams(location.hash.replace(/^#/, ""));
+if (fragment.get("access_token") || fragment.get("error_description")) {
+  const type = fragment.get("type");
+  if (type === "recovery") location.replace(`reset.html${location.hash}`);
+  else if (type) location.replace(`confirm.html${location.hash}`);
+}
+
 const actions = document.querySelector(".nav-actions");
 if (actions) {
   const core = window.AsusAuthCore;

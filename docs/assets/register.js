@@ -89,7 +89,7 @@ form.addEventListener("submit", async (event) => {
     if (result && result.needsConfirmation) {
       setMessage(
         message,
-        `Check ${email} for the confirmation link, then sign in. If that address already has an account, use Sign in instead.`,
+        `Check ${email} for the confirmation link. Clicking it confirms the account and opens your dashboard. If that address already has an account, use Sign in instead.`,
         true
       );
       passwordInput.value = "";

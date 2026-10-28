@@ -93,7 +93,7 @@ export async function signUpEmail({ name, email, password }) {
       password,
       options: {
         data: name ? { full_name: name } : {},
-        emailRedirectTo: absolute("dashboard/"),
+        emailRedirectTo: absolute("confirm.html"),
       },
     });
     if (error) throw error;

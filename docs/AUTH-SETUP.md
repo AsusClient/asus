@@ -83,6 +83,14 @@ Confirmation links, password-reset links and the return from Google all check
 this list. Without it you get "requested path is invalid" after clicking a mail
 link.
 
+> **This step is not optional.** A fresh Supabase project ships with
+> **Site URL = `http://localhost:3000`**. If that is left in place, Supabase
+> ignores the site's `emailRedirectTo`, and every confirmation link opens
+> `http://localhost:3000/#access_token=…` instead of asus.wtf. The page cannot
+> override it from JavaScript — the fallback happens on Supabase's servers.
+> Change the two fields above, save, then use **Resend verification** (or
+> register again): mail that was already sent still contains the old URL.
+
 ## 6. Try it
 
 1. Open <https://asusclient.github.io/asus/register.html>.
