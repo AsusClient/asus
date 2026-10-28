@@ -57,6 +57,7 @@ async function loadConfig() {
     freeJarName: String(pick("FREE_JAR_NAME", "asus-free-1.0.0.jar")),
     premiumJar: resolve(String(pick("PREMIUM_JAR_PATH", join(SITE, "assets", "asus-wtf-2.0.jar")))),
     premiumJarName: String(pick("PREMIUM_JAR_NAME", "asus-wtf-2.0.jar")),
+    publishSite: String(pick("PUBLISH_SITE", "1")) !== "0",
   };
 }
 
@@ -566,7 +567,7 @@ const PUBLISH_DIR = resolve(HERE, ".site-publish");
 const SITE_LICENSES_JS = join(PUBLISH_DIR, "docs", "assets", "licenses.js");
 const SITE_LICENSES_JSON = join(PUBLISH_DIR, "docs", "assets", "licenses.json");
 const DEFAULT_REMOTE = "https://github.com/AsusClient/asus.git";
-const PUBLISH_ENABLED = String(process.env.PUBLISH_SITE ?? "1") !== "0";
+const PUBLISH_ENABLED = cfg.publishSite;
 
 let publishQueue = Promise.resolve();
 
@@ -596,7 +597,7 @@ function runGit(args, cwd = PUBLISH_DIR) {
   return new Promise((resolvePromise, reject) => {
     const child = spawn("git", args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
-    const timer = setTimeout(() => child.kill(), 30_000);
+    const timer = setTimeout(() => child.kill(), 60_000);
     child.stdout.on("data", (chunk) => (output += chunk));
     child.stderr.on("data", (chunk) => (output += chunk));
     child.on("error", reject);

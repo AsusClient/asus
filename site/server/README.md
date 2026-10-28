@@ -42,6 +42,7 @@ Useful env vars (all optional, see `config.example.json`):
 | `ADMIN_USER` / `ADMIN_PASSWORD` | `admin` / — | `/admin` and `/api/admin/*`; closed when the password is empty |
 | `KEY_STORE` | `./keys.json` | Where keys live |
 | `JAR_PATH` | `../assets/asus-wtf-1.0.10.jar` | File served by `/download` |
+| `PUBLISH_SITE` | `1` | Republish the site's key fingerprints after generate/revoke/delete; `0` turns it off |
 
 ## 2. Keys
 
@@ -154,7 +155,27 @@ Pages repo — anyone can fetch it.
 Set `BASE_URL` to the real HTTPS origin. Cookies flip to `Secure` automatically on `https://`
 and the redirect URI must match the Discord portal entry exactly.
 
-## 6. What is already handled
+## 6. Publishing the site gate
+
+The GitHub Pages dashboard only carries SHA-256 fingerprints, so a new key is invisible until
+that list is republished. The server does it for you: after a successful generate, revoke,
+revoke-all, delete or delete-all it rewrites `docs/assets/licenses.js` **and**
+`docs/assets/licenses.json`, commits only those two files and pushes to `origin/main`.
+
+It does this from a dedicated shallow clone at `site/server/.site-publish` (gitignored), fetched
+from `origin/main` first. That means it works even when your local checkout is behind or dirty,
+and it never stages `keys.json`, `config.json` or anything else. The first run clones the repo;
+git needs working push credentials. Failures are logged as `[site] publish failed: …` and do not
+break key generation — the key is still valid on the server.
+
+The site fetches `licenses.json` with `cache: "no-store"`, so a revocation locks the dashboard on
+the next page load instead of waiting out GitHub Pages' 10-minute cache.
+
+This gates the page: the paid jar is still a public file under `docs/assets/`. Revoking hides the
+download button and locks the gate, but anyone who knows the jar URL can still fetch it. True
+file-level revocation needs the jar behind a server that checks the key before streaming it.
+
+## 7. What is already handled
 
 - Key format with a fixed alphabet, canonical re-grouping, and per-IP rate limit on `/api/license/auth`.
 - Atomic `keys.json` writes (temp file + rename); the store is never served (`/server/*` is 403).
@@ -165,7 +186,7 @@ and the redirect URI must match the Discord portal entry exactly.
   `no-store` on the API and the jar.
 - Admin routes are Basic-auth only and constant-time compared; closed entirely if `ADMIN_PASSWORD` is empty.
 
-## 7. Known gaps
+## 8. Known gaps
 
 - Keys are stored in plain text in `keys.json` — that file is the crown jewels. Keep it off
   backups you share, and off the web root.
