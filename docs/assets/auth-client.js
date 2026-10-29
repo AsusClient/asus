@@ -58,6 +58,11 @@ async function init() {
   return client;
 }
 
+/** The shared signed-in client, for table queries after login. */
+export async function supabaseClient() {
+  return init();
+}
+
 /**
  * Subscribe to the signed-in user. Calls back once immediately with null when
  * accounts are not configured, so callers never wait on a promise that can't

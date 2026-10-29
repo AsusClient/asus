@@ -12,6 +12,7 @@ import {
 } from "./auth-client.js";
 import { setBusy, setMessage } from "./auth-ui.js";
 import * as license from "./license-client.js?v=20261028c";
+import * as premium from "./premium-client.js";
 
 // Namespace access, not named imports: a browser holding a cached older
 // license-client.js would otherwise fail to link the whole module.
@@ -54,6 +55,9 @@ const els = {
 
 let currentUser = null;
 let licenseFor = null;
+let premiumFor = null;
+let keyAccess = null;
+let premiumAccess = false;
 
 function paintAvatar(element, user) {
   if (!element) return;
@@ -97,23 +101,25 @@ function licenseExpiryText(expiresAt) {
   return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
-function unlockFullBuild(result) {
+function unlockFullBuild(result, granted = false) {
   if (els.licensePill) {
-    els.licensePill.textContent = "Full access";
+    els.licensePill.textContent = granted ? "Premium" : "Full access";
     els.licensePill.classList.add("pill-ok");
   }
   if (els.fullBadge) {
-    els.fullBadge.textContent = "Unlocked";
+    els.fullBadge.textContent = granted ? "Premium" : "Unlocked";
     els.fullBadge.className = "pill pill-ok";
   }
   if (els.fullStatus) {
-    els.fullStatus.textContent = `Key active · ${
-      result.expiresAt ? `expires ${licenseExpiryText(result.expiresAt)}` : "lifetime"
-    }`;
+    els.fullStatus.textContent = granted
+      ? "Premium access — granted to your account on the site."
+      : `Key active · ${
+          result.expiresAt ? `expires ${licenseExpiryText(result.expiresAt)}` : "lifetime"
+        }`;
   }
   if (els.fullDownload) els.fullDownload.hidden = false;
   if (els.keyForm) els.keyForm.hidden = true;
-  if (els.forgetKey) els.forgetKey.hidden = false;
+  if (els.forgetKey) els.forgetKey.hidden = granted;
   if (els.keyMsg) setMessage(els.keyMsg, "");
 }
 
@@ -134,21 +140,46 @@ function lockFullBuild(text) {
   if (els.forgetKey) els.forgetKey.hidden = true;
 }
 
+/** Paint from both sources of access: an admin grant wins over a key. */
+function paintAccess(message) {
+  if (premiumAccess) {
+    unlockFullBuild(null, true);
+    return;
+  }
+  if (keyAccess) {
+    unlockFullBuild(keyAccess);
+    return;
+  }
+  lockFullBuild(message);
+}
+
 async function restoreLicense(user) {
   const saved = recall(user.id);
   if (!saved) {
-    lockFullBuild();
+    keyAccess = null;
+    paintAccess();
     return;
   }
   // Always re-check against the freshest list: a key revoked since the last
   // visit must lock the build again, not stay unlocked from a cached file.
   const result = await verifyStoredHash(saved);
   if (result.ok) {
-    unlockFullBuild(result);
+    keyAccess = result;
+    paintAccess();
     return;
   }
   forget(user.id);
-  lockFullBuild(reasonText(result.reason));
+  keyAccess = null;
+  paintAccess(reasonText(result.reason));
+}
+
+/** Premium is granted per account on the site; a missing table means "free". */
+async function restorePremium(user) {
+  if (premiumFor === user.id) return;
+  premiumFor = user.id;
+  const profile = await premium.myProfile(user.id);
+  premiumAccess = Boolean(profile && profile.is_premium);
+  paintAccess();
 }
 
 function render(user) {
@@ -172,6 +203,7 @@ function render(user) {
     licenseFor = user.id;
     restoreLicense(user);
   }
+  restorePremium(user);
 
   document.title = `${name} — asus.wtf dashboard`;
 }
@@ -217,7 +249,8 @@ if (els.keyForm) {
       }
       remember(currentUser.id, result.hash);
       els.licenseKey.value = "";
-      unlockFullBuild(result);
+      keyAccess = result;
+      paintAccess();
       setMessage(els.keyMsg, "Key accepted — the full build is unlocked.", true);
     } finally {
       setBusy(els.redeem, false);
@@ -228,7 +261,8 @@ if (els.keyForm) {
 if (els.forgetKey) {
   els.forgetKey.addEventListener("click", () => {
     if (currentUser) forget(currentUser.id);
-    lockFullBuild();
+    keyAccess = null;
+    paintAccess();
     setMessage(els.keyMsg, "Key removed from this browser. The full build is locked again.");
   });
 }
@@ -283,5 +317,8 @@ document.addEventListener("visibilitychange", async () => {
   if (fresh) {
     render(fresh);
     renderAvatarOnly(fresh);
+    // An admin may have granted or removed premium while the tab was hidden.
+    premiumFor = null;
+    restorePremium(fresh);
   }
 });

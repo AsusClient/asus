@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — asus.wtf</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a0714">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#06040d; --ink:#f5f2ff; --dim:#c3bcdd; --mut:#8f87aa;
+    --line:rgba(255,255,255,.1); --panel:rgba(255,255,255,.025);
+    --accent:#a78bfa; --ok:#6ef2b0; --bad:#ff9d9d;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+      radial-gradient(1100px 700px at 50% -20%,rgba(167,139,250,.14),transparent 60%),
+      radial-gradient(800px 600px at 90% 10%,rgba(124,92,255,.08),transparent 60%),
+      var(--bg);
+    color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 28px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;color:inherit;text-decoration:none}
+  .brand svg{width:26px;height:26px;color:var(--accent)}
+  .brand .dot{color:var(--accent)}
+  .chip{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:.85rem;color:var(--mut)}
+  .chip b{color:var(--ink);font-weight:600}
+  main{max-width:1180px;margin:0 auto;padding:28px 28px 80px}
+  .panel{border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:28px}
+  .kicker{display:block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+  h1{margin:0 0 6px;font-size:1.5rem;letter-spacing:-.03em}
+  h2{margin:0;font-size:1.05rem;letter-spacing:-.02em}
+  p{margin:0;color:var(--dim);font-size:.92rem}
+  .lede{margin-top:6px;max-width:56ch}
+  .gate{max-width:400px;margin:8vh auto 0}
+  .field{margin-top:16px}
+  label{display:block;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:7px}
+  input{width:100%;padding:12px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(9,7,19,.7);color:var(--ink);font:inherit;font-size:.95rem;outline:none}
+  input:focus{border-color:rgba(167,139,250,.6);box-shadow:0 0 0 3px rgba(167,139,250,.12)}
+  button{font:inherit;cursor:pointer;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);padding:11px 20px;font-weight:600;font-size:.9rem;transition:transform .15s ease,background .2s ease,opacity .2s ease}
+  button:hover{transform:translateY(-1px)}
+  button:disabled{opacity:.55;cursor:default;transform:none}
+  button.primary{border-color:transparent;background:linear-gradient(135deg,#c9b8ff,#7c5cff);color:#0a0614}
+  button.ghost{background:transparent}
+  button.small{padding:7px 14px;font-size:.8rem}
+  button.grant{border-color:rgba(110,242,176,.45);color:#8dffc2}
+  button.remove{border-color:rgba(255,110,110,.4);color:var(--bad)}
+  .msg{margin-top:14px;font-size:.88rem;min-height:1.3em;color:var(--bad)}
+  .msg.ok{color:var(--ok)}
+  .hidden{display:none !important}
+  .bar{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  .stats{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:10px 16px;min-width:104px;background:rgba(9,7,19,.5)}
+  .stat span{display:block;font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--mut)}
+  .stat b{font-family:var(--mono);font-size:1.15rem}
+  .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .search{flex:1;min-width:220px}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:640px}
+  th{text-align:left;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding:12px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .who strong{display:block;font-weight:600}
+  .who span{color:var(--mut);font-size:.82rem;font-family:var(--mono)}
+  .tag{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:.76rem;font-family:var(--mono)}
+  .tag.premium{background:rgba(110,242,176,.14);color:#8dffc2;border:1px solid rgba(110,242,176,.3)}
+  .tag.free{background:rgba(255,255,255,.05);color:var(--mut);border:1px solid var(--line)}
+  .when{color:var(--mut);font-size:.84rem;font-family:var(--mono);white-space:nowrap}
+  .empty{padding:26px 16px;color:var(--mut);text-align:center}
+  .note{margin-top:18px;font-size:.8rem;color:var(--mut)}
+  @media (max-width:640px){main{padding:20px 16px 60px}.panel{padding:20px}}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="./index.html">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></svg>
+    <span>asus<span class="dot">.</span>wtf <span style="color:var(--mut);font-weight:500">/ admin</span></span>
+  </a>
+  <div class="chip">
+    <span id="whoami">Signed out</span>
+    <button class="ghost small hidden" id="signOut" type="button">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <!-- sign in -->
+  <section class="panel gate" id="gate">
+    <span class="kicker">Restricted</span>
+    <h1>Premium access</h1>
+    <p class="lede">Sign in with an admin account to give or remove full access for registered users.</p>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="field">
+        <button class="primary" id="loginBtn" type="submit" style="width:100%">Sign in</button>
+      </div>
+    </form>
+    <p class="msg" id="gateMsg" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- not an admin -->
+  <section class="panel gate hidden" id="denied">
+    <span class="kicker">Access denied</span>
+    <h1>Not an admin account</h1>
+    <p class="lede" id="deniedText">This account is signed in but is not listed in the site's admin list.</p>
+    <p class="msg" id="deniedMsg" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- admin -->
+  <section class="panel hidden" id="panel">
+    <div class="bar">
+      <div>
+        <span class="kicker">Accounts</span>
+        <h2>Premium access</h2>
+        <p class="lede">Granting premium unlocks the full build on the dashboard without a license key. Removing it locks the build again on the next dashboard load.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Accounts</span><b id="statTotal">—</b></div>
+        <div class="stat"><span>Premium</span><b id="statPremium">—</b></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Search by email or name" autocomplete="off">
+      <button class="ghost" id="refresh" type="button">Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <div id="tableBody" class="empty">Loading…</div>
+    </div>
+
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    <p class="note">Only accounts listed in <code>public.site_admins</code> can see this list. New sign-ups appear here automatically.</p>
+  </section>
+</main>
+
+<script src="assets/auth-core.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script type="module" src="assets/admin-premium.js"></script>
+</body>
+</html>
