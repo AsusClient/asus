@@ -73,6 +73,17 @@
   .when{color:var(--mut);font-size:.84rem;font-family:var(--mono);white-space:nowrap}
   .empty{padding:26px 16px;color:var(--mut);text-align:center}
   .note{margin-top:18px;font-size:.8rem;color:var(--mut)}
+  .gen{border:1px solid var(--line);border-radius:18px;background:rgba(9,7,19,.45);padding:22px;margin-bottom:26px}
+  .gen-head{display:flex;align-items:flex-start;gap:16px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+  .gen-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+  .row{display:flex;gap:8px}
+  .row input{flex:1}
+  select{width:100%;padding:12px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(9,7,19,.7);color:var(--ink);font:inherit;font-size:.95rem;outline:none}
+  select:focus{border-color:rgba(167,139,250,.6)}
+  .gen-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .check{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--dim);text-transform:none;letter-spacing:0;margin:0}
+  .check input{width:auto}
+  .keys-out{margin:16px 0 0;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(9,7,19,.85);color:#e7e0ff;font-family:var(--mono);font-size:.85rem;white-space:pre-wrap;word-break:break-all}
   @media (max-width:640px){main{padding:20px 16px 60px}.panel{padding:20px}}
 </style>
 </head>
@@ -132,6 +143,74 @@
         <div class="stat"><span>Premium</span><b id="statPremium">—</b></div>
       </div>
     </div>
+
+    <section class="gen" aria-labelledby="genHeading">
+      <div class="gen-head">
+        <div>
+          <span class="kicker">Key generator</span>
+          <h2 id="genHeading">Mint keys</h2>
+          <p class="lede">Keys are minted by your local key server, so they validate in game and are published to the download gate.</p>
+        </div>
+        <span class="tag free" id="genState">server not checked</span>
+      </div>
+
+      <div class="gen-grid">
+        <div>
+          <label for="keyServer">Server</label>
+          <input id="keyServer" value="http://localhost:3000" spellcheck="false" autocomplete="off">
+        </div>
+        <div>
+          <label for="keyUser">Admin user</label>
+          <input id="keyUser" value="admin" autocomplete="off" spellcheck="false">
+        </div>
+        <div>
+          <label for="keyPass">Admin password</label>
+          <input id="keyPass" type="password" autocomplete="current-password">
+        </div>
+        <div>
+          <label for="keyAmount">Duration</label>
+          <div class="row">
+            <input id="keyAmount" type="number" min="0" value="1">
+            <select id="keyUnit">
+              <option value="s">seconds</option>
+              <option value="m">minutes</option>
+              <option value="h">hours</option>
+              <option value="d" selected>days</option>
+              <option value="w">weeks</option>
+              <option value="mo">months</option>
+              <option value="y">years</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="keyCount">How many</label>
+          <input id="keyCount" type="number" min="1" max="50" value="1">
+        </div>
+        <div>
+          <label for="keyUses">PCs per key</label>
+          <input id="keyUses" type="number" min="1" max="20" value="1">
+        </div>
+        <div>
+          <label for="keyNote">Note</label>
+          <input id="keyNote" maxlength="40" placeholder="optional" autocomplete="off">
+        </div>
+        <div>
+          <label for="keyGrant">Give premium to</label>
+          <input id="keyGrant" type="email" list="accountEmails" placeholder="account email (optional)" autocomplete="off">
+        </div>
+      </div>
+
+      <datalist id="accountEmails"></datalist>
+
+      <div class="gen-actions">
+        <label class="check"><input type="checkbox" id="keyNever"> Never expires</label>
+        <button class="primary" id="keyGenerate" type="button">Generate</button>
+        <button class="ghost" id="keyCopyAll" type="button" disabled>Copy all</button>
+      </div>
+
+      <p class="msg" id="keyMsg" role="status" aria-live="polite"></p>
+      <pre class="keys-out hidden" id="keyOut"></pre>
+    </section>
 
     <div class="toolbar">
       <input class="search" id="search" type="search" placeholder="Search by email or name" autocomplete="off">

@@ -49,6 +49,32 @@ Durations now work down to seconds. The panel always sends an absolute
 every key came out as "never expires". That is fixed: 3s, 30m, 1h, 1d, 1w,
 1mo, 1y and Never all store the exact expiry.
 
+### Generating keys from the admin page
+
+`/admin.html` on the deployed site has a **Key generator** card. It does not mint
+keys itself — a static page can't, and keys it invented would be rejected in
+game. It calls your local key server, so start that first:
+
+```bash
+cd site/server
+node site/server/server.mjs
+```
+
+Then fill in the card:
+
+| Field | Value |
+|---|---|
+| Server | `http://localhost:3000` |
+| Admin user / password | from `site/server/config.json` |
+| Duration | amount + unit, or tick **Never expires** |
+| How many / PCs per key | batch size and binding limit |
+| Give premium to | optional account email; also unlocks the website for them |
+
+The browser only allows this because `localhost` counts as a secure origin and
+the server answers the private-network preflight. If the card says
+**server unreachable**, the Node server isn't running or the password is wrong.
+The credentials are kept in `sessionStorage` only (gone when the tab closes).
+
 ### How panel keys reach the live site
 
 With `PUBLISH_SITE=1` (default) the server writes `docs/assets/licenses.js`,

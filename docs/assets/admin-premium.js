@@ -8,6 +8,7 @@
 
 import { configured, onAuth, signInEmail, signOutNow } from "./auth-client.js";
 import * as premium from "./premium-client.js";
+import { mountKeyGenerator, setKeyGenAccounts } from "./admin-keys.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -172,6 +173,7 @@ async function load() {
     rows = await premium.listProfiles();
     renderStats();
     renderTable();
+    setKeyGenAccounts(rows);
   } catch (error) {
     els.tableBody.className = "empty";
     els.tableBody.textContent = isMissingTable(error)
@@ -199,6 +201,8 @@ async function enter(user) {
     return;
   }
   show("panel");
+  // Minting needs the local key server; the rest of the page works without it.
+  mountKeyGenerator({ profiles: () => rows, reload: load });
   await load();
 }
 

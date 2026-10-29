@@ -58,6 +58,13 @@ async function loadConfig() {
     premiumJar: resolve(String(pick("PREMIUM_JAR_PATH", join(SITE, "assets", "asus-wtf-2.0.jar")))),
     premiumJarName: String(pick("PREMIUM_JAR_NAME", "asus-wtf-2.0.jar")),
     publishSite: String(pick("PUBLISH_SITE", "1")) !== "0",
+    // Origins allowed to call /api/admin/* from a browser (the Pages admin page).
+    adminOrigins: String(
+      pick("ADMIN_ORIGINS", "https://asusclient.github.io")
+    )
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
   };
 }
 
@@ -223,6 +230,27 @@ function isAdmin(req) {
   const a = Buffer.from(`${user}:${pass}`);
   const b = Buffer.from(`${cfg.adminUser}:${cfg.adminPassword}`);
   return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/**
+ * CORS for the admin API only: the Pages admin page is https and this server is
+ * http on localhost, which Chrome treats as a private-network request. Answering
+ * the preflight (including Allow-Private-Network) is what makes it reachable.
+ */
+function applyAdminCors(req, res) {
+  const origin = req.headers.origin;
+  if (!origin) return;
+  const allowed =
+    cfg.adminOrigins.includes(origin) ||
+    /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  if (!allowed) return;
+
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "authorization, content-type");
+  res.setHeader("Access-Control-Allow-Private-Network", "true");
+  res.setHeader("Access-Control-Max-Age", "600");
 }
 
 function requireAdmin(req, res) {
@@ -750,6 +778,8 @@ async function handleAdminKeys(req, res) {
         note: typeof body.note === "string" ? body.note.slice(0, 40) : "",
         maxUses: Number(body.uses) || 1,
         days: Number(body.days) || 0,
+        // the panel posts an absolute time so seconds and minutes work too
+        expiresAt: Number(body.expiresAtMs) || null,
         createdBy: "admin",
       }).key
     );
@@ -867,6 +897,11 @@ const server = createServer(async (req, res) => {
   });
 
   try {
+    if (url.pathname.startsWith("/api/admin")) {
+      applyAdminCors(req, res);
+      if (req.method === "OPTIONS") return send(res, 204, "");
+    }
+
     if (limited(ip) && (url.pathname.startsWith("/auth/") || url.pathname === "/download" || url.pathname === "/api/license/auth")) {
       return send(res, 429, "slow down");
     }
