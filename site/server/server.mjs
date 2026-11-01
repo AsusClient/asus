@@ -883,6 +883,40 @@ async function handleAdminRevoke(req, res, unbindOnly = false) {
   return json(res, ok ? 200 : 404, { ok });
 }
 
+async function handleAdminAccounts(req, res) {
+  if (!requireAdmin(req, res)) return;
+  const users = await auth.listUsers();
+  const accounts = users
+    .map((u) => ({
+      id: u.id,
+      email: u.email || "",
+      name: u.name || "",
+      premium: !!u.premium,
+      key: u.key || null,
+      createdAt: u.createdAt || null,
+    }))
+    .sort((a, b) => a.email.localeCompare(b.email));
+  return json(res, 200, { accounts });
+}
+
+/** Premium by email, for the accounts registered on this site (users.json). */
+async function handleAdminPremium(req, res) {
+  if (!requireAdmin(req, res)) return;
+  if (req.method !== "POST") return json(res, 405, { error: "method" });
+
+  const body = await readJson(req);
+  const email = String((body && body.email) || "").trim().toLowerCase();
+  if (!email) return json(res, 400, { error: "email required" });
+  const premium = body.premium === undefined ? true : Boolean(body.premium);
+
+  const { user } = await auth.findUserByEmail(email);
+  if (!user) return json(res, 404, { error: "no account with that email" });
+
+  const updated = await auth.setPremium(user.id, premium);
+  console.log(`[premium] ${email} ${premium ? "on" : "off"}`);
+  return json(res, 200, { ok: true, email: updated.email, premium: !!updated.premium });
+}
+
 /* -------------------------------- server ------------------------------- */
 
 const server = createServer(async (req, res) => {
@@ -956,6 +990,10 @@ const server = createServer(async (req, res) => {
         return handleAdminDelete(req, res, false);
       case "/api/admin/delete-all":
         return handleAdminDelete(req, res, true);
+      case "/api/admin/accounts":
+        return handleAdminAccounts(req, res);
+      case "/api/admin/premium":
+        return handleAdminPremium(req, res);
       default:
         if (req.method !== "GET" && req.method !== "HEAD") return send(res, 405, "method not allowed");
         return handleStatic(req, res, url);

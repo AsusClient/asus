@@ -78,15 +78,24 @@ export function createEntry(store, options = {}) {
     note = "",
     maxUses = 1,
     days = 0,
+    expiresAt: explicitExpiry = null,
     createdBy = "cli",
   } = options;
 
   const now = Date.now();
+  // The panel sends an absolute time (so seconds / minutes work); the CLI still
+  // sends whole days. An absolute expiry wins when both are present.
+  const expiry = Number(explicitExpiry) > 0
+    ? Number(explicitExpiry)
+    : days > 0
+      ? now + days * 86_400_000
+      : null;
+
   const entry = {
     key,
     note,
     createdAt: now,
-    expiresAt: days > 0 ? now + days * 86_400_000 : null,
+    expiresAt: expiry,
     maxUses: Math.max(1, Number(maxUses) || 1),
     hwids: [],
     revoked: false,

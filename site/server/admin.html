@@ -24,7 +24,10 @@
   form { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; align-items:end; }
   label { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--mut); margin-bottom:8px; }
   input, select { width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--ink); font:inherit; font-size:.9rem; }
+  input:focus, select:focus { outline:none; border-color:rgba(167,139,250,.65); background:rgba(167,139,250,.07); }
   .duration { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .dur-hint { margin:7px 0 0; font-size:.76rem; line-height:1.4; color:var(--mut); min-height:1.1em; }
+  .dur-hint.bad { color:#ff9f9f; }
   .actions { display:flex; flex-wrap:wrap; gap:10px; }
   button { padding:10px 18px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--ink); font:inherit; font-size:.88rem; font-weight:600; cursor:pointer; }
   button.primary { border-color:transparent; background:linear-gradient(135deg,#c9b8ff,#7c5cff); color:#0a0614; }
@@ -60,7 +63,7 @@
     <div class="panel-header">
       <div>
         <h2>Generate keys</h2>
-        <p>Duration down to seconds. For 2 PCs use the preset.</p>
+        <p>Type any duration: 30, 1.5, 90m, 2d, 1d12h or never. For 2 PCs use the preset.</p>
       </div>
       <div class="preset-row">
         <button class="preset" data-uses="1">1 PC</button>
@@ -89,7 +92,7 @@
       <div style="grid-column:span 2">
         <label>Duration</label>
         <div class="duration">
-          <input id="durAmount" type="number" min="0" value="1">
+          <input id="durAmount" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1" placeholder="1.5, 90m, 2d, never">
           <select id="durUnit">
             <option value="s">Seconds</option>
             <option value="m">Minutes</option>
@@ -100,10 +103,23 @@
             <option value="y">Years</option>
           </select>
         </div>
+        <p class="dur-hint" id="durHint"></p>
       </div>
       <div><label>Note / plan</label><input id="note" type="text" maxlength="40"></div>
+      <div>
+        <label>Give premium to</label>
+        <input id="premEmail" type="email" list="accountEmails" placeholder="account email" autocomplete="off" spellcheck="false">
+      </div>
+      <div>
+        <label>Premium</label>
+        <div class="actions">
+          <button class="small ghost" type="button" id="premGrant">Grant</button>
+          <button class="small ghost" type="button" id="premRemove">Remove</button>
+        </div>
+      </div>
       <div class="actions"><button class="primary" type="submit">Generate keys</button><button class="ghost" type="button" id="copyAll" disabled>Copy all</button></div>
     </form>
+    <datalist id="accountEmails"></datalist>
     <div class="output" id="output">
       <div style="display:flex;align-items:center;justify-content:space-between"><span>Generated keys</span><button class="small" id="copyAll2">Copy all</button></div>
       <pre id="outputList" style="margin:0"></pre>
@@ -126,20 +142,86 @@
 <div class="toast" id="toast"></div>
 <script>
 const $=id=>document.getElementById(id);
-const toast=m=>{const t=toast;t.textContent=m;t.classList.add('show');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('show'),1400);};
+const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('show'),1400);};
 const fmt=ms=>ms?new Date(ms).toLocaleString():'never';
 const rel=ms=>{if(!ms)return'never';const d=ms-Date.now();if(d<0)return'expired';const s=Math.floor(d/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24),mo=Math.floor(dd/30),y=Math.floor(dd/365);if(y)return'in '+y+'y';if(mo)return'in '+mo+'mo';if(dd)return'in '+dd+'d';if(h)return'in '+h+'h '+(m%60)+'m';if(m)return'in '+m+'m';return'in '+s+'s';};
 const u2ms=u=>u=='s'?1000:u=='m'?60000:u=='h'?3600000:u=='d'?86400000:u=='w'?604800000:u=='mo'?2592000000:31536000000;
+/**
+ * Any duration the panel is given. A bare number uses the unit dropdown; a
+ * suffix wins over it ("90m"), and units can be stacked ("1d12h").
+ * "never", "life", "0" and an empty-ish lifetime mean no expiry.
+ */
+function parseDuration(raw,fallbackUnit){
+  const text=String(raw||'').toLowerCase().replace(/,/g,'.').replace(/\s+/g,'');
+  if(!text||text==='0') return null;
+  if(['never','life','lifetime','forever','perm','perma'].includes(text)) return null;
+  if(/^[0-9]*\.?[0-9]+$/.test(text)){
+    const amount=parseFloat(text);
+    return amount>0?amount*u2ms(fallbackUnit||'d'):null;
+  }
+  let total=0,seen='',m;
+  const re=/([0-9]*\.?[0-9]+)(mo|s|m|h|d|w|y)/g;
+  while((m=re.exec(text))){total+=parseFloat(m[1])*u2ms(m[2]);seen+=m[0];}
+  if(!seen||seen!==text) throw new Error("That isn't a duration. Try 30, 1.5, 90m, 2d, 1d12h or never.");
+  return total>0?total:null;
+}
+function durationMs(){return parseDuration(durAmount.value,durUnit.value);}
+function paintDuration(){
+  const hint=$('durHint');
+  if(!hint) return;
+  try{
+    const ms=durationMs();
+    hint.className='dur-hint';
+    hint.textContent=ms?`expires ${fmt(Date.now()+ms)} (${rel(Date.now()+ms)})`:'never expires';
+  }catch(err){
+    hint.className='dur-hint bad';
+    hint.textContent=err.message;
+  }
+}
 let keys=[],last=[];
 async function load(){const r=await fetch('/api/admin/keys');const d=await r.json();keys=d.keys;stats.innerHTML='<span>total <b>'+d.stats.total+'</b></span><span>active <b>'+d.stats.active+'</b></span><span>bound <b>'+d.stats.bound+'</b></span><span>revoked <b>'+d.stats.revoked+'</b></span>';render();}
 function render(){const q=search.value.toLowerCase();const list=keys.filter(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return (e.key+e.note+st).toLowerCase().includes(q);});if(!list.length){tableWrap.innerHTML='<p class="empty">No keys</p>';return;}tableWrap.innerHTML='<table><thead><tr><th>Key</th><th>Note</th><th>Uses</th><th>Created</th><th>Expires</th><th>Last seen</th><th>Status</th><th></th></tr></thead><tbody>'+list.map(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return '<tr><td><code>'+e.key+'</code></td><td>'+(e.note||'-')+'</td><td>'+(e.hwids||[]).length+'/'+e.maxUses+'</td><td>'+fmt(e.createdAt)+'</td><td>'+(e.expiresAt?rel(e.expiresAt):'never')+'</td><td>'+(e.lastSeenAt?fmt(e.lastSeenAt):'-')+'</td><td><span class="tag t-'+(st=='active'?'active':st=='unbound'?'unbound':'dead')+'">'+st+'</span></td><td class="row-actions"><button class="small" data-copy="'+e.key+'">Copy</button><button class="small" data-unbind="'+e.key+'">Unbind</button>'+(st=='revoked'?'':'<button class="small danger" data-revoke="'+e.key+'">Revoke</button>')+'</td></tr>';}).join('')+'</tbody></table>';}
 search.oninput=render;refresh.onclick=load;
 document.querySelectorAll('[data-uses]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-uses]').forEach(x=>x.classList.remove('active'));b.classList.add('active');uses.value=b.dataset.uses;});
-document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-time]').forEach(x=>x.classList.remove('active'));b.classList.add('active');durAmount.value=b.dataset.time;durUnit.value=b.dataset.unit;});
-genForm.onsubmit=async e=>{e.preventDefault();const amt=+durAmount.value,unit=durUnit.value,expiresAtMs=amt?Date.now()+amt*u2ms(unit):null;const res=await fetch('/api/admin/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({count:+count.value,uses:+uses.value,note:note.value.trim(),expiresAtMs})}).then(r=>r.json());last=res.keys;outputList.textContent=res.keys.join('\n');output.classList.add('show');copyAll.disabled=false;copyAll2.disabled=false;toast(res.keys.length+' generated');load();};
+document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-time]').forEach(x=>x.classList.remove('active'));b.classList.add('active');durAmount.value=b.dataset.time==='0'?'never':b.dataset.time;durUnit.value=b.dataset.unit;paintDuration();});
+// Typing your own duration clears the preset highlight, so the panel never claims a preset you are not using.
+durAmount.oninput=()=>{document.querySelectorAll('[data-time]').forEach(x=>x.classList.remove('active'));paintDuration();};
+durUnit.onchange=()=>{document.querySelectorAll('[data-time]').forEach(x=>x.classList.remove('active'));paintDuration();};
+async function setPremium(email,on){
+  const res=await fetch('/api/admin/premium',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,premium:on})});
+  const data=await res.json().catch(()=>({}));
+  return {ok:res.ok,status:res.status,email:data.email||email,error:data.error};
+}
+async function loadAccounts(){
+  try{
+    const res=await fetch('/api/admin/accounts');
+    if(!res.ok) return;
+    const data=await res.json();
+    const list=$('accountEmails');
+    list.replaceChildren(...(data.accounts||[]).filter(a=>a.email).map(a=>{const o=document.createElement('option');o.value=a.email;o.label=a.premium?'premium':'free';return o;}));
+  }catch{}
+}
+premGrant.onclick=async()=>{const email=premEmail.value.trim().toLowerCase();if(!email){toast('Type the account email first');return;}const r=await setPremium(email,true);toast(r.ok?'Premium on · '+r.email:(r.error||'server said '+r.status));loadAccounts();};
+premRemove.onclick=async()=>{const email=premEmail.value.trim().toLowerCase();if(!email){toast('Type the account email first');return;}const r=await setPremium(email,false);toast(r.ok?'Premium off · '+r.email:(r.error||'server said '+r.status));loadAccounts();};
+genForm.onsubmit=async e=>{
+  e.preventDefault();
+  let expiresAtMs;
+  try{const ms=durationMs();expiresAtMs=ms?Date.now()+ms:null;}catch(err){paintDuration();return;}
+  const res=await fetch('/api/admin/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({count:+count.value,uses:+uses.value,note:note.value.trim(),expiresAtMs})}).then(r=>r.json());
+  last=res.keys;outputList.textContent=res.keys.join('\n');output.classList.add('show');copyAll.disabled=false;copyAll2.disabled=false;
+  let message=res.keys.length+' generated';
+  const email=premEmail.value.trim().toLowerCase();
+  if(email){
+    const grant=await setPremium(email,true);
+    message+=grant.ok?' · premium on '+grant.email:' · premium failed: '+(grant.error||('server said '+grant.status));
+    if(grant.ok) premEmail.value='';
+    loadAccounts();
+  }
+  toast(message);load();
+};
 const ca=()=>{if(!last.length)return;navigator.clipboard.writeText(last.join('\n'));toast('Copied all');};copyAll.onclick=ca;copyAll2.onclick=ca;
 document.onclick=async e=>{const t=e.target;if(t.dataset.copy){navigator.clipboard.writeText(t.dataset.copy);toast('Copied');}if(t.dataset.revoke){if(!confirm('Revoke '+t.dataset.revoke+'?'))return;await fetch('/api/admin/revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.revoke})});toast('Revoked');load();}if(t.dataset.unbind){if(!confirm('Unbind '+t.dataset.unbind+'?'))return;await fetch('/api/admin/unbind',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.unbind})});toast('Unbound');load();}};
-load();setInterval(load,30000);
+paintDuration();load();loadAccounts();setInterval(load,30000);
 </script>
 </body>
 </html>

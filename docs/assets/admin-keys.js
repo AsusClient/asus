@@ -39,11 +39,63 @@ function state(text, ok = false) {
   els.state.className = `tag ${ok ? "premium" : "free"}`;
 }
 
-function baseUrl() {
-  let value = String(els.server.value || "").trim().replace(/\/+$/, "");
+function normalizeBase(raw) {
+  let value = String(raw || "").trim().replace(/\/+$/, "");
   if (!value) return "";
   if (!/^https?:\/\//i.test(value)) value = `http://${value}`;
   return value;
+}
+
+function baseUrl() {
+  return normalizeBase(els.server.value);
+}
+
+/**
+ * localhost and 127.0.0.1 are different sockets: on Windows localhost often
+ * resolves to ::1 while the server may only be reachable over IPv4. Trying both
+ * turns a confusing "unreachable" into a working call.
+ */
+function candidates() {
+  const primary = baseUrl();
+  if (!primary) return [];
+  const out = [primary];
+  try {
+    const url = new URL(primary);
+    const swap =
+      url.hostname === "localhost"
+        ? "127.0.0.1"
+        : url.hostname === "127.0.0.1"
+        ? "localhost"
+        : "";
+    if (swap) {
+      const alt = new URL(primary);
+      alt.hostname = swap;
+      out.push(alt.origin);
+    }
+  } catch {
+    /* not parseable — the raw value is all we have */
+  }
+  return out;
+}
+
+/** Shows the same-origin generator on the key server, which needs no CORS. */
+function showLocal(base) {
+  if (!els.local) return;
+  els.local.href = `${base || "http://localhost:3000"}/admin`;
+  els.local.classList.remove("hidden");
+}
+
+/**
+ * True when the port answers at all. A cross-origin read is impossible here
+ * (the point is to fail), so this only proves a listener exists.
+ */
+async function listening(base) {
+  try {
+    await fetch(`${base}/api/license/ping`, { mode: "no-cors", cache: "no-store" });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function saved() {
@@ -71,27 +123,40 @@ function authorization() {
 }
 
 async function request(method, body) {
-  const base = baseUrl();
-  if (!base) throw new Error("Enter the server address, e.g. http://localhost:3000");
-  const response = await fetch(`${base}/api/admin/keys`, {
-    method,
-    headers: {
-      Authorization: authorization(),
-      ...(body ? { "Content-Type": "application/json" } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  return { base, response };
+  const list = candidates();
+  if (!list.length) throw new Error("Enter the server address, e.g. http://localhost:3000");
+
+  let failure = null;
+  for (const base of list) {
+    try {
+      const response = await fetch(`${base}/api/admin/keys`, {
+        method,
+        headers: {
+          Authorization: authorization(),
+          ...(body ? { "Content-Type": "application/json" } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      if (base !== baseUrl()) els.server.value = base; // the host that actually answered
+      return { base, response };
+    } catch (error) {
+      failure = error;
+    }
+  }
+  throw failure || new Error("unreachable");
 }
 
 async function probe() {
   try {
     const { response } = await request("GET");
-    if (response.ok) state("server online", true);
-    else if (response.status === 401) state("password rejected");
+    if (response.ok) {
+      state("server online", true);
+      els.local?.classList.add("hidden");
+    } else if (response.status === 401) state("password rejected");
     else state(`server error ${response.status}`);
   } catch {
     state("server unreachable");
+    showLocal(baseUrl());
   }
 }
 
@@ -159,6 +224,7 @@ async function generate() {
     }
 
     state("server online", true);
+    els.local?.classList.add("hidden");
     paintKeys(data.keys);
 
     const until = expiry();
@@ -184,10 +250,21 @@ async function generate() {
     }
 
     say(message, true);
-  } catch (error) {
+  } catch {
     state("server unreachable");
-    const base = baseUrl() || "the key server";
-    say(`Couldn't reach ${base}. Start it with: node site/server/server.mjs — then try again.`);
+    const base = baseUrl() || "http://localhost:3000";
+    showLocal(base);
+    if (await listening(base)) {
+      say(
+        `The key server is running on ${base}, but this page isn't allowed to call it. ` +
+          "Open the local generator (button above) — same admin login, no browser restrictions."
+      );
+    } else {
+      say(
+        `No answer from ${base}. Start the server with: node site/server/server.mjs — ` +
+          "if it's already running, this browser blocked the call to your PC, so use the local generator button."
+      );
+    }
   } finally {
     if (els) {
       els.generate.disabled = false;
@@ -220,6 +297,7 @@ export function mountKeyGenerator(options = {}) {
     out: document.querySelector("#keyOut"),
     state: document.querySelector("#genState"),
     emails: document.querySelector("#accountEmails"),
+    local: document.querySelector("#keyLocal"),
   };
 
   if (!els.generate) return;

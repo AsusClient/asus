@@ -56,9 +56,14 @@ keys itself — a static page can't, and keys it invented would be rejected in
 game. It calls your local key server, so start that first:
 
 ```bash
-cd site/server
 node site/server/server.mjs
 ```
+
+If the badge stays red, the browser is refusing to let a public page call your PC
+(Chrome's local-network permission, or a dismissed prompt). The card then shows an
+**Open the local generator** button: that is the same panel served by the server at
+`http://localhost:3000/admin`, so there is no cross-origin call at all. Same admin
+login, same keys.
 
 Then fill in the card:
 

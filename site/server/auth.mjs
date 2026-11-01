@@ -96,6 +96,20 @@ export async function setUserKey(id,k){
   return u;
 }
 
+export async function setPremium(id,on){
+  const st=await getStore();
+  const u=st.users[id];
+  if(!u)return null;
+  u.premium=!!on;
+  await persist(st);
+  return u;
+}
+
+export async function listUsers(){
+  const st=await getStore();
+  return Object.values(st.users);
+}
+
 export async function getUserById(id){
   const st=await getStore();
   return st.users[id]||null;
