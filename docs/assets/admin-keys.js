@@ -160,11 +160,80 @@ async function probe() {
   }
 }
 
+/**
+ * Any duration the panel is given. A bare number uses the unit dropdown; a
+ * suffix wins over it ("90m"), units stack ("1d12h"), and never/0 is lifetime.
+ */
+function parseDuration(raw, fallbackUnit) {
+  const text = String(raw || "").toLowerCase().replace(/,/g, ".").replace(/\s+/g, "");
+  if (!text || text === "0") return null;
+  if (["never", "life", "lifetime", "forever", "perm", "perma"].includes(text)) return null;
+  if (/^[0-9]*\.?[0-9]+$/.test(text)) {
+    const amount = Number(text);
+    return amount > 0 ? amount * (UNIT_MS[fallbackUnit] || UNIT_MS.d) : null;
+  }
+  let total = 0;
+  let seen = "";
+  let match;
+  const units = /([0-9]*\.?[0-9]+)(mo|s|m|h|d|w|y)/g;
+  while ((match = units.exec(text))) {
+    total += Number(match[1]) * (UNIT_MS[match[2]] || UNIT_MS.d);
+    seen += match[0];
+  }
+  if (!seen || seen !== text) {
+    throw new Error("That isn't a duration. Try 30, 1.5, 90m, 2d, 1d12h or never.");
+  }
+  return total > 0 ? total : null;
+}
+
+/** Milliseconds from now until the key dies, or null for a lifetime key. */
 function expiry() {
   if (els.never.checked) return null;
-  const amount = Number(els.amount.value);
-  if (!amount || amount <= 0) return null;
-  return Date.now() + amount * (UNIT_MS[els.unit.value] || UNIT_MS.d);
+  return parseDuration(els.amount.value, els.unit.value);
+}
+
+/** The "expires …" line, so a typo is visible before anything is minted. */
+function paintDuration() {
+  if (!els || !els.durHint) return;
+  try {
+    const ms = expiry();
+    els.durHint.className = "dur-hint";
+    els.durHint.textContent = els.never.checked
+      ? "never expires (Never expires is ticked)"
+      : ms
+      ? `expires ${new Date(Date.now() + ms).toLocaleString()}`
+      : "never expires";
+  } catch (error) {
+    els.durHint.className = "dur-hint bad";
+    els.durHint.textContent = error.message;
+  }
+}
+
+/** Premium by email on its own, without minting a key. */
+async function grantOnly() {
+  const email = els.grant.value.trim().toLowerCase();
+  if (!email) {
+    say("Type the account email first.");
+    return;
+  }
+  const profile = (opts.profiles ? opts.profiles() : []).find(
+    (row) => String(row.email || "").toLowerCase() === email
+  );
+  if (!profile) {
+    say(`No account matches ${email}.`);
+    return;
+  }
+  if (els.grantBtn) els.grantBtn.disabled = true;
+  try {
+    await setPremium(profile.id, true, "granted from the admin panel");
+    if (opts.reload) await opts.reload();
+    els.grant.value = "";
+    say(`Premium granted to ${profile.email}.`, true);
+  } catch {
+    say(`Granting premium to ${email} failed.`);
+  } finally {
+    if (els.grantBtn) els.grantBtn.disabled = false;
+  }
 }
 
 function paintKeys(keys) {
@@ -190,6 +259,15 @@ async function generate() {
   const note = els.note.value.trim().slice(0, 40);
   const email = els.grant.value.trim().toLowerCase();
 
+  let until;
+  try {
+    until = expiry();
+  } catch (error) {
+    say(error.message);
+    paintDuration();
+    return;
+  }
+
   say("");
   paintKeys([]);
   els.generate.disabled = true;
@@ -201,7 +279,7 @@ async function generate() {
       count,
       uses,
       note,
-      expiresAtMs: expiry(),
+      expiresAtMs: until,
     });
 
     if (response.status === 401) {
@@ -227,7 +305,6 @@ async function generate() {
     els.local?.classList.add("hidden");
     paintKeys(data.keys);
 
-    const until = expiry();
     const life = until ? `expires ${new Date(until).toLocaleString()}` : "never expires";
     let message = `Generated ${data.keys.length} key(s), ${life}.`;
 
@@ -287,10 +364,12 @@ export function mountKeyGenerator(options = {}) {
     amount: document.querySelector("#keyAmount"),
     unit: document.querySelector("#keyUnit"),
     never: document.querySelector("#keyNever"),
+    durHint: document.querySelector("#keyDurHint"),
     count: document.querySelector("#keyCount"),
     uses: document.querySelector("#keyUses"),
     note: document.querySelector("#keyNote"),
     grant: document.querySelector("#keyGrant"),
+    grantBtn: document.querySelector("#keyGrantBtn"),
     generate: document.querySelector("#keyGenerate"),
     copy: document.querySelector("#keyCopyAll"),
     msg: document.querySelector("#keyMsg"),
@@ -307,9 +386,13 @@ export function mountKeyGenerator(options = {}) {
   if (kept.user) els.user.value = kept.user;
   if (kept.pass) els.pass.value = kept.pass;
 
-  els.never.addEventListener("change", () => {
-    els.amount.disabled = els.never.checked;
-  });
+  // The amount stays typeable even with "Never expires" ticked: the tick only
+  // overrides the value, so the box can never end up dead with no explanation.
+  els.never.addEventListener("change", paintDuration);
+  els.amount.addEventListener("input", paintDuration);
+  els.unit.addEventListener("change", paintDuration);
+  els.grantBtn?.addEventListener("click", grantOnly);
+  paintDuration();
   els.generate.addEventListener("click", generate);
   els.copy.addEventListener("click", copyAll);
   els.pass.addEventListener("keydown", (event) => {

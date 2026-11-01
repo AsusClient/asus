@@ -80,6 +80,8 @@
   .gen-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
   .row{display:flex;gap:8px}
   .row input{flex:1}
+  .dur-hint{margin:7px 0 0;font-size:.76rem;line-height:1.4;color:var(--mut);min-height:1.05em}
+  .dur-hint.bad{color:#ff9f9f}
   select{width:100%;padding:12px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(9,7,19,.7);color:var(--ink);font:inherit;font-size:.95rem;outline:none}
   select:focus{border-color:rgba(167,139,250,.6)}
   .gen-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
@@ -172,7 +174,7 @@
         <div>
           <label for="keyAmount">Duration</label>
           <div class="row">
-            <input id="keyAmount" type="number" min="0" value="1">
+            <input id="keyAmount" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1" placeholder="1.5, 90m, 2d, never">
             <select id="keyUnit">
               <option value="s">seconds</option>
               <option value="m">minutes</option>
@@ -183,6 +185,7 @@
               <option value="y">years</option>
             </select>
           </div>
+          <p class="dur-hint" id="keyDurHint"></p>
         </div>
         <div>
           <label for="keyCount">How many</label>
@@ -207,6 +210,7 @@
       <div class="gen-actions">
         <label class="check"><input type="checkbox" id="keyNever"> Never expires</label>
         <button class="primary" id="keyGenerate" type="button">Generate</button>
+        <button class="ghost" id="keyGrantBtn" type="button">Grant premium</button>
         <button class="ghost" id="keyCopyAll" type="button" disabled>Copy all</button>
       </div>
 
