@@ -108,9 +108,11 @@ function saved() {
 
 function remember() {
   try {
+    // Never persist the admin password. The browser may remember it for this tab if the operator
+    // asks it to, but a reload always requires the secret to be entered again.
     sessionStorage.setItem(
       SESSION_KEY,
-      JSON.stringify({ base: els.server.value, user: els.user.value, pass: els.pass.value })
+      JSON.stringify({ base: els.server.value, user: els.user.value })
     );
   } catch {
     /* private mode: values just won't survive a reload */
@@ -384,7 +386,8 @@ export function mountKeyGenerator(options = {}) {
   const kept = saved();
   if (kept.base) els.server.value = kept.base;
   if (kept.user) els.user.value = kept.user;
-  if (kept.pass) els.pass.value = kept.pass;
+  // A password written by an older build of this page is discarded, not restored.
+  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ base: kept.base || "", user: kept.user || "" })); } catch {}
 
   // The amount stays typeable even with "Never expires" ticked: the tick only
   // overrides the value, so the box can never end up dead with no explanation.
@@ -399,7 +402,8 @@ export function mountKeyGenerator(options = {}) {
     if (event.key === "Enter") generate();
   });
 
-  if (kept.pass) probe();
+  // Probe after the operator supplies a password, never from persisted credentials.
+  els.pass.addEventListener("change", probe);
 }
 
 /** Keeps the "Give premium to" autocomplete in step with the account list. */
