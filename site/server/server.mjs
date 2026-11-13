@@ -32,7 +32,12 @@ async function loadConfig() {
   }
 
   const pick = (key, def = "") => process.env[key] ?? file[key] ?? def;
-  const port = Number(pick("PORT", 3000));
+  const configuredPort = Number(pick("PORT", 3000));
+  // Some runners export PORT=0; that would silently bind an ephemeral port and make the
+  // localhost admin page look unreachable. Fall back to the documented port instead.
+  const port = Number.isInteger(configuredPort) && configuredPort > 0 && configuredPort <= 65535
+    ? configuredPort
+    : 3000;
 
   return {
     port,
@@ -47,10 +52,14 @@ async function loadConfig() {
       .filter(Boolean),
     botToken: String(pick("DISCORD_BOT_TOKEN")),
     inviteUrl: String(pick("INVITE_URL")),
-    jarPath: resolve(String(pick("JAR_PATH", join(SITE, "assets", "asus-wtf-1.0.10.jar")))),
-    jarName: String(pick("JAR_NAME", "asus-wtf-1.0.10.jar")),
+    jarPath: resolve(String(pick("JAR_PATH", join(SITE, "assets", "asus-wtf-1.1.0.jar")))),
+    jarName: String(pick("JAR_NAME", "asus-wtf-1.1.0.jar")),
     sessionDays: Number(pick("SESSION_DAYS", 14)),
     keyStore: resolve(String(pick("KEY_STORE", join(HERE, "keys.json")))),
+    // The hosted key API is what shipped clients check against, so it is the single source of
+    // truth for keys. The panel and the licence endpoint forward to it: a key generated here is
+    // then valid for players, instead of living in a local file nobody's client ever reads.
+    keyApi: String(pick("KEY_API", "https://site-9d16d28e8e6c4fc881e1636264073bc8.freebuff.page")).replace(/\/+$/, ""),
     adminUser: String(pick("ADMIN_USER", "admin")),
     adminPassword: String(pick("ADMIN_PASSWORD")),
     freeJar: resolve(String(pick("FREE_JAR_PATH", join(SITE, "assets", "asus-free-1.0.0.jar")))),
@@ -209,6 +218,45 @@ async function readJson(req, limit = 4096) {
   }
 }
 
+async function readRaw(req, limit = 65536) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > limit) throw new Error("body too large");
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
+/**
+ * Forward a key call to the hosted API and copy the answer back, so the panel keeps its
+ * endpoints while the store it edits is the one every client actually validates against.
+ */
+async function forwardToKeyApi(req, res, pathname) {
+  if (!cfg.keyApi) return false;
+  const method = req.method || "GET";
+  const body = method === "GET" || method === "HEAD" ? undefined : await readRaw(req);
+  const headers = {};
+  if (req.headers.authorization) headers.Authorization = req.headers.authorization;
+  if (req.headers["content-type"]) headers["Content-Type"] = req.headers["content-type"];
+
+  let upstream;
+  try {
+    upstream = await fetch(`${cfg.keyApi}${pathname}`, { method, headers, body });
+  } catch (error) {
+    console.error(`[keys] hosted API unreachable: ${error.message}`);
+    json(res, 502, { ok: false, error: "key-service-unreachable" });
+    return true;
+  }
+
+  const text = await upstream.text();
+  send(res, upstream.status, text, {
+    "Content-Type": upstream.headers.get("content-type") || "application/json; charset=utf-8",
+  });
+  return true;
+}
+
 function isAdmin(req) {
   if (!cfg.adminPassword) return false;
 
@@ -237,12 +285,15 @@ function isAdmin(req) {
  * http on localhost, which Chrome treats as a private-network request. Answering
  * the preflight (including Allow-Private-Network) is what makes it reachable.
  */
+function adminOriginAllowed(origin) {
+  return cfg.adminOrigins.includes(origin)
+    || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+}
+
 function applyAdminCors(req, res) {
   const origin = req.headers.origin;
   if (!origin) return;
-  const allowed =
-    cfg.adminOrigins.includes(origin) ||
-    /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  const allowed = adminOriginAllowed(origin);
   if (!allowed) return;
 
   res.setHeader("Access-Control-Allow-Origin", origin);
@@ -470,6 +521,40 @@ function handleLogout(req, res) {
   return redirect(res, "/", [cookie(SESSION_COOKIE, "", { maxAge: 0 }), cookie(ACCOUNT_TOKEN_COOKIE, "", { maxAge: 0 })]);
 }
 
+/* ------------------------------ download stats --------------------------- */
+
+const DOWNLOAD_STATS_FILE = join(HERE, "download-stats.json");
+let downloadStats = null;
+
+async function loadDownloadStats() {
+  if (downloadStats) return downloadStats;
+  try {
+    downloadStats = JSON.parse(await readFile(DOWNLOAD_STATS_FILE, "utf8"));
+  } catch {
+    downloadStats = { total: 0, free: 0, premium: 0, byDay: {} };
+  }
+  downloadStats.total ||= 0;
+  downloadStats.free ||= 0;
+  downloadStats.premium ||= 0;
+  downloadStats.byDay ||= {};
+  return downloadStats;
+}
+
+async function recordDownload(kind) {
+  try {
+    const stats = await loadDownloadStats();
+    const day = new Date().toISOString().slice(0, 10);
+    stats.total += 1;
+    stats[kind] = (stats[kind] || 0) + 1;
+    stats.byDay[day] = (stats.byDay[day] || 0) + 1;
+    const days = Object.keys(stats.byDay).sort().slice(-90);
+    stats.byDay = Object.fromEntries(days.map((key) => [key, stats.byDay[key]]));
+    await writeFile(DOWNLOAD_STATS_FILE, JSON.stringify(stats, null, 2));
+  } catch (error) {
+    console.error(`[downloads] could not record ${kind}: ${error.message}`);
+  }
+}
+
 async function handleDownload(req, res) {
   // try account auth first
   const acc = await currentAccount(req);
@@ -486,6 +571,7 @@ async function handleDownload(req, res) {
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff",
       });
+      await recordDownload("premium");
       return createReadStream(cfg.premiumJar).pipe(res);
     }
     let info;
@@ -498,6 +584,7 @@ async function handleDownload(req, res) {
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
     });
+    await recordDownload("free");
     return createReadStream(cfg.freeJar).pipe(res);
   }
 
@@ -734,6 +821,9 @@ function publishSite(store) {
 async function handleLicenseAuth(req, res) {
   if (req.method !== "POST") return json(res, 405, { ok: false, reason: "method" });
 
+  // Same store the shipped client talks to, so local testing cannot disagree with players.
+  if (await forwardToKeyApi(req, res, "/api/license/auth")) return;
+
   const body = await readJson(req);
   if (!body) return json(res, 400, { ok: false, reason: "bad-json" });
 
@@ -917,6 +1007,26 @@ async function handleAdminPremium(req, res) {
   return json(res, 200, { ok: true, email: updated.email, premium: !!updated.premium });
 }
 
+const KEY_ADMIN_ROUTES = new Set([
+  "/api/admin/keys",
+  "/api/admin/revoke",
+  "/api/admin/unbind",
+  "/api/admin/delete",
+  "/api/admin/revoke-all",
+  "/api/admin/delete-all",
+  "/api/admin/announcements",
+  "/api/admin/announcements/delete",
+  "/api/admin/announcements/update",
+  "/api/admin/announcements/clear",
+  "/api/admin/release",
+  "/api/admin/whoami",
+  "/api/admin/presence",
+  "/api/admin/allowlist",
+  "/api/admin/allowlist/revoke",
+  "/api/admin/allowlist/delete",
+  "/api/admin/audit",
+]);
+
 /* -------------------------------- server ------------------------------- */
 
 const server = createServer(async (req, res) => {
@@ -934,7 +1044,17 @@ const server = createServer(async (req, res) => {
     if (url.pathname.startsWith("/api/admin")) {
       applyAdminCors(req, res);
       if (req.method === "OPTIONS") return send(res, 204, "");
+      if (limited("admin:" + ip, 90)) return send(res, 429, "slow down");
+      const origin = req.headers.origin || "";
+      if (origin && !adminOriginAllowed(origin)) return send(res, 403, "origin not allowed");
+      if (req.method !== "GET" && req.method !== "HEAD"
+          && !/^application\/json(;|$)/i.test(req.headers["content-type"] || "")) {
+        return json(res, 415, { error: "json-required" });
+      }
     }
+
+    // Only the key routes are hosted; accounts and premium stay local to this server.
+    if (KEY_ADMIN_ROUTES.has(url.pathname) && (await forwardToKeyApi(req, res, url.pathname))) return;
 
     if (limited(ip) && (url.pathname.startsWith("/auth/") || url.pathname === "/download" || url.pathname === "/api/license/auth")) {
       return send(res, 429, "slow down");
@@ -976,8 +1096,20 @@ const server = createServer(async (req, res) => {
         return handleLicenseAuth(req, res);
       case "/api/license/ping":
         return json(res, 200, { ok: true, service: "asus.wtf keys" });
+      case "/api/presence":
+        // Heartbeats belong to the hosted store the admin panel reads; a local file would show a
+        // different list depending on which server the jar happened to point at.
+        if (await forwardToKeyApi(req, res, "/api/presence")) return;
+        return json(res, 503, { ok: false, reason: "presence-unavailable" });
+      case "/api/announcements":
+        // Same feed the clients poll; the hosted worker owns it, this server only mirrors it.
+        if (await forwardToKeyApi(req, res, "/api/announcements")) return;
+        return json(res, 200, { ok: true, messages: [] });
       case "/admin":
         return handleAdminPage(req, res);
+      case "/api/admin/downloads":
+        if (!requireAdmin(req, res)) return;
+        return json(res, 200, await loadDownloadStats());
       case "/api/admin/keys":
         return handleAdminKeys(req, res);
       case "/api/admin/revoke":
@@ -1070,6 +1202,7 @@ async function handleDownloadFree(req, res) {
     "Cache-Control": "private, no-store",
     "X-Content-Type-Options": "nosniff",
   });
+  await recordDownload("free");
   return createReadStream(cfg.freeJar).pipe(res);
 }
 
@@ -1087,6 +1220,7 @@ async function handleDownloadPremium(req, res) {
     "Cache-Control": "private, no-store",
     "X-Content-Type-Options": "nosniff",
   });
+  await recordDownload("premium");
   return createReadStream(cfg.premiumJar).pipe(res);
 }
 

@@ -62,6 +62,43 @@
   <section class="panel">
     <div class="panel-header">
       <div>
+        <h2>Live clients <span class="tag t-unbound" id="liveCount" style="margin-left:8px">0 online</span></h2>
+        <p>Every running jar reports in each minute: player name, server, version and plan. Updates every 15 seconds.</p>
+      </div>
+      <div class="actions"><button class="ghost" id="liveRefresh">Refresh</button></div>
+    </div>
+    <div id="liveWrap"><p class="empty">Loading…</p></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Download statistics</h2>
+        <p>Authenticated downloads recorded by this server, with the last 90 days kept. Free and premium are counted separately.</p>
+      </div>
+      <button class="ghost small" id="downloadRefresh">Refresh</button>
+    </div>
+    <div id="downloadStats"><p class="empty">Loading…</p></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Client update</h2>
+        <p>Publish the newest client version. Older jars are told in chat and with a toast to update.</p>
+      </div>
+      <span class="tag t-unbound" id="releaseState">not set</span>
+    </div>
+    <form id="releaseForm">
+      <div><label>Latest version</label><input id="releaseVersion" maxlength="24" placeholder="1.0.11" autocomplete="off" spellcheck="false"></div>
+      <div><label>Update page</label><input id="releaseUrl" maxlength="300" placeholder="https://…" autocomplete="off" spellcheck="false"></div>
+      <div style="grid-column:span 2"><label>Message (optional)</label><input id="releaseMessage" maxlength="160" placeholder="Outdated asus client — please update." autocomplete="off"></div>
+      <div style="grid-column:span 2"><label>SHA-256 of the release jar (optional)</label><input id="releaseSha" maxlength="64" placeholder="64 hex characters" autocomplete="off" spellcheck="false"><p class="dur-hint">Published so the client can verify a downloaded file before accepting it. Leave blank only for a metadata-only release.</p></div>
+      <div class="actions"><button class="primary" type="submit">Publish version</button><button class="ghost" type="button" id="releaseClear">Clear</button></div>
+    </form>
+    <p class="dur-hint" id="releaseHint">Publishing tells every older client to update; the message and link appear with the warning.</p>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div>
         <h2>Generate keys</h2>
         <p>Type any duration: 30, 1.5, 90m, 2d, 1d12h or never. For 2 PCs use the preset.</p>
       </div>
@@ -134,9 +171,71 @@
     </div>
     <div class="toolbar">
       <div class="search"><input id="search" placeholder="Search key, note or status" autocomplete="off"></div>
-      <button class="ghost" id="refresh">Refresh</button>
+      <div class="actions">
+        <button class="ghost" id="refresh">Refresh</button>
+        <button class="danger" id="deleteAll">Delete all keys</button>
+      </div>
     </div>
     <div id="tableWrap"><p class="empty">Loading…</p></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Testing allowlist</h2>
+        <p>Exemptions for internal testing only. IP and hardware-id rows can open the client without a key; usernames and account ids only annotate a key that already validated, so nobody can claim someone else's name to get in. Every row expires or can be revoked.</p>
+      </div>
+      <span class="tag t-unbound" id="allowCount">0 active</span>
+    </div>
+    <form id="allowForm">
+      <div><label>Type</label><select id="allowKind"><option value="ip">IP address</option><option value="hwid">Hardware ID</option><option value="username">Minecraft username</option><option value="account_id">Account ID</option></select></div>
+      <div><label>Value</label><div style="display:flex;gap:8px"><input id="allowValue" maxlength="128" placeholder="203.0.113.7" autocomplete="off" spellcheck="false" style="flex:1;min-width:0"><button class="ghost small" type="button" id="allowMyIp">My IP</button></div><p class="dur-hint" id="allowIpHint"></p></div>
+      <div><label>Note</label><input id="allowNote" maxlength="120" placeholder="why this exemption exists" autocomplete="off"></div>
+      <div><label>Expires in</label><div class="duration"><input id="allowTime" type="text" inputmode="decimal" value="7" autocomplete="off"><select id="allowUnit"><option value="h">Hours</option><option value="d" selected>Days</option><option value="w">Weeks</option></select></div><p class="dur-hint" id="allowHint"></p></div>
+      <div class="actions"><button class="primary" type="submit">Add exemption</button></div>
+    </form>
+    <div id="allowWrap" style="margin-top:16px"><p class="empty">Loading…</p></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header"><div><h2>Admin audit log</h2><p>Every release publish and allowlist change is written server-side with actor, target, time and source IP.</p></div><button class="ghost small" id="auditRefresh">Refresh</button></div>
+    <div id="auditWrap"><p class="empty">Loading…</p></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Announcements</h2>
+        <p>Sent to every running client: chat in-game, a toast on the menus. Clients pick them up within ten seconds. Edit a message to re-send it to players who already saw it.</p>
+      </div>
+      <button class="danger small" id="sayClear">Clear all</button>
+    </div>
+    <form id="sayForm">
+      <div style="grid-column:span 3">
+        <label>Message</label>
+        <input id="sayText" maxlength="300" placeholder="Key server restarts at 20:00 UTC" autocomplete="off">
+      </div>
+      <div>
+        <label>Style</label>
+        <select id="sayLevel">
+          <option value="info" selected>Info</option>
+          <option value="update">Update</option>
+          <option value="warning">Warning</option>
+        </select>
+      </div>
+      <div style="grid-column:span 2">
+        <label>Show for</label>
+        <div class="duration">
+          <input id="sayTime" type="text" inputmode="decimal" value="1" placeholder="1, 12, 0 = until removed" autocomplete="off" spellcheck="false">
+          <select id="sayUnit">
+            <option value="m">Minutes</option>
+            <option value="h" selected>Hours</option>
+            <option value="d">Days</option>
+            <option value="w">Weeks</option>
+          </select>
+        </div>
+        <p class="dur-hint" id="sayHint"></p>
+      </div>
+      <div class="actions"><button class="primary" type="submit" id="saySubmit">Send</button></div>
+    </form>
+    <div id="sayWrap"><p class="empty">Loading…</p></div>
   </section>
 </main>
 <div class="toast" id="toast"></div>
@@ -179,8 +278,83 @@ function paintDuration(){
   }
 }
 let keys=[],last=[];
+let live={online:[],recent:0,total:0};
+let release=null;
+const ago=ms=>{if(!ms)return'-';const s=Math.max(0,Math.round((Date.now()-ms)/1000));if(s<60)return s+'s ago';const m=Math.floor(s/60);if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h '+(m%60)+'m ago';return Math.floor(h/24)+'d ago';};
+const sessionLen=ms=>{if(!ms)return'-';const s=Math.max(0,Math.round((Date.now()-ms)/1000));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);if(h)return h+'h '+m+'m';if(m)return m+'m';return s+'s';};
+function versionParts(v){return String(v||'').split(/[-+]/,1)[0].split('.').map(n=>parseInt(n,10)||0);}
+function releaseOutdated(v){
+  if(!release||!release.version||!v)return false;
+  const a=versionParts(v),b=versionParts(release.version);
+  for(let i=0;i<Math.max(a.length,b.length);i++){const x=a[i]||0,y=b[i]||0;if(x!==y)return x<y;}
+  return false;
+}
+function renderLive(){
+  const list=live.online||[];
+  liveCount.textContent=list.length+' online';
+  liveCount.className='tag '+(list.length?'t-active':'t-unbound');
+  if(!list.length){
+    liveWrap.innerHTML='<p class="empty">No clients online right now'+(live.recent?' · '+live.recent+' seen in the last 24h':'')+'</p>';
+    return;
+  }
+  liveWrap.innerHTML='<table><thead><tr><th>Player</th><th>Server</th><th>Version</th><th>Plan</th><th>Session</th><th>Last beat</th><th>Key</th><th>PC</th></tr></thead><tbody>'+
+    list.map(e=>'<tr><td><b>'+esc(e.name||'unknown')+'</b></td><td><code>'+esc(e.server||'-')+'</code></td><td>'+esc(e.version||'-')+(releaseOutdated(e.version)?' <span class="tag t-dead">outdated</span>':'')+'</td><td>'+esc(e.plan||'-')+'</td><td>'+sessionLen(e.firstSeenAt)+'</td><td>'+ago(e.lastSeenAt)+'</td><td><code>'+esc(e.key||'')+'</code></td><td><code>'+esc(e.hwid||'')+'</code></td></tr>').join('')+
+    '</tbody></table>'+(live.recent?'<p class="empty" style="padding-top:12px">'+live.recent+' distinct client'+(live.recent===1?'':'s')+' seen in the last 24 hours.</p>':'');
+}
+async function loadLive(){
+  try{
+    const res=await fetch('/api/admin/presence');
+    if(!res.ok){liveWrap.innerHTML='<p class="empty">Live clients: server said '+res.status+'</p>';return;}
+    const data=await res.json();live={online:data.online||[],recent:data.recent||0,total:data.total||0};renderLive();
+  }catch{liveWrap.innerHTML='<p class="empty">Live clients unreachable</p>';}
+}
+$('liveRefresh').onclick=loadLive;
+/* ── client update ── */
+function releaseFieldFocused(){
+  const id=document.activeElement&&document.activeElement.id;
+  return id==='releaseVersion'||id==='releaseMessage'||id==='releaseUrl'||id==='releaseSha';
+}
+function paintRelease(){
+  const version=release&&release.version;
+  releaseState.textContent=version?'live '+version:'not set';
+  releaseState.className='tag '+(version?'t-active':'t-unbound');
+  if(version){
+    // The panel reloads once a minute; never replace a version the operator is halfway through typing.
+    if(!releaseFieldFocused()){
+      releaseVersion.value=version;
+      releaseMessage.value=release.message||'';
+      releaseUrl.value=release.url||'';
+      releaseSha.value=release.sha256||'';
+    }
+    releaseHint.textContent='Published '+fmt(release.updatedAt)+'. Older clients see: '+(release.message||'Outdated asus client — please update.')+(release.sha256?' Hash: '+release.sha256.slice(0,16)+'…':'');
+  }else{
+    releaseHint.textContent='No version published. Clients are not told to update.';
+  }
+}
+async function loadRelease(){
+  try{
+    const res=await fetch('/api/admin/release');
+    if(!res.ok){releaseHint.textContent='Client update: server said '+res.status;return;}
+    const data=await res.json();release=data.release||null;paintRelease();
+  }catch{releaseHint.textContent='Client update unreachable';}
+}
+releaseForm.onsubmit=async e=>{
+  e.preventDefault();
+  const version=releaseVersion.value.trim();
+  if(!version){toast('Type the latest version first');return;}
+  const res=await fetch('/api/admin/release',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({version,message:releaseMessage.value.trim(),url:releaseUrl.value.trim(),sha256:releaseSha.value.trim()})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok){toast('Publish failed ('+(data.error||res.status)+')');return;}
+  release=data.release||null;paintRelease();toast('Published '+version);loadLive();
+};
+releaseClear.onclick=async()=>{
+  if(!confirm('Stop telling older clients to update?'))return;
+  const res=await fetch('/api/admin/release',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({version:''})});
+  if(!res.ok){toast('Clear failed ('+res.status+')');return;}
+  release=null;releaseVersion.value='';releaseMessage.value='';releaseUrl.value='';releaseSha.value='';paintRelease();toast('Cleared');loadLive();
+};
 async function load(){const r=await fetch('/api/admin/keys');const d=await r.json();keys=d.keys;stats.innerHTML='<span>total <b>'+d.stats.total+'</b></span><span>active <b>'+d.stats.active+'</b></span><span>bound <b>'+d.stats.bound+'</b></span><span>revoked <b>'+d.stats.revoked+'</b></span>';render();}
-function render(){const q=search.value.toLowerCase();const list=keys.filter(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return (e.key+e.note+st).toLowerCase().includes(q);});if(!list.length){tableWrap.innerHTML='<p class="empty">No keys</p>';return;}tableWrap.innerHTML='<table><thead><tr><th>Key</th><th>Note</th><th>Uses</th><th>Created</th><th>Expires</th><th>Last seen</th><th>Status</th><th></th></tr></thead><tbody>'+list.map(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return '<tr><td><code>'+e.key+'</code></td><td>'+(e.note||'-')+'</td><td>'+(e.hwids||[]).length+'/'+e.maxUses+'</td><td>'+fmt(e.createdAt)+'</td><td>'+(e.expiresAt?rel(e.expiresAt):'never')+'</td><td>'+(e.lastSeenAt?fmt(e.lastSeenAt):'-')+'</td><td><span class="tag t-'+(st=='active'?'active':st=='unbound'?'unbound':'dead')+'">'+st+'</span></td><td class="row-actions"><button class="small" data-copy="'+e.key+'">Copy</button><button class="small" data-unbind="'+e.key+'">Unbind</button>'+(st=='revoked'?'':'<button class="small danger" data-revoke="'+e.key+'">Revoke</button>')+'</td></tr>';}).join('')+'</tbody></table>';}
+function render(){const q=search.value.toLowerCase();const list=keys.filter(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return (e.key+e.note+st).toLowerCase().includes(q);});if(!list.length){tableWrap.innerHTML='<p class="empty">No keys</p>';return;}tableWrap.innerHTML='<table><thead><tr><th>Key</th><th>Note</th><th>Uses</th><th>Created</th><th>Expires</th><th>Last seen</th><th>Status</th><th></th></tr></thead><tbody>'+list.map(e=>{const st=e.revoked?'revoked':e.expiresAt&&e.expiresAt<Date.now()?'expired':(e.hwids||[]).length?'active':'unused';return '<tr><td><code>'+e.key+'</code></td><td>'+(e.note||'-')+'</td><td>'+(e.hwids||[]).length+'/'+e.maxUses+'</td><td>'+fmt(e.createdAt)+'</td><td>'+(e.expiresAt?rel(e.expiresAt):'never')+'</td><td>'+(e.lastSeenAt?fmt(e.lastSeenAt):'-')+'</td><td><span class="tag t-'+(st=='active'?'active':st=='unbound'?'unbound':'dead')+'">'+st+'</span></td><td class="row-actions"><button class="small" data-copy="'+e.key+'">Copy</button><button class="small" data-unbind="'+e.key+'">Unbind</button>'+(st=='revoked'?'':'<button class="small danger" data-revoke="'+e.key+'">Revoke</button>')+'<button class="small danger" data-delete="'+e.key+'">Delete</button></td></tr>';}).join('')+'</tbody></table>';}
 search.oninput=render;refresh.onclick=load;
 document.querySelectorAll('[data-uses]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-uses]').forEach(x=>x.classList.remove('active'));b.classList.add('active');uses.value=b.dataset.uses;});
 document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-time]').forEach(x=>x.classList.remove('active'));b.classList.add('active');durAmount.value=b.dataset.time==='0'?'never':b.dataset.time;durUnit.value=b.dataset.unit;paintDuration();});
@@ -220,8 +394,124 @@ genForm.onsubmit=async e=>{
   toast(message);load();
 };
 const ca=()=>{if(!last.length)return;navigator.clipboard.writeText(last.join('\n'));toast('Copied all');};copyAll.onclick=ca;copyAll2.onclick=ca;
-document.onclick=async e=>{const t=e.target;if(t.dataset.copy){navigator.clipboard.writeText(t.dataset.copy);toast('Copied');}if(t.dataset.revoke){if(!confirm('Revoke '+t.dataset.revoke+'?'))return;await fetch('/api/admin/revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.revoke})});toast('Revoked');load();}if(t.dataset.unbind){if(!confirm('Unbind '+t.dataset.unbind+'?'))return;await fetch('/api/admin/unbind',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.unbind})});toast('Unbound');load();}};
-paintDuration();load();loadAccounts();setInterval(load,30000);
+document.onclick=async e=>{const t=e.target;if(t.dataset.copy){navigator.clipboard.writeText(t.dataset.copy);toast('Copied');}if(t.dataset.revoke){if(!confirm('Revoke '+t.dataset.revoke+'?'))return;await fetch('/api/admin/revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.revoke})});toast('Revoked');load();}if(t.dataset.unbind){if(!confirm('Unbind '+t.dataset.unbind+'?'))return;await fetch('/api/admin/unbind',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.unbind})});toast('Unbound');load();}if(t.dataset.delete){if(!confirm('Delete '+t.dataset.delete+'? The key stops existing, bound PCs included.'))return;const r=await fetch('/api/admin/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:t.dataset.delete})});toast(r.ok?'Deleted':'Delete failed ('+r.status+')');load();}if(t.dataset.sayEdit){const m=sayMsgs.find(x=>x.id===t.dataset.sayEdit);if(!m)return;sayEditing=m.id;sayText.value=m.text;sayLevel.value=m.level||'info';if(m.expiresAt){sayTime.value=String(Math.max(0.1,(m.expiresAt-Date.now())/3600000));sayUnit.value='h';}else{sayTime.value='0';}paintSay();$('saySubmit').textContent='Save changes';sayText.focus();sayText.scrollIntoView({behavior:'smooth',block:'center'});}if(t.dataset.sayDel){if(!confirm('Delete this announcement?'))return;const r=await fetch('/api/admin/announcements/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:t.dataset.sayDel})});toast(r.ok?'Deleted':'Delete failed ('+r.status+')');loadSay();}if(t.dataset.allowRevoke){if(!confirm('Revoke this testing exemption?'))return;const r=await fetch('/api/admin/allowlist/revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:t.dataset.allowRevoke})});toast(r.ok?'Revoked':'Revoke failed ('+r.status+')');loadAllow();loadAudit();}if(t.dataset.allowDelete){if(!confirm('Delete this testing exemption permanently?'))return;const r=await fetch('/api/admin/allowlist/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:t.dataset.allowDelete})});toast(r.ok?'Deleted':'Delete failed ('+r.status+')');loadAllow();loadAudit();}};
+deleteAll.onclick=async()=>{if(!confirm('Delete EVERY key? This cannot be undone here.'))return;const r=await fetch('/api/admin/delete-all',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});const d=await r.json().catch(()=>({}));toast(r.ok?'Deleted '+(d.removed??'all'):'Delete all failed ('+r.status+')');load();};
+/* ── announcements ── */
+let sayMsgs=[];
+const esc=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderSay(){
+  if(!sayMsgs.length){sayWrap.innerHTML='<p class="empty">Nothing sent yet</p>';return;}
+  sayWrap.innerHTML='<table><thead><tr><th>Message</th><th>Style</th><th>Sent</th><th>Expires</th><th></th></tr></thead><tbody>'+
+    sayMsgs.map(m=>'<tr><td>'+esc(m.text)+'</td><td><span class="tag '+(m.level==='warning'?'t-dead':'t-unbound')+'">'+esc(m.level||'info')+'</span></td><td>'+fmt(m.createdAt)+'</td><td>'+(m.expiresAt?rel(m.expiresAt):'until removed')+'</td><td class="row-actions"><button class="small ghost" data-say-edit="'+esc(m.id)+'">Edit</button><button class="small danger" data-say-del="'+esc(m.id)+'">Delete</button></td></tr>').join('')+
+    '</tbody></table>';
+}
+async function loadSay(){
+  try{
+    const res=await fetch('/api/admin/announcements');
+    if(!res.ok){sayWrap.innerHTML='<p class="empty">Announcements: server said '+res.status+'</p>';return;}
+    const data=await res.json();sayMsgs=data.messages||[];renderSay();
+  }catch{sayWrap.innerHTML='<p class="empty">Announcements unreachable</p>';}
+}
+function sayHoursNow(){
+  const raw=String(sayTime.value||'').trim().toLowerCase();
+  if(!raw||raw==='0'||raw==='never') return 0;
+  const n=parseFloat(raw.replace(',','.'));
+  if(!Number.isFinite(n)||n<=0) return 0;
+  return sayUnit.value==='m'?n/60:sayUnit.value==='d'?n*24:sayUnit.value==='w'?n*168:n;
+}
+function paintSay(){
+  const hours=sayHoursNow();
+  sayHint.className='dur-hint';
+  sayHint.textContent=hours>0?`visible until ${fmt(Date.now()+hours*3600000)} (${rel(Date.now()+hours*3600000)})`:'stays until you delete it';
+}
+sayTime.oninput=paintSay;sayUnit.onchange=paintSay;
+let sayEditing=null;
+sayForm.onsubmit=async e=>{
+  e.preventDefault();
+  const text=sayText.value.trim();
+  if(!text){toast('Type a message first');return;}
+  const editing=sayEditing;
+  const payload={text,level:sayLevel.value,hours:sayHoursNow()};
+  if(editing) payload.id=editing;
+  const res=await fetch(editing?'/api/admin/announcements/update':'/api/admin/announcements',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!res.ok){toast((editing?'Save':'Send')+' failed ('+res.status+')');return;}
+  sayEditing=null;sayText.value='';$('saySubmit').textContent='Send';toast(editing?'Saved':'Sent');loadSay();
+};
+sayClear.onclick=async()=>{if(!confirm('Delete every announcement?'))return;const r=await fetch('/api/admin/announcements/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});toast(r.ok?'Cleared':'Clear failed ('+r.status+')');loadSay();};
+/* ── download stats ── */
+async function loadDownloads(){
+  try{
+    const res=await fetch('/api/admin/downloads');
+    if(!res.ok){downloadStats.innerHTML='<p class="empty">Downloads: server said '+res.status+'</p>';return;}
+    const data=await res.json();
+    const days=Object.entries(data.byDay||{}).slice(-14).map(([d,n])=>`<span class="tag t-unbound">${esc(d.slice(5))} · ${n}</span>`).join(' ');
+    downloadStats.innerHTML='<div class="stats" style="margin:0"><span>total <b>'+(data.total||0)+'</b></span><span>free <b>'+(data.free||0)+'</b></span><span>premium <b>'+(data.premium||0)+'</b></span></div>'+(days?'<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">'+days+'</div>':'');
+  }catch{downloadStats.innerHTML='<p class="empty">Download statistics unreachable</p>';}
+}
+downloadRefresh.onclick=loadDownloads;
+
+/* ── tester allowlist ── */
+let allowRows=[],allowMyIpValue='';
+const allowMyIp=$('allowMyIp'),allowIpHint=$('allowIpHint');
+async function loadAllowIp(){
+  try{
+    const res=await fetch('/api/admin/whoami');
+    if(!res.ok) return;
+    const data=await res.json();
+    allowMyIpValue=typeof data.ip==='string'?data.ip:'';
+    if(allowMyIpValue) allowIpHint.textContent='This machine is seen as '+allowMyIpValue+' by Cloudflare';
+  }catch{}
+}
+allowMyIp.onclick=()=>{
+  if(!allowMyIpValue){toast('Could not determine this machine\'s public IP');return;}
+  allowKind.value='ip';allowValue.value=allowMyIpValue;allowValue.focus();
+  toast('Using this machine\'s observed IP');
+};
+const allowKindLabel={ip:'IP address',hwid:'Hardware ID',username:'Username',account_id:'Account ID'};
+function renderAllow(){
+  const now=Date.now();
+  const active=allowRows.filter(e=>!e.revoked&&(!e.expiresAt||e.expiresAt>now));
+  allowCount.textContent=active.length+' active';
+  allowCount.className='tag '+(active.length?'t-active':'t-unbound');
+  if(!allowRows.length){allowWrap.innerHTML='<p class="empty">No testing exemptions</p>';return;}
+  allowWrap.innerHTML='<table><thead><tr><th>Type</th><th>Value</th><th>Note</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody>'+
+    allowRows.map(e=>{const dead=e.revoked||(e.expiresAt&&e.expiresAt<=now);return '<tr><td><span class="tag t-unbound">'+esc(allowKindLabel[e.kind]||e.kind)+'</span></td><td><code>'+esc(e.value)+'</code></td><td>'+esc(e.note||'-')+'</td><td>'+(e.expiresAt?rel(e.expiresAt):'never')+'</td><td><span class="tag '+(dead?'t-dead':'t-active')+'">'+(e.revoked?'revoked':dead?'expired':'active')+'</span></td><td class="row-actions">'+(e.revoked?'':'<button class="small danger" data-allow-revoke="'+esc(e.id)+'">Revoke</button>')+'<button class="small danger" data-allow-delete="'+esc(e.id)+'">Delete</button></td></tr>';}).join('')+'</tbody></table>';
+}
+async function loadAllow(){
+  try{
+    const res=await fetch('/api/admin/allowlist');
+    if(!res.ok){allowWrap.innerHTML='<p class="empty">Allowlist: server said '+res.status+'</p>';return;}
+    const data=await res.json();allowRows=data.testerAllowlist||[];renderAllow();
+  }catch{allowWrap.innerHTML='<p class="empty">Allowlist unreachable</p>';}
+}
+function allowHours(){const raw=String(allowTime.value||'').trim().toLowerCase();const n=parseFloat(raw.replace(',','.'));if(!raw||raw==='0'||raw==='never')return null;if(!Number.isFinite(n)||n<=0)return null;return allowUnit.value==='h'?n:allowUnit.value==='w'?n*168:n*24;}
+function paintAllow(){const h=allowHours();allowHint.className='dur-hint';allowHint.textContent=h?`expires ${fmt(Date.now()+h*3600000)} (${rel(Date.now()+h*3600000)})`:'never expires';}
+allowTime.oninput=paintAllow;allowUnit.onchange=paintAllow;
+allowForm.onsubmit=async e=>{
+  e.preventDefault();
+  const kind=allowKind.value,value=allowValue.value.trim();
+  if(!value){toast('Type a value first');return;}
+  const hours=allowHours();
+  const res=await fetch('/api/admin/allowlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,value,note:allowNote.value.trim(),expiresAtMs:hours?Date.now()+hours*3600000:null})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok){toast('Allowlist failed ('+(data.error||res.status)+')');return;}
+  allowValue.value='';allowNote.value='';toast('Exemption added');loadAllow();loadAudit();
+};
+/* ── audit ── */
+function renderAudit(list){
+  if(!list.length){auditWrap.innerHTML='<p class="empty">No admin actions recorded yet</p>';return;}
+  auditWrap.innerHTML='<table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Source</th></tr></thead><tbody>'+
+    list.map(e=>'<tr><td>'+fmt(e.at)+'</td><td>'+esc(e.actor||'-')+'</td><td><span class="tag t-unbound">'+esc(e.action)+'</span></td><td><code>'+esc(e.target||'-')+'</code></td><td><code>'+esc(e.ip||'-')+'</code></td></tr>').join('')+'</tbody></table>';
+}
+async function loadAudit(){
+  try{
+    const res=await fetch('/api/admin/audit?limit=100');
+    if(!res.ok){auditWrap.innerHTML='<p class="empty">Audit log: server said '+res.status+'</p>';return;}
+    const data=await res.json();renderAudit(data.audit||[]);
+  }catch{auditWrap.innerHTML='<p class="empty">Audit log unreachable</p>';}
+}
+auditRefresh.onclick=loadAudit;
+paintAllow();paintDuration();paintSay();load();loadLive();loadDownloads();loadRelease();loadAccounts();loadSay();loadAllow();loadAllowIp();loadAudit();setInterval(load,30000);setInterval(loadLive,15000);setInterval(loadRelease,60000);setInterval(loadSay,60000);setInterval(loadDownloads,60000);setInterval(loadAudit,60000);
 </script>
 </body>
 </html>
