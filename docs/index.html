@@ -1,474 +1,456 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="void" data-release-api="assets/releases.json">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>asus.wtf — Minecraft client for 1.21.11</title>
-<meta name="description" content="asus.wtf is a Fabric client for Minecraft 1.21.11: 109 modules, two menu layouts, 15 themes and a stream-proof overlay. One key, no account, no launcher.">
-<meta name="theme-color" content="#0a0714">
-<meta property="og:title" content="asus.wtf — Minecraft client for 1.21.11">
-<meta property="og:description" content="109 modules. Two layouts. Fifteen themes. One key, no account.">
+<title>asus.wtf — a new breed of Minecraft client</title>
+<meta name="description" content="asus.wtf is a premium Fabric client for Minecraft 1.21.11: 16 animated themes, 15 original capes, a pixel cape maker, Prism UI, 100+ modules and secure remote updates.">
+<meta name="theme-color" content="#07060c">
+<meta property="og:title" content="asus.wtf — a new breed of Minecraft client">
+<meta property="og:description" content="16 living themes. 15 original capes. A cape maker with a live 3D preview. Fabric 1.21.11.">
 <meta property="og:image" content="assets/shots/prism.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0714'/%3E%3Cpath d='M9 22 16 9l7 13' stroke='%23a78bfa' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2307060c'/%3E%3Cpath d='M8 23 16 8l8 15' stroke='%23a78bfa' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M12 18h8' stroke='%235eead4' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/theme-cards.css?v=3">
 </head>
 <body>
-
-<div class="aurora" aria-hidden="true">
-  <span class="blob b1"></span>
-  <span class="blob b2"></span>
-  <span class="blob b3"></span>
-  <span class="grid-lines"></span>
+<div class="stage" aria-hidden="true">
+  <div class="stage-grid"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <div class="stage-noise"></div>
 </div>
 
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="asus.wtf home">
-    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M8 23 16 8l8 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M12.4 18.4h7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
-    </svg>
-    <span class="brand-text">asus<span class="dot">.</span>wtf</span>
+    <span class="brand-mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7.5 23.5 16 7.5l8.5 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M11.7 18h8.6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+      </svg>
+    </span>
+    <span class="brand-text">asus<span>.</span>wtf</span>
+    <span class="build-chip">1.1.0</span>
   </a>
 
-  <nav class="nav-links" id="navLinks" aria-label="Sections">
-    <a href="#features">Features</a>
+  <nav class="nav-links" id="navLinks" aria-label="Pages">
+    <a href="#capes">Capes</a>
+    <a href="#themes">Themes</a>
+    <a href="features.html">Features</a>
     <a href="#modules">Modules</a>
-    <a href="#gallery">Screenshots</a>
-    <a href="#install">Install</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="download.html">Download</a>
     <a href="#faq">FAQ</a>
-    <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a>
   </nav>
 
   <div class="nav-actions">
-    <a class="btn btn-ghost" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
-      Discord
-    </a>
-    <a class="btn btn-primary" href="#install">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <a class="nav-signin" href="login.html">Sign in</a>
+    <a class="btn btn-primary btn-sm" href="download.html">
+      <span class="btn-dot"></span>
       Download
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- ============================ HERO ============================ -->
+  <!-- ───────────────────────────── HERO ───────────────────────────── -->
   <section class="hero">
     <div class="hero-copy">
-      <div class="eyebrow reveal">
-        <span class="pulse"></span>
-        Fabric &middot; 1.21.11 &middot; build 1.0.10
-      </div>
-
-      <h1 class="reveal">
-        Sharper than<br>
-        <span class="grad">the rest.</span>
-      </h1>
-
+      <div class="eyebrow reveal"><span class="live-dot"></span> Fabric 1.21.11 &middot; release 1.1.0</div>
+      <h1 class="reveal">A new breed<br>of <span class="grad">client.</span></h1>
       <p class="lede reveal">
-        One hundred and nine modules, two hand-built menu layouts and a stream-proof overlay that
-        refuses to show up on capture. One key unlocks it &mdash; no launcher, no subscription.
-        Drop the jar in, paste the key, press <kbd>Right Shift</kbd>, go.
+        A client with a real visual identity: 16 hand-built themes, 15 original capes, a live cape
+        maker, a rebuilt Prism interface, a deep module library and secure remote updates &mdash; all
+        in one Fabric jar.
       </p>
-
       <div class="hero-actions reveal">
-        <a class="btn btn-primary btn-lg" href="#install">
+        <a class="btn btn-primary btn-lg" href="#download">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Get 1.0.10
+          Download 1.1.0
         </a>
-        <a class="btn btn-ghost btn-lg" href="#gallery">Look inside</a>
+        <a class="btn btn-ghost btn-lg" href="#capes">
+          Explore the capes
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
-
-      <dl class="hero-stats reveal">
-        <div><dt>Modules</dt><dd data-count="109">0</dd></div>
-        <div><dt>Themes</dt><dd data-count="15">0</dd></div>
-        <div><dt>Layouts</dt><dd data-count="2">0</dd></div>
-        <div><dt>Key</dt><dd>1</dd></div>
-      </dl>
+      <div class="hero-meta reveal">
+        <span><b>100+</b> modules</span>
+        <span><b>16</b> living themes</span>
+        <span><b>15</b> original capes</span>
+        <span><b>4K</b> ready</span>
+        <span><b>1</b> key</span>
+      </div>
     </div>
 
-    <div class="hero-shot reveal" data-parallax="0.04">
-      <div class="shot-frame">
-        <div class="shot-bar">
-          <span class="shot-dot"></span>
-          <span class="shot-name">Prism &middot; Combat</span>
-          <span class="shot-tag">asus.wtf</span>
+    <div class="hero-visual reveal" data-parallax="0.025">
+      <div class="hero-glow"></div>
+      <div class="client-window">
+        <div class="window-bar">
+          <span class="window-lights"><i></i><i></i><i></i></span>
+          <span class="window-title">Prism <b>/</b> Combat</span>
+          <span class="window-tag">asus.wtf</span>
         </div>
-        <img src="assets/shots/prism.png" alt="asus.wtf Prism menu open on the Combat category" width="1920" height="1080" loading="eager">
+        <div class="window-shot">
+          <img src="assets/shots/prism.png" alt="asus.wtf Prism interface on the Combat category" width="1920" height="1080" loading="eager">
+          <div class="window-sheen"></div>
+        </div>
+        <div class="window-status">
+          <span class="status-ok"><i></i> SS-Proof active</span>
+          <span class="status-mono">FPS 312 &middot; 6.4 ms</span>
+        </div>
       </div>
-      <div class="shot-glow" aria-hidden="true"></div>
+      <div class="float-card float-theme">
+        <span class="float-kicker">Theme</span>
+        <span class="float-title" data-theme-name>Void</span>
+        <span class="float-swatches"><i class="sw-a"></i><i class="sw-b"></i><i class="sw-c"></i></span>
+      </div>
+      <div class="float-card float-dragon">
+        <span class="cape-mark"><i></i></span>
+        <div><b>Voidfall</b><small>Original cape &middot; new</small></div>
+      </div>
     </div>
   </section>
 
-  <!-- ============================ MARQUEE ============================ -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>KillAura</span><span>&middot;</span><span>Scaffold</span><span>&middot;</span><span>BedAura</span><span>&middot;</span><span>Speed</span><span>&middot;</span><span>NoFall</span><span>&middot;</span><span>ESP</span><span>&middot;</span><span>AutoTotem</span><span>&middot;</span><span>Disabler</span><span>&middot;</span><span>SMP Finder</span><span>&middot;</span><span>ChestStealer</span><span>&middot;</span>
-      <span>KillAura</span><span>&middot;</span><span>Scaffold</span><span>&middot;</span><span>BedAura</span><span>&middot;</span><span>Speed</span><span>&middot;</span><span>NoFall</span><span>&middot;</span><span>ESP</span><span>&middot;</span><span>AutoTotem</span><span>&middot;</span><span>Disabler</span><span>&middot;</span><span>SMP Finder</span><span>&middot;</span><span>ChestStealer</span><span>&middot;</span>
+  <!-- ───────────────────────────── TICKER ───────────────────────────── -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>15 original capes</span><i></i><span>16 animated themes</span><i></i><span>Prism 2.0</span><i></i><span>3D pathfinding</span><i></i><span>Hash published updates</span><i></i><span>Admin console</span><i></i>
+      <span>15 original capes</span><i></i><span>16 animated themes</span><i></i><span>Prism 2.0</span><i></i><span>3D pathfinding</span><i></i><span>Hash published updates</span><i></i><span>Admin console</span><i></i>
     </div>
   </div>
 
-  <!-- ============================ FEATURES ============================ -->
+  <!-- ───────────────────────────── CAPES ───────────────────────────── -->
+  <section class="section cape-section" id="capes">
+    <div class="section-head split-head">
+      <div>
+        <span class="kicker">01 — The wardrobe</span>
+        <h2 class="reveal">Fifteen capes.<br><span class="grad">One attitude.</span></h2>
+      </div>
+      <p class="section-lede reveal">
+        Every cape is original pixel art built on the vanilla 64&times;32 atlas, with a cloth rig that
+        sways in game. Pick one below to preview its palette, then make your own in the Cape Maker.
+      </p>
+    </div>
+
+    <div class="cape-stage reveal">
+      <div class="cape-preview">
+        <div class="cape-cloth" id="capeCloth" aria-hidden="true">
+          <span class="cape-emblem">V</span>
+          <i class="cape-fold f1"></i><i class="cape-fold f2"></i><i class="cape-fold f3"></i>
+        </div>
+        <span class="cape-preview-name" id="capePreviewName">Voidfall</span>
+        <span class="cape-preview-note">Live palette preview &middot; vanilla proportions</span>
+      </div>
+      <div class="cape-grid">
+        <button class="cape-card" data-cape="voidfall" data-c1="#03040c" data-c2="#25104d" data-accent="#9b7bff"><span class="cape-swatch"></span><b>Voidfall</b><small>Cosmic &middot; moon sigil</small></button>
+        <button class="cape-card" data-cape="crimson-emperor" data-c1="#260207" data-c2="#8e0c1b" data-accent="#ffc857"><span class="cape-swatch"></span><b>Crimson Emperor</b><small>Royal &middot; gold crown</small></button>
+        <button class="cape-card" data-cape="oceanic" data-c1="#021923" data-c2="#087e8b" data-accent="#6ff7e8"><span class="cape-swatch"></span><b>Oceanic</b><small>Tidal &middot; woven waves</small></button>
+        <button class="cape-card" data-cape="frostbite" data-c1="#d9f5ff" data-c2="#4b9ed6" data-accent="#f7feff"><span class="cape-swatch"></span><b>Frostbite</b><small>Glacial &middot; scale frost</small></button>
+        <button class="cape-card" data-cape="celestial" data-c1="#080a1d" data-c2="#25245c" data-accent="#ffe7a3"><span class="cape-swatch"></span><b>Celestial</b><small>Astral &middot; gold stars</small></button>
+        <button class="cape-card" data-cape="bloodmoon" data-c1="#100105" data-c2="#57000f" data-accent="#ff8a9a"><span class="cape-swatch"></span><b>Bloodmoon</b><small>Eclipse &middot; red halo</small></button>
+        <button class="cape-card" data-cape="sakura" data-c1="#ffe4ef" data-c2="#e96596" data-accent="#ffffff"><span class="cape-swatch"></span><b>Sakura</b><small>Petal &middot; blush wave</small></button>
+        <button class="cape-card" data-cape="infernal" data-c1="#120201" data-c2="#5e0a03" data-accent="#ffb347"><span class="cape-swatch"></span><b>Infernal</b><small>Ember &middot; flame crest</small></button>
+        <button class="cape-card" data-cape="phantom" data-c1="#0a1016" data-c2="#344653" data-accent="#9fb7c7"><span class="cape-swatch"></span><b>Phantom</b><small>Smoke &middot; circuit trace</small></button>
+        <button class="cape-card" data-cape="emerald-knight" data-c1="#03150b" data-c2="#0a5f35" data-accent="#ffe08a"><span class="cape-swatch"></span><b>Emerald Knight</b><small>Order &middot; gold honour</small></button>
+        <button class="cape-card" data-cape="aurora" data-c1="#061018" data-c2="#1e5b68" data-accent="#7cffd4"><span class="cape-swatch"></span><b>Aurora</b><small>Polar &middot; light ribbon</small></button>
+        <button class="cape-card" data-cape="royal" data-c1="#08152e" data-c2="#34206c" data-accent="#ffe29a"><span class="cape-swatch"></span><b>Royal</b><small>Regal &middot; navy and gold</small></button>
+        <button class="cape-card" data-cape="midnight" data-c1="#02040b" data-c2="#101d3b" data-accent="#afc8ff"><span class="cape-swatch"></span><b>Midnight</b><small>Nocturne &middot; silver stars</small></button>
+        <button class="cape-card" data-cape="cyber" data-c1="#030614" data-c2="#101a3e" data-accent="#00f0ff"><span class="cape-swatch"></span><b>Cyber</b><small>Neon &middot; magenta bolt</small></button>
+        <button class="cape-card" data-cape="dragonless" data-c1="#0b0d0a" data-c2="#24351f" data-accent="#6b8f54"><span class="cape-swatch"></span><b>Dragonless</b><small>Wild &middot; forest scales</small></button>
+      </div>
+    </div>
+
+    <div class="cape-features">
+      <article class="reveal"><span>01</span><h3>Vanilla mapping</h3><p>Correct 64&times;32 atlas proportions, separate outer and inner faces, and transparent edge pixels where the design needs them.</p></article>
+      <article class="reveal"><span>02</span><h3>Live cloth</h3><p>Physics, static, animated and vanilla cape modes. The cape lifts in a fall, swings on a turn and reacts to strafing.</p></article>
+      <article class="reveal"><span>03</span><h3>Make it yours</h3><p>Colours, gradients, patterns, emblems, borders, imported art, undo/redo and a saved library in the Cape Maker.</p></article>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── THEMES ───────────────────────────── -->
+  <section class="section" id="themes">
+    <div class="section-head split-head">
+      <div>
+        <span class="kicker">02 — Identity</span>
+        <h2 class="reveal">Sixteen worlds.<br><span class="grad">One menu.</span></h2>
+      </div>
+      <p class="section-lede reveal">
+        The original six are still here. Midnight, Inferno, Cyberpunk, Emerald, Bloodmoon, Lavender,
+        Arctic, Sunset, Obsidian and Amethyst Night each carry their own palette and animated
+        backdrop, not a recoloured copy of the last one. Pick one below to tint this page.
+      </p>
+    </div>
+
+    <div class="theme-grid">
+      <button class="theme-card" data-theme="ocean" aria-label="Preview Ocean theme">
+        <div class="theme-sky ocean"><span class="wave"></span><span class="wave w2"></span><span class="bubble b1"></span><span class="bubble b2"></span></div>
+        <div class="theme-info"><span class="theme-name">Ocean</span><span class="theme-desc">Deep navy &middot; turquoise</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="magma" aria-label="Preview Magma theme">
+        <div class="theme-sky magma"><span class="lava"></span><span class="ember e1"></span><span class="ember e2"></span><span class="ember e3"></span></div>
+        <div class="theme-info"><span class="theme-name">Magma</span><span class="theme-desc">Charcoal &middot; molten gold</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="aurora" aria-label="Preview Aurora theme">
+        <div class="theme-sky aurora"><span class="ribbon r1"></span><span class="ribbon r2"></span><span class="ribbon r3"></span></div>
+        <div class="theme-info"><span class="theme-name">Aurora</span><span class="theme-desc">Midnight &middot; violet / teal</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="sakura" aria-label="Preview Sakura theme">
+        <div class="theme-sky sakura"><span class="petal p1"></span><span class="petal p2"></span><span class="petal p3"></span><span class="petal p4"></span></div>
+        <div class="theme-info"><span class="theme-name">Sakura</span><span class="theme-desc">Dark plum &middot; rose</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="void" aria-label="Preview Void theme">
+        <div class="theme-sky void"><span class="star s1"></span><span class="star s2"></span><span class="star s3"></span><span class="star s4"></span><span class="core"></span></div>
+        <div class="theme-info"><span class="theme-name">Void</span><span class="theme-desc">Near-black &middot; deep purple</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="glacier" aria-label="Preview Glacier theme">
+        <div class="theme-sky glacier"><span class="snow n1"></span><span class="snow n2"></span><span class="snow n3"></span><span class="frost"></span></div>
+        <div class="theme-info"><span class="theme-name">Glacier</span><span class="theme-desc">Dark blue &middot; icy cyan</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="midnight" aria-label="Preview Midnight theme">
+        <div class="theme-sky t-midnight"><span class="moon"></span><span class="star s1"></span><span class="star s2"></span><span class="star s3"></span></div>
+        <div class="theme-info"><span class="theme-name">Midnight</span><span class="theme-desc">Navy &middot; moonlit silver</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="inferno" aria-label="Preview Inferno theme">
+        <div class="theme-sky t-inferno"><span class="lava"></span><span class="ember e1"></span><span class="ember e2"></span><span class="ember e3"></span></div>
+        <div class="theme-info"><span class="theme-name">Inferno</span><span class="theme-desc">Black &middot; molten orange</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="cyberpunk" aria-label="Preview Cyberpunk theme">
+        <div class="theme-sky t-cyberpunk"><span class="neon-grid"></span><span class="neon-horizon"></span><span class="scan"></span><span class="spark sp1"></span><span class="spark sp2"></span></div>
+        <div class="theme-info"><span class="theme-name">Cyberpunk</span><span class="theme-desc">Ink &middot; cyan / magenta</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="emerald" aria-label="Preview Emerald theme">
+        <div class="theme-sky t-emerald"><span class="crystal c1"></span><span class="crystal c2"></span><span class="crystal c3"></span><span class="moss-glow"></span></div>
+        <div class="theme-info"><span class="theme-name">Emerald</span><span class="theme-desc">Forest &middot; emerald / gold</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="bloodmoon" aria-label="Preview Bloodmoon theme">
+        <div class="theme-sky t-bloodmoon"><span class="blood-moon"></span><span class="haze"></span><span class="blood-mote bm1"></span><span class="blood-mote bm2"></span></div>
+        <div class="theme-info"><span class="theme-name">Bloodmoon</span><span class="theme-desc">Maroon &middot; crimson halo</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="lavender" aria-label="Preview Lavender theme">
+        <div class="theme-sky t-lavender"><span class="bloom lb1"></span><span class="bloom lb2"></span><span class="bloom lb3"></span><span class="mote lm1"></span><span class="mote lm2"></span></div>
+        <div class="theme-info"><span class="theme-name">Lavender</span><span class="theme-desc">Violet dusk &middot; pearl</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="arctic" aria-label="Preview Arctic theme">
+        <div class="theme-sky t-arctic"><span class="ice-band ib1"></span><span class="ice-band ib2"></span><span class="snow n1"></span><span class="snow n2"></span><span class="snow n3"></span></div>
+        <div class="theme-info"><span class="theme-name">Arctic</span><span class="theme-desc">Polar &middot; ice cyan</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="sunset" aria-label="Preview Sunset theme">
+        <div class="theme-sky t-sunset"><span class="sun"></span><span class="sunset-band sb1"></span><span class="sunset-band sb2"></span><span class="sunset-band sb3"></span></div>
+        <div class="theme-info"><span class="theme-name">Sunset</span><span class="theme-desc">Dusk plum &middot; peach</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="obsidian" aria-label="Preview Obsidian theme">
+        <div class="theme-sky t-obsidian"><span class="fracture fr1"></span><span class="fracture fr2"></span><span class="obsidian-shard os1"></span><span class="obsidian-shard os2"></span></div>
+        <div class="theme-info"><span class="theme-name">Obsidian</span><span class="theme-desc">Volcanic black &middot; violet</span><span class="theme-check">Selected</span></div>
+      </button>
+      <button class="theme-card" data-theme="amethyst-night" aria-label="Preview Amethyst Night theme">
+        <div class="theme-sky t-amethyst"><span class="amethyst-core"></span><span class="amethyst-shard as1"></span><span class="amethyst-shard as2"></span><span class="amethyst-shard as3"></span></div>
+        <div class="theme-info"><span class="theme-name">Amethyst Night</span><span class="theme-desc">Purple &middot; cut amethyst</span><span class="theme-check">Selected</span></div>
+      </button>
+    </div>
+
+    <div class="theme-custom reveal">
+      <div class="custom-copy">
+        <span class="kicker">Make it yours</span>
+        <h3>Identity, with controls.</h3>
+        <p>Accent, background and secondary colours. Gradient direction and speed. Animation and particle intensity. Blur, transparency and UI brightness. Every control is live and saved with your config.</p>
+      </div>
+      <div class="custom-controls" aria-hidden="true">
+        <div class="control-row"><span>Accent</span><i class="dot purple"></i><i class="dot cyan"></i><i class="dot pink"></i><i class="dot gold"></i></div>
+        <div class="control-row"><span>Gradient</span><div class="fake-slider"><i style="width:72%"></i></div></div>
+        <div class="control-row"><span>Motion</span><div class="fake-slider"><i style="width:48%"></i></div></div>
+        <div class="control-row"><span>Particles</span><div class="fake-slider"><i style="width:62%"></i></div></div>
+        <div class="control-row"><span>Glass</span><div class="fake-slider"><i style="width:84%"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── FEATURES ───────────────────────────── -->
   <section class="section" id="features">
     <div class="section-head">
-      <span class="kicker">01 — What is in the box</span>
-      <h2 class="reveal">Built like a tool,<br>not a paywall.</h2>
-      <p class="section-lede reveal">
-        Everything runs client-side on Fabric. Every screen is drawn on the GPU, every panel is
-        laid out from scratch, and every feature ships enabled from the first launch.
-      </p>
+      <span class="kicker">03 — The rebuild</span>
+      <h2 class="reveal">Everything touched.<br>Nothing left <span class="grad">broken.</span></h2>
     </div>
 
-    <div class="cards">
-      <article class="card card-wide reveal">
-        <div class="card-media">
-          <img src="assets/shots/prism-settings.png" alt="Prism layout with a module's settings unfolded inline" loading="lazy" width="1920" height="1080">
-        </div>
-        <div class="card-body">
-          <span class="pill">Layout 01</span>
-          <h3>Prism</h3>
-          <p>
-            One pane. A category column down the left, an accordion list on the right. Click a row
-            to toggle it, click the plus to unfold that module's settings right underneath it &mdash;
-            no side panels, no overlapping windows, nothing covering the list.
-          </p>
-          <ul class="ticks">
-            <li>Inline settings with sliders, modes, colours and keybinds</li>
-            <li>Fuzzy search across every category with <kbd>/</kbd></li>
-            <li>Scroll wheel on the category column flips categories</li>
-          </ul>
+    <div class="bento">
+      <article class="bento-card span-2 reveal">
+        <span class="bento-icon">◇</span>
+        <h3>Prism 2.0</h3>
+        <p>A compact single-pane menu with category navigation, fast search, expandable module cards, inline settings and transitions that never stutter. Built on the GPU UI from the first pixel.</p>
+        <div class="mini-ui">
+          <span class="mini-nav"><i class="on"></i><i></i><i></i><i></i><i></i></span>
+          <div class="mini-list"><span class="mini-row on"><b>AimAssist</b><i></i></span><span class="mini-row"><b>Sprint</b><i></i></span><span class="mini-row"><b>PlayerESP</b><i></i></span><span class="mini-row"><b>Scaffold</b><i></i></span></div>
         </div>
       </article>
 
-      <article class="card card-wide reveal">
-        <div class="card-media">
-          <img src="assets/shots/classic.png" alt="Classic menu with page tabs and category chips" loading="lazy" width="1920" height="1080">
-        </div>
-        <div class="card-body">
-          <span class="pill">Layout 02</span>
-          <h3>Classic Deck</h3>
-          <p>
-            The three-pane window: page tabs across the top, category chips under them, and a card
-            catalog that docks its inspector and drawer beside the window instead of on top of it.
-          </p>
-          <ul class="ticks">
-            <li>Auto-scales to your monitor and remembers its size</li>
-            <li>Configs, friends, macros, scripts and HUD pages</li>
-            <li>Docked panels &mdash; the catalog never gets covered</li>
-          </ul>
-        </div>
+      <article class="bento-card reveal">
+        <span class="bento-icon">◎</span>
+        <h3>Real 3D navigation</h3>
+        <p>Collision-aware A* with step-up, drops, water, danger costs, stuck detection and replanning. The Dia SMP bot reads the world, not a flat grid.</p>
+        <div class="path-viz" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </article>
 
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11M4 12h7M4 17h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-        </div>
-        <h3>Stream-proof by default</h3>
-        <p>
-          The SS-Proof overlay draws the menu and HUD on a capture-excluded layer, with its own
-          pointer sized to your display so it never balloons or shrinks. What your viewers see is
-          the game, nothing else.
-        </p>
+      <article class="bento-card reveal">
+        <span class="bento-icon">⌁</span>
+        <h3>Remote updates</h3>
+        <p>Version manifests, release history and in-game notices. Every release publishes a SHA-256 hash, and the client only accepts HTTPS update links.</p>
       </article>
 
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8c3 2.6 3 13.8 0 16.4M12 3.8c-3 2.6-3 13.8 0 16.4M3.8 12h16.4" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".75"/></svg>
-        </div>
-        <h3>Fifteen themes</h3>
-        <p>
-          Amethyst, Ruby, Emerald, Ocean, Sunset, Rose, Midnight, Gold, Slate, Teal, Catppuccin,
-          Granite, Nero Portoro, Liquid Glass and asus.wtf. Or take the highlight colour and set
-          your own.
-        </p>
+      <article class="bento-card reveal">
+        <span class="bento-icon">◈</span>
+        <h3>Admin console</h3>
+        <p>Publish releases, manage keys and testers, read audit logs and see download counts. Server-side authorisation, rate limits and audit; the page never stores the password.</p>
       </article>
 
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="12" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 20h6M12 16.5V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3>HUD editor</h3>
-        <p>
-          Drag every element where you actually want it &mdash; arraylist, target HUD, armour, potions,
-          keystrokes, watermarks. Per-element fonts, colours and scale, saved per config.
-        </p>
-      </article>
-
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        </div>
-        <h3>Studio scripting</h3>
-        <p>
-          Write routines in the built-in editor and run them from a macro or a keybind. Loops,
-          conditions, timers, movement primitives and a live log &mdash; no rebuild between runs.
-        </p>
-      </article>
-
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6 5 6.6v5.2c0 4.3 3 7.4 7 8.6 4-1.2 7-4.3 7-8.6V6.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 12 2.2 2.2L15.4 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <h3>Configs that behave</h3>
-        <p>
-          Named configs, drag-to-load, per-server auto-load and a shareable file format. Switch
-          between a bedwars set and a lifesteal set without touching a single setting.
-        </p>
-      </article>
-
-      <article class="card reveal">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11.9 12H21M17.4 12v3.4M20 12v2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3>One key, one machine</h3>
-        <p>
-          Paste the key once and it binds to that install. The answer is cached, so the client keeps
-          working for 72 hours without reaching the key server &mdash; and a revoked key stops working
-          on the next check. Lost a machine? Ask for a reset in the Discord.
-        </p>
+      <article class="bento-card span-2 reveal">
+        <span class="bento-icon">✦</span>
+        <h3>Cosmetics that render like real model work</h3>
+        <p>Vanilla armor trims and banner-pattern shields on local render-state copies, 29 cape designs, a pixel cape maker with undo/redo, wings, hats and followers. No fake overlay textures.</p>
+        <div class="cosmetic-strip"><span>Voidfall</span><span>Crimson Emperor</span><span>Emerald Knight</span><span>Bloodmoon</span><span>Celestial</span><span>Cyber</span></div>
       </article>
     </div>
   </section>
 
-  <!-- ============================ MODULES ============================ -->
+  <!-- ───────────────────────────── MODULES ───────────────────────────── -->
   <section class="section section-split" id="modules">
     <div class="section-head sticky">
-      <span class="kicker">02 — The catalog</span>
-      <h2 class="reveal">109 modules.<br>Eight shelves.</h2>
-      <p class="section-lede reveal">
-        Combat runs the usual suspects plus crystal and mace logic. Automations keep the boring
-        parts of survival on rails. Bedwars and SMP suites exist because generic modules never
-        actually win those games.
-      </p>
-      <a class="btn btn-ghost" href="#gallery">See it in the menu</a>
+      <span class="kicker">04 — The catalog</span>
+      <h2 class="reveal">A deeper<br>toolbox.</h2>
+      <p class="section-lede reveal">Combat, visuals, movement, player and world modules with real settings and saved configuration. No decorative toggles.</p>
+      <div class="module-tabs" role="tablist" aria-label="Module categories">
+        <button class="module-tab is-on" data-cat="visuals" role="tab" aria-selected="true">Visuals</button>
+        <button class="module-tab" data-cat="combat" role="tab" aria-selected="false">Combat</button>
+        <button class="module-tab" data-cat="movement" role="tab" aria-selected="false">Movement</button>
+        <button class="module-tab" data-cat="player" role="tab" aria-selected="false">Player</button>
+        <button class="module-tab" data-cat="world" role="tab" aria-selected="false">World</button>
+      </div>
     </div>
 
-    <div class="shelf">
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Combat</span>
-        <span class="shelf-count">35</span>
-        <p>KillAura, Criticals, AutoCrystal, MaceAura, Backtrack, Reach, AutoTotem, HitSelect, Velocity&hellip;</p>
+    <div class="module-panel">
+      <div class="module-group is-on" data-group="visuals">
+        <span class="module-count">Visuals</span>
+        <div class="module-chips"><span>PlayerESP</span><span>ShaderESP</span><span>SkeletonESP</span><span>Tracers</span><span>Nametags</span><span>ItemESP</span><span>BlockESP</span><span>WorldESP</span><span>BlockOutline</span><span>FullBright</span><span>DamageNumbers</span><span>CustomCrosshair</span><span>TargetESP</span><span>NewChunks</span><span>Xray</span><span>NoRender</span><span>TotemPopCustomizer</span><span>Notifications</span></div>
       </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Render</span>
-        <span class="shelf-count">16</span>
-        <p>ESP, Tracers, TargetESP, DamageNumbers, ProjectileTrails, Xray, Chams, Nametags&hellip;</p>
+      <div class="module-group" data-group="combat">
+        <span class="module-count">Combat</span>
+        <div class="module-chips"><span>AimAssist</span><span>HitSelect</span><span>AutoMace</span><span>AutoCrystal</span><span>AutoTotem</span><span>SmartWTap</span><span>AutoWeb</span><span>AutoShieldBreak</span><span>PearlCatch</span><span>BowSpam</span><span>TriggerBot</span><span>AutoHeal</span><span>AutoCart</span><span>AntiMiss</span><span>CombatTracker</span></div>
       </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Player</span>
-        <span class="shelf-count">15</span>
-        <p>AutoArmor, AutoTool, ChestStealer, InventoryManager, AutoEat, FastPlace, NoSlow&hellip;</p>
+      <div class="module-group" data-group="movement">
+        <span class="module-count">Movement</span>
+        <div class="module-chips"><span>Sprint</span><span>AutoWalk</span><span>SnapTap</span><span>AutoLunge</span><span>SpearAssist</span><span>ScriptCompiler</span><span>AutoJumpReset</span><span>Strafe</span><span>MaceFallIndicator</span><span>PearlLandingMarker</span><span>DashTrails</span><span>JumpCircles</span></div>
       </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Blatant</span>
-        <span class="shelf-count">12</span>
-        <p>Fly, Speed, NoFall, Scaffold, Disabler, AntiVoid, Phase, Jesus&hellip;</p>
+      <div class="module-group" data-group="player">
+        <span class="module-count">Player</span>
+        <div class="module-chips"><span>AutoTotem</span><span>ArmorManager</span><span>InventoryManager</span><span>HotbarManager</span><span>ItemTracker</span><span>AutoTool</span><span>ChestSteal</span><span>AntiAFK</span><span>KitLayout</span><span>PotRefill</span><span>Replenish</span><span>Clutch</span><span>WebEscape</span><span>ShieldManager</span><span>FastExp</span><span>InvCleaner</span></div>
       </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Bedwars</span>
-        <span class="shelf-count">10</span>
-        <p>BedAura, AutoBuy, Defend, ResourceTracker, SpeedBridge, BridgeAssist&hellip;</p>
-      </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">SMP</span>
-        <span class="shelf-count">7</span>
-        <p>BaseFinder, ItemESP, StashFinder, AutoTame, SpawnerProtect, ChunkScanner&hellip;</p>
-      </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Automations</span>
-        <span class="shelf-count">5</span>
-        <p>AutoSell, AutoFish, AutoFarm, ChatSuffix, AutoReconnect&hellip;</p>
-      </div>
-      <div class="shelf-row reveal">
-        <span class="shelf-name">Movement</span>
-        <span class="shelf-count">4</span>
-        <p>SprintReset, Strafe, Step, LongJump&hellip;</p>
+      <div class="module-group" data-group="world">
+        <span class="module-count">World</span>
+        <div class="module-chips"><span>WorldESP</span><span>BlockESP</span><span>NewChunks</span><span>LogoutSpots</span><span>BaseFinder</span><span>DeathCoords</span><span>VisualRange</span><span>Freecam</span><span>AutoMine</span><span>AutoFarm</span><span>AutoBuild</span><span>AutoEscape</span><span>StaffDetector</span><span>ItemTracker</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ GALLERY ============================ -->
-  <section class="section" id="gallery">
+  <!-- ───────────────────────────── SCREENS ───────────────────────────── -->
+  <section class="section" id="screens">
     <div class="section-head">
-      <span class="kicker">03 — Screens</span>
-      <h2 class="reveal">Straight from the build.</h2>
-      <p class="section-lede reveal">
-        Every frame below was rendered by the client's own layout code at 1920&times;1080 &mdash; not a
-        mockup, not a figma file.
-      </p>
+      <span class="kicker">05 — Straight from the build</span>
+      <h2 class="reveal">Look inside.</h2>
+      <p class="section-lede reveal">Rendered by the client's own layout code at 1920&times;1080. No mockups.</p>
     </div>
-
     <div class="gallery">
-      <button class="shot reveal" data-full="assets/shots/prism.png">
-        <img src="assets/shots/prism.png" alt="Prism menu, Combat category" loading="lazy">
-        <span class="shot-cap">Prism &middot; Combat</span>
-      </button>
-      <button class="shot reveal" data-full="assets/shots/prism-settings.png">
-        <img src="assets/shots/prism-settings.png" alt="Prism menu with inline module settings" loading="lazy">
-        <span class="shot-cap">Inline settings</span>
-      </button>
-      <button class="shot reveal" data-full="assets/shots/themes.png">
-        <img src="assets/shots/themes.png" alt="Theme popover with the full theme grid" loading="lazy">
-        <span class="shot-cap">Theme grid</span>
-      </button>
-      <button class="shot reveal" data-full="assets/shots/ruby.png">
-        <img src="assets/shots/ruby.png" alt="The same menu on the Ruby theme" loading="lazy">
-        <span class="shot-cap">Ruby theme</span>
-      </button>
-      <button class="shot reveal" data-full="assets/shots/classic.png">
-        <img src="assets/shots/classic.png" alt="Classic Deck layout with page tabs" loading="lazy">
-        <span class="shot-cap">Classic Deck</span>
-      </button>
-      <button class="shot reveal" data-full="assets/shots/configs.png">
-        <img src="assets/shots/configs.png" alt="Configs page with saved config cards" loading="lazy">
-        <span class="shot-cap">Configs</span>
-      </button>
+      <button class="shot wide reveal" data-full="assets/shots/prism.png"><img src="assets/shots/prism.png" alt="Prism menu on the Combat category" loading="lazy"><span>Prism &middot; Combat</span></button>
+      <button class="shot reveal" data-full="assets/shots/prism-settings.png"><img src="assets/shots/prism-settings.png" alt="Inline module settings" loading="lazy"><span>Inline settings</span></button>
+      <button class="shot reveal" data-full="assets/shots/themes.png"><img src="assets/shots/themes.png" alt="Theme selector" loading="lazy"><span>Theme selector</span></button>
+      <button class="shot reveal" data-full="assets/shots/classic.png"><img src="assets/shots/classic.png" alt="Classic client layout" loading="lazy"><span>Classic deck</span></button>
+      <button class="shot reveal" data-full="assets/shots/configs.png"><img src="assets/shots/configs.png" alt="Configuration page" loading="lazy"><span>Configs</span></button>
+      <button class="shot wide reveal" data-full="assets/shots/ruby.png"><img src="assets/shots/ruby.png" alt="Older client build" loading="lazy"><span>Previous generation</span></button>
     </div>
   </section>
 
-  <!-- ============================ INSTALL ============================ -->
-  <section class="section" id="install">
-    <div class="section-head">
-      <span class="kicker">04 — Install</span>
-      <h2 class="reveal">Four steps,<br>one key.</h2>
-    </div>
-
-    <div class="steps">
-      <div class="step reveal">
-        <span class="step-num">1</span>
-        <h3>Install Fabric</h3>
-        <p>
-          Run the Fabric installer for <strong>Minecraft 1.21.11</strong> and pick loader
-          <code>0.20.1</code>. Launch the profile once so the <code>mods</code> folder exists.
-        </p>
-        <div class="step-tags"><span>1.21.11</span><span>loader 0.20.1</span><span>Java 21+</span></div>
-      </div>
-
-      <div class="step reveal">
-        <span class="step-num">2</span>
-        <h3>Drop the jar</h3>
-        <p>
-          Put <code>asus-wtf-1.0.10.jar</code> into <code>.minecraft/mods</code>. Add
-          <strong>Fabric API</strong>; Cloth Config and Mod Menu are optional but recommended.
-        </p>
-        <div class="step-tags"><span>asus-wtf-1.0.10.jar</span><span>+ Fabric API</span></div>
-      </div>
-
-      <div class="step reveal">
-        <span class="step-num">3</span>
-        <h3>Get a key</h3>
-        <p>
-          Join the Discord and grab a key from the key channel. One key, one machine &mdash; if you
-          switch PCs, ask for a reset instead of buying another.
-        </p>
-        <div class="step-tags"><span>ASUS-XXXXX-XXXXX-XXXXX-XXXXX</span></div>
-        <a class="btn btn-primary step-btn" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
-          Join discord.gg/Ua8qVQ2JU
-        </a>
-      </div>
-
-      <div class="step reveal">
-        <span class="step-num">4</span>
-        <h3>Paste it in-game</h3>
-        <p>
-          Launch, press <kbd>Right Shift</kbd> and the key screen appears before the menu. Paste the
-          key, hit Unlock, and the client binds it to this install. After that the menu opens
-          normally and every setting saves as you change it.
-        </p>
-        <div class="step-tags"><span>Right Shift</span><span>/ search</span><span>Esc close</span></div>
-      </div>
-    </div>
-
-    <div class="dl-panel reveal">
+  <!-- ───────────────────────────── DOWNLOAD ───────────────────────────── -->
+  <section class="section download-section" id="download">
+    <div class="download-head">
       <div>
-        <span class="pill">Latest build</span>
-        <h3>asus.wtf 1.0.10</h3>
-        <p>Minecraft 1.21.11 &middot; Fabric 0.20.1 &middot; 13.7 MB</p>
+        <span class="kicker">06 — Install</span>
+        <h2 class="reveal">One jar.<br><span class="grad">One key.</span></h2>
+        <p class="section-lede reveal">Fabric 1.21.11 &middot; loader 0.20.1 &middot; Java 21+. Drop it in <code>mods</code>, paste your key once, press Right Shift.</p>
       </div>
-      <div class="dl-actions">
-        <a class="btn btn-primary btn-lg" href="dashboard/">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Full build
-        </a>
-        <a class="btn btn-ghost btn-lg" href="assets/asus-free-1.0.0.jar" download>Free build</a>
-        <a class="btn btn-ghost btn-lg" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.3.6a17 17 0 0 1 4 1.3 13.6 13.6 0 0 0-11.9 0 17 17 0 0 1 4-1.3L11.1 3A19 19 0 0 0 6.4 4.4C3.4 8.8 2.5 13.2 3 17.6a19 19 0 0 0 5.7 2.9l.9-1.5a12 12 0 0 1-1.9-.9l.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3a12 12 0 0 1-1.9.9l.9 1.5a19 19 0 0 0 5.7-2.9c.6-4.6-.7-9-3.3-13.2M9.5 14.8c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2m5 0c-1 0-1.9-1-1.9-2.2s.8-2.2 1.9-2.2 1.9 1 1.9 2.2-.9 2.2-1.9 2.2" fill="currentColor"/></svg>
-          Get a key
-        </a>
-        <button class="btn btn-ghost btn-lg" id="copyVersion" data-copy="1.21.11">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 5.5H6.5A1.5 1.5 0 0 0 5 7v8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          Copy MC version
-        </button>
+      <div class="release-card reveal">
+        <div class="release-top"><span class="release-badge">Latest</span><span class="release-version" data-release-version>1.1.0</span></div>
+        <div class="release-build">Minecraft 1.21.11 &middot; Fabric 0.20.1</div>
+        <div class="release-links">
+          <a class="btn btn-primary" href="dashboard/">Full build</a>
+          <a class="btn btn-ghost" href="assets/asus-free-1.0.0.jar" download>Free build</a>
+        </div>
+        <div class="release-hash">SHA-256 <code id="downloadHash">60e6ad93f3d1ef6df5b1f5afdf6fa59b4fdb0c38d8f72041b43b155ef8c5c1d3</code></div>
+        <div class="release-foot"><span class="status-ok"><i></i> Hash published</span><button class="copy-version" id="copyVersion" data-copy="1.21.11" type="button">Copy MC version</button></div>
+      </div>
+    </div>
+
+    <div class="download-grid">
+      <div class="install-steps reveal">
+        <article><span>1</span><div><h3>Install Fabric</h3><p>Run the installer for Minecraft 1.21.11 with loader 0.20.1, then launch once to create the mods folder.</p></div></article>
+        <article><span>2</span><div><h3>Add the jar</h3><p>Put <code>asus-wtf-1.1.0.jar</code> in <code>.minecraft/mods</code> with Fabric API. Mod Menu and Cloth Config are optional.</p></div></article>
+        <article><span>3</span><div><h3>Activate</h3><p>Launch the game, press <kbd>Right Shift</kbd>, paste your key. One key binds to one machine; ask for a reset if you change PCs.</p></div></article>
+        <article><span>4</span><div><h3>Play</h3><p>Every setting saves as you change it. Configs can be named, shared and auto-loaded per server.</p></div></article>
+      </div>
+
+      <div class="release-history reveal">
+        <div class="history-head"><h3>Release history</h3><a href="dashboard/">All builds</a></div>
+        <a class="history-row" href="dashboard/"><span class="h-ver">1.1.0</span><span class="h-note">Ten new themes, fifteen original capes, cape maker library and bot rebuild</span><span class="h-date">Current</span></a>
+        <a class="history-row" href="dashboard/"><span class="h-ver">1.0.10</span><span class="h-note">Prism 2.0, animated themes, remote admin console and secure updates</span><span class="h-date">Older</span></a>
+        <a class="history-row" href="dashboard/"><span class="h-ver">1.0.9</span><span class="h-note">3D pathfinding, wind-charge escape, combat and HUD fixes</span><span class="h-date">Older</span></a>
+        <a class="history-row" href="dashboard/"><span class="h-ver">1.0.8</span><span class="h-note">Config migration, crash fixes and rendering optimisations</span><span class="h-date">Older</span></a>
       </div>
     </div>
   </section>
 
-  <!-- ============================ FAQ ============================ -->
+  <!-- ───────────────────────────── CHANGELOG ───────────────────────────── -->
+  <section class="section changelog" id="changelog">
+    <div class="section-head">
+      <span class="kicker">07 — Changelog</span>
+      <h2 class="reveal">What changed.</h2>
+    </div>
+    <div class="timeline">
+      <article class="reveal"><span class="t-ver">1.1.0</span><div><h3>Themes, capes and a smarter bot</h3><p>Sixteen hand-built themes, fifteen original capes, a pixel cape maker, dragon cosmetics paused and a rebuilt Dia SMP navigation and escape stack.</p></div><span class="t-tag">Major</span></article>
+      <article class="reveal"><span class="t-ver">1.0.10</span><div><h3>The Prism generation</h3><p>Six original animated themes, theme editor, Prism 2.0, website and admin redesign, secure sha256 release pipeline.</p></div><span class="t-tag">Feature</span></article>
+      <article class="reveal"><span class="t-ver">1.0.9</span><div><h3>Navigation and combat</h3><p>SmpPathfinder A* with collision costs, hole detection, pillar and wind-charge escape, stuck replanning, bot debug HUD.</p></div><span class="t-tag">Feature</span></article>
+      <article class="reveal"><span class="t-ver">1.0.8</span><div><h3>Stability</h3><p>Key validation hardened against network failures, expiry boundaries corrected, config migration and render fixes.</p></div><span class="t-tag">Fix</span></article>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── FAQ ───────────────────────────── -->
   <section class="section faq-section" id="faq">
     <div class="section-head">
-      <span class="kicker">05 — Questions</span>
+      <span class="kicker">08 — Questions</span>
       <h2 class="reveal">The short answers.</h2>
     </div>
-
     <div class="faq">
-      <details class="reveal" open>
-        <summary>Where do I get a key?</summary>
-        <p>In the <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a> — the key channel. One key unlocks one machine. Resets for a new PC are handled there too.</p>
-      </details>
-      <details class="reveal">
-        <summary>Does it need an account or Discord login in-game?</summary>
-        <p>No. The client only talks to the key server, and only with the key plus a hashed install id. No username, no email, no Discord token ever reaches the client.</p>
-      </details>
-      <details class="reveal">
-        <summary>What is the site account for?</summary>
-        <p>The <a href="login.html">account</a> opens the dashboard, which keeps the builds and install steps together. The free build downloads without one; the full build unlocks on your account with a working key. The client still asks for that key in game.</p>
-      </details>
-      <details class="reveal">
-        <summary>What happens if the key server is down?</summary>
-        <p>The last successful check is cached for 72 hours, so a temporary outage does not lock you out. Past that, the menu stays closed until a check succeeds.</p>
-      </details>
-      <details class="reveal">
-        <summary>Which versions and loaders?</summary>
-        <p>Minecraft 1.21.11 on Fabric loader 0.20.1, built against Fabric API 0.141.6. It needs Java 21 or newer; Java 25 is what it ships built on.</p>
-      </details>
-      <details class="reveal">
-        <summary>Will it run with Sodium and Iris?</summary>
-        <p>Yes. The renderer is separate from Sodium's chunk pipeline, and shaders work with the menu. Mod Menu and Cloth Config are optional &mdash; the settings also live inside the menu itself.</p>
-      </details>
-      <details class="reveal">
-        <summary>Can servers detect it?</summary>
-        <p>Any client-side movement or combat module changes packets, and any anticheat that watches those packets can flag them. Keep blatant modules off on servers you care about; ghost settings exist for exactly that reason.</p>
-      </details>
-      <details class="reveal">
-        <summary>What does SS-Proof actually do?</summary>
-        <p>It draws the menu and HUD onto an overlay layer that capture APIs skip, then draws its own pointer at the display's real pixel density. Streams and recordings see the game only.</p>
-      </details>
-      <details class="reveal">
-        <summary>Where do configs live?</summary>
-        <p>In <code>.minecraft/config/asus_wtf/</code> as readable files. Copy them between machines, share them, or keep a separate set per server.</p>
-      </details>
+      <details open><summary>Where do I get a key?</summary><p>From the key channel in the <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a>. One key unlocks one machine; resets for a new PC are handled there too.</p></details>
+      <details><summary>Does the client need my Minecraft account?</summary><p>No. The client only sends the key plus a hashed install id to the licence server. No Microsoft password, email or Discord token is ever read.</p></details>
+      <details><summary>What happens when the backend is down?</summary><p>A valid key stays valid. The last successful check is cached for 72 hours, and a network error is reported as a network error &mdash; never as an expired or revoked key.</p></details>
+      <details><summary>Will it run with Sodium and Iris?</summary><p>Yes. The client renders separately from Sodium's chunk pipeline, and companions and capes use an opaque layer so shaders cannot make them see-through.</p></details>
+      <details><summary>Are updates automatic?</summary><p>No. The client checks the published manifest, shows an in-game notice when a newer build exists and only displays HTTPS links. It never auto-installs or executes anything from a response.</p></details>
+      <details><summary>Can I manage testers without giving them a paid key?</summary><p>Administrators can create expiring, audited IP and HWID exemptions; usernames and account IDs annotate a normal key instead of replacing one. Every exemption is checked on the server, never by the client.</p></details>
+      <details><summary>Does it work on private servers?</summary><p>It is built for private worlds, testing and servers that allow client mods. Any module that changes movement or combat can be detected by a server; use it only where the server permits it.</p></details>
     </div>
   </section>
 
-  <!-- ============================ CTA ============================ -->
   <section class="cta reveal">
-    <div class="cta-inner">
-      <h2>Load it. Bind it. Win.</h2>
-      <p>One jar, 109 modules, two layouts, fifteen themes and a key that takes ten seconds to paste.</p>
-      <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="dashboard/">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Get the full build
-        </a>
-        <a class="btn btn-ghost btn-lg" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Get a key</a>
+    <div class="cta-orb"></div>
+    <div class="cta-copy">
+      <span class="kicker">Ready</span>
+      <h2>Load it. Bind it.<br><span class="grad">Make it yours.</span></h2>
+      <p>One jar. Sixteen themes. Fifteen capes that move with you.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="dashboard/">Get the full build</a>
+        <a class="btn btn-ghost btn-lg" href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Join the Discord</a>
       </div>
     </div>
   </section>
@@ -477,34 +459,20 @@
 <footer class="footer">
   <div class="footer-main">
     <div class="footer-brand">
-      <span class="brand-text">asus<span class="dot">.</span>wtf</span>
-      <p>Fabric client for Minecraft 1.21.11. Built for private worlds and servers that allow it.</p>
+      <span class="brand-text">asus<span>.</span>wtf</span>
+      <p>A Fabric client for Minecraft 1.21.11. Built for private worlds and servers that allow it.</p>
+      <span class="footer-status"><i></i> All systems operational</span>
     </div>
     <div class="footer-cols">
-      <div>
-        <h4>Client</h4>
-        <a href="#features">Features</a>
-        <a href="#modules">Modules</a>
-        <a href="#install">Install</a>
-        <a href="login.html">Account</a>
-        <a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord / keys</a>
-      </div>
-      <div>
-        <h4>Media</h4>
-        <a href="#gallery">Screenshots</a>
-        <a href="assets/shots/prism.png" download>Wallpaper</a>
-      </div>
-      <div>
-        <h4>Needs</h4>
-        <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric installer</a>
-        <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a>
-        <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">Mod Menu</a>
-      </div>
+      <div><h4>Client</h4><a href="features.html">Features</a><a href="#themes">Themes</a><a href="#modules">Modules</a><a href="download.html">Download</a></div>
+      <div><h4>Account</h4><a href="login.html">Sign in</a><a href="register.html">Create account</a><a href="dashboard/">Dashboard</a><a href="admin.html">Admin</a></div>
+      <div><h4>Community</h4><a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a><a href="changelog.html">Changelog</a><a href="#faq">FAQ</a></div>
+      <div><h4>Needs</h4><a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric installer</a><a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a><a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">Mod Menu</a></div>
     </div>
   </div>
   <div class="footer-base">
     <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
-    <span class="footer-build">build 1.0.10 &middot; mc 1.21.11</span>
+    <span>build 1.1.0 &middot; mc 1.21.11</span>
   </div>
 </footer>
 
@@ -513,9 +481,9 @@
   <img id="lbImg" alt="">
 </div>
 
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=3"></script>
 <script src="assets/auth-core.js"></script>
 <script src="assets/supabase-config.js"></script>
-<script type="module" src="assets/auth.js"></script>
+<script type="module" src="assets/auth.js?v=2"></script>
 </body>
 </html>

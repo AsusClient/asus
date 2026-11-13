@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "release": {
+    "version": "1.1.0",
+    "message": "Sixteen themes, fifteen original capes, a rebuilt cape maker and smarter Dia SMP escapes.",
+    "url": "/dashboard/",
+    "sha256": "60e6ad93f3d1ef6df5b1f5afdf6fa59b4fdb0c38d8f72041b43b155ef8c5c1d3",
+    "updatedAt": 1794542991908
+  },
+  "messages": [],
+  "history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-13",
+      "notes": "Ten new themes, fifteen capes, cape library/editor, dragon cosmetics paused, bot navigation, rotation and escape rebuild."
+    },
+    {
+      "version": "1.0.10",
+      "date": "2026-11-12",
+      "notes": "Prism 2.0, animated themes, remote admin console and secure updates."
+    },
+    {
+      "version": "1.0.9",
+      "date": "2026-10-28",
+      "notes": "3D pathfinding, wind-charge escape, combat and HUD fixes."
+    },
+    {
+      "version": "1.0.8",
+      "date": "2026-10-10",
+      "notes": "Config migration, crash fixes and rendering optimisations."
+    }
+  ]
+}

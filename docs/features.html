@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="void">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Features — asus.wtf</title>
+<meta name="description" content="Every asus.wtf system in one place: Prism UI, 16 animated themes, capes and the pixel cape maker, the module catalog, Dia SMP automation and secure updates.">
+<meta name="theme-color" content="#07060c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2307060c'/%3E%3Cpath d='M8 23 16 8l8 15' stroke='%23a78bfa' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M12 18h8' stroke='%235eead4' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/pages.css?v=4">
+</head>
+<body>
+<div class="stage" aria-hidden="true">
+  <div class="stage-grid"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <div class="stage-noise"></div>
+</div>
+
+<header class="nav is-scrolled" id="nav">
+  <a class="brand" href="index.html" aria-label="asus.wtf home">
+    <span class="brand-mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7.5 23.5 16 7.5l8.5 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M11.7 18h8.6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+      </svg>
+    </span>
+    <span class="brand-text">asus<span>.</span>wtf</span>
+    <span class="build-chip">1.1.0</span>
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Pages">
+    <a href="index.html">Home</a>
+    <a href="features.html" class="is-active">Features</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="download.html">Download</a>
+  </nav>
+  <div class="nav-actions">
+    <a class="nav-signin" href="login.html">Sign in</a>
+    <a class="btn btn-primary btn-sm" href="download.html"><span class="btn-dot"></span> Download</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="subpage">
+  <div class="container">
+    <div class="crumbs"><a href="index.html">Home</a><span>/</span> Features</div>
+    <div class="page-hero">
+      <div>
+        <span class="page-kicker">The full picture</span>
+        <h1>Built like<br><span class="grad">a client.</span></h1>
+        <p>A real interface, real settings and a real renderer. Prism draws every panel, theme and cape preview in the client's own layout code &mdash; not a screenshot with hotspots drawn over it.</p>
+      </div>
+      <aside class="hero-side">
+        <h3>At a glance</h3>
+        <ul>
+          <li><span>Themes</span><b>16</b></li>
+          <li><span>Cape presets</span><b>29</b></li>
+          <li><span>Requested originals</span><b>15</b></li>
+          <li><span>Module categories</span><b>5</b></li>
+        </ul>
+      </aside>
+    </div>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Systems</span><h2>What the build includes</h2></div>
+        <p>Each card describes behaviour that exists in the client, not a concept render.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-block"><span class="fb-icon">P</span><h3>Prism 2.0</h3><p>Rounded panels, inline module settings, a live search field, keyboard navigation and a compact layout that stays readable at GUI scale 1 and 4.</p></article>
+        <article class="feature-block"><span class="fb-icon">16</span><h3>Sixteen themes</h3><p>The original six plus Midnight, Inferno, Cyberpunk, Emerald, Bloodmoon, Lavender, Arctic, Sunset, Obsidian and Amethyst Night. Each has a palette, border treatment and animated backdrop.</p></article>
+        <article class="feature-block"><span class="fb-icon">3D</span><h3>Cape maker</h3><p>Live 3D preview, pixel painting, palette, transparency, undo and redo, PNG import and export, saved cape library and vanilla mapping guides.</p></article>
+        <article class="feature-block"><span class="fb-icon">AI</span><h3>Dia SMP automation</h3><p>Collision-aware 3D pathfinding, stuck detection, hole and web escape, water decisions, Auto Bubble Web, rotation control and a readable debug panel.</p></article>
+        <article class="feature-block"><span class="fb-icon">R</span><h3>Render-aware cosmetics</h3><p>Vanilla armour trims, banner-pattern shields and capes drawn on local render-state copies. Transparent pixels stay transparent and shaders cannot make opaque pieces see-through.</p></article>
+        <article class="feature-block"><span class="fb-icon">↻</span><h3>Secure updates</h3><p>HTTPS-only manifests, version checks and a published SHA-256 for every release. The update card reports the hash it was offered before you run anything.</p></article>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Wardrobe</span><h2>Themes and capes</h2></div>
+        <p>Theme changes apply immediately and persist to the client config. Capes are selected per-account from the cosmetics menu.</p>
+      </div>
+      <div class="theme-list">
+        <div><i style="--tc:linear-gradient(90deg,#38bdf8,#8b5cf6)"></i><b>Ocean</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#ff7a3d,#ff3d5e)"></i><b>Magma</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#34d399,#7dd3fc)"></i><b>Aurora</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#f9a8d4,#fda4af)"></i><b>Sakura</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#a78bfa,#22d3ee)"></i><b>Void</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#67e8f9,#e0f2fe)"></i><b>Glacier</b><small>Original</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#86b7ff,#5b8def)"></i><b>Midnight</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#ff5a2e,#ffc15c)"></i><b>Inferno</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#00f0ff,#ff2bd6)"></i><b>Cyberpunk</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#34d399,#f5d36a)"></i><b>Emerald</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#ff3355,#ff8a9a)"></i><b>Bloodmoon</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#c4a7ff,#f0e6ff)"></i><b>Lavender</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#8be9ff,#d6f7ff)"></i><b>Arctic</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#ff8a5c,#ff5d8f)"></i><b>Sunset</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#a89cff,#6f5bd6)"></i><b>Obsidian</b><small>New</small></div>
+        <div><i style="--tc:linear-gradient(90deg,#c084fc,#7b2fbe)"></i><b>Amethyst Night</b><small>New</small></div>
+      </div>
+      <div class="chips" style="margin-top:16px">
+        <span>Voidfall</span><span>Crimson Emperor</span><span>Oceanic</span><span>Frostbite</span><span>Celestial</span><span>Bloodmoon</span><span>Sakura</span><span>Infernal</span><span>Phantom</span><span>Emerald Knight</span><span>Aurora</span><span>Royal</span><span>Midnight</span><span>Cyber</span><span>Dragonless</span>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Catalog</span><h2>Modules that do something</h2></div>
+        <p>These are the module names shipped in the client. Every one has settings and saves to the active config.</p>
+      </div>
+      <div class="module-board">
+        <article class="module-group-card"><h3>Combat <span>15</span></h3><div class="chips"><span>AimAssist</span><span>HitSelect</span><span>AutoMace</span><span>AutoCrystal</span><span>AutoTotem</span><span>SmartWTap</span><span>AutoWeb</span><span>AutoShieldBreak</span><span>PearlCatch</span><span>BowSpam</span><span>TriggerBot</span><span>AutoHeal</span><span>AutoCart</span><span>AntiMiss</span><span>CombatTracker</span></div></article>
+        <article class="module-group-card"><h3>Visuals <span>18</span></h3><div class="chips"><span>PlayerESP</span><span>ShaderESP</span><span>SkeletonESP</span><span>Tracers</span><span>Nametags</span><span>ItemESP</span><span>BlockESP</span><span>WorldESP</span><span>BlockOutline</span><span>FullBright</span><span>DamageNumbers</span><span>CustomCrosshair</span><span>TargetESP</span><span>NewChunks</span><span>Xray</span><span>NoRender</span><span>TotemPopCustomizer</span><span>Notifications</span></div></article>
+        <article class="module-group-card"><h3>Movement <span>12</span></h3><div class="chips"><span>Sprint</span><span>AutoWalk</span><span>SnapTap</span><span>AutoLunge</span><span>SpearAssist</span><span>ScriptCompiler</span><span>AutoJumpReset</span><span>Strafe</span><span>MaceFallIndicator</span><span>PearlLandingMarker</span><span>DashTrails</span><span>JumpCircles</span></div></article>
+        <article class="module-group-card"><h3>Player <span>16</span></h3><div class="chips"><span>AutoTotem</span><span>ArmorManager</span><span>InventoryManager</span><span>HotbarManager</span><span>ItemTracker</span><span>AutoTool</span><span>ChestSteal</span><span>AntiAFK</span><span>KitLayout</span><span>PotRefill</span><span>Replenish</span><span>Clutch</span><span>WebEscape</span><span>ShieldManager</span><span>FastExp</span><span>InvCleaner</span></div></article>
+        <article class="module-group-card"><h3>World <span>14</span></h3><div class="chips"><span>WorldESP</span><span>BlockESP</span><span>NewChunks</span><span>LogoutSpots</span><span>BaseFinder</span><span>DeathCoords</span><span>VisualRange</span><span>Freecam</span><span>AutoMine</span><span>AutoFarm</span><span>AutoBuild</span><span>AutoEscape</span><span>StaffDetector</span><span>ItemTracker</span></div></article>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Boundaries</span><h2>What it will not do</h2></div>
+        <p>Being clear about the edges is part of the product.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-block"><h3>No anti-cheat promises</h3><p>The client uses normal player input. It does not bypass screens, spoof packets or claim to be undetectable. Servers can inspect movement and combat.</p></article>
+        <article class="feature-block"><h3>No dragon assets</h3><p>Dragon models, animations and menu entries are paused in this build. Their code is kept for a future restoration, but nothing dragon-related renders or appears in active cosmetics.</p></article>
+        <article class="feature-block"><h3>No fake buttons</h3><p>Download links point at published files, account forms call the real authentication service, and admin actions are authorised by the server, not by hiding a button.</p></article>
+      </div>
+    </section>
+
+    <section class="page-section" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+      <div><span class="page-kicker">Next step</span><h2 style="font:600 clamp(1.6rem,3vw,2.4rem)/1.05 var(--display);letter-spacing:-.04em;margin-top:10px">Put it in your mods folder.</h2></div>
+      <a class="btn btn-primary btn-lg" href="download.html">Download 1.1.0</a>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <span class="brand-text">asus<span>.</span>wtf</span>
+      <p>A Fabric client for Minecraft 1.21.11. Built for private worlds and servers that allow it.</p>
+      <span class="footer-status"><i></i> All systems operational</span>
+    </div>
+    <div class="footer-cols">
+      <div><h4>Client</h4><a href="features.html">Features</a><a href="index.html#themes">Themes</a><a href="index.html#modules">Modules</a><a href="download.html">Download</a></div>
+      <div><h4>Account</h4><a href="login.html">Sign in</a><a href="register.html">Create account</a><a href="dashboard/">Dashboard</a><a href="admin.html">Admin</a></div>
+      <div><h4>Community</h4><a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a><a href="changelog.html">Changelog</a><a href="index.html#faq">FAQ</a></div>
+      <div><h4>Needs</h4><a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric installer</a><a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a><a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">Mod Menu</a></div>
+    </div>
+  </div>
+  <div class="footer-base">
+    <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+    <span>build 1.1.0 &middot; mc 1.21.11</span>
+  </div>
+</footer>
+
+<script src="assets/app.js?v=3"></script>
+<script src="assets/auth-core.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script type="module" src="assets/auth.js?v=2"></script>
+</body>
+</html>

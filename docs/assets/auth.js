@@ -22,12 +22,15 @@ if (actions) {
   const core = window.AsusAuthCore;
   const navLinks = document.querySelector("#navLinks");
 
-  const signIn = document.createElement("a");
-  signIn.className = "btn btn-ghost";
+  // Reuse the static link in the markup instead of adding a second "Sign in" beside it.
+  let signIn = actions.querySelector(".nav-signin");
+  if (!signIn) {
+    signIn = document.createElement("a");
+    signIn.className = "btn btn-ghost";
+    signIn.textContent = "Sign in";
+    actions.insertBefore(signIn, actions.querySelector(".btn-primary"));
+  }
   signIn.href = "login.html";
-  signIn.textContent = "Sign in";
-
-  actions.insertBefore(signIn, actions.querySelector(".btn-primary"));
 
   // The ghost buttons are hidden on phones; the account entry rides in the menu instead.
   let mobileAccount = null;

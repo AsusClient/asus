@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="void">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog — asus.wtf</title>
+<meta name="description" content="Release notes for asus.wtf 1.1.0: sixteen themes, fifteen original capes, the cape maker, dragon cosmetics paused, bot improvements and every published Fabric release.">
+<meta name="theme-color" content="#07060c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2307060c'/%3E%3Cpath d='M8 23 16 8l8 15' stroke='%23a78bfa' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M12 18h8' stroke='%235eead4' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/pages.css?v=4">
+</head>
+<body>
+<div class="stage" aria-hidden="true">
+  <div class="stage-grid"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <div class="stage-noise"></div>
+</div>
+
+<header class="nav is-scrolled" id="nav">
+  <a class="brand" href="index.html" aria-label="asus.wtf home">
+    <span class="brand-mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7.5 23.5 16 7.5l8.5 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M11.7 18h8.6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+      </svg>
+    </span>
+    <span class="brand-text">asus<span>.</span>wtf</span>
+    <span class="build-chip">1.1.0</span>
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Pages">
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="changelog.html" class="is-active">Changelog</a>
+    <a href="download.html">Download</a>
+  </nav>
+  <div class="nav-actions">
+    <a class="nav-signin" href="login.html">Sign in</a>
+    <a class="btn btn-primary btn-sm" href="download.html"><span class="btn-dot"></span> Download</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="subpage">
+  <div class="container">
+    <div class="crumbs"><a href="index.html">Home</a><span>/</span> Changelog</div>
+    <div class="page-hero">
+      <div>
+        <span class="page-kicker">Release notes</span>
+        <h1>Every change.<br><span class="grad">On the record.</span></h1>
+        <p>Published builds with their fixed SHA-256 downloads. Release notes are updated only after the jar is published and hashed.</p>
+      </div>
+      <aside class="hero-side">
+        <h3>Channel status</h3>
+        <ul>
+          <li><span>Current build</span><b>1.1.0</b></li>
+          <li><span>In testing</span><b>&mdash;</b></li>
+          <li><span>Minecraft</span><b>1.21.11</b></li>
+          <li><span>Loader</span><b>Fabric</b></li>
+        </ul>
+      </aside>
+    </div>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Current release</span><h2>1.1.0 &mdash; Themes &amp; capes</h2></div>
+        <span class="tag ok">Published</span>
+      </div>
+      <div class="timeline">
+        <article class="release-entry is-current">
+          <div class="release-head"><h2>1.1.0</h2><span class="tag ok">Current</span><span class="release-date">13 Nov 2026</span></div>
+          <ul>
+            <li><b>Ten new themes.</b> Midnight, Inferno, Cyberpunk, Emerald, Bloodmoon, Lavender, Arctic, Sunset, Obsidian and Amethyst Night join the original six. Each has its own palette, borders, text colours, gradients and animated backdrop.</li>
+            <li><b>Fifteen original capes.</b> Voidfall, Crimson Emperor, Oceanic, Frostbite, Celestial, Bloodmoon, Sakura, Infernal, Phantom, Emerald Knight, Aurora, Royal, Midnight, Cyber and Dragonless, drawn on the vanilla cape atlas.</li>
+            <li><b>Cape maker library.</b> Save, load and remove capes; import and export a compact cape code; keep undo and redo across edits.</li>
+            <li><b>Dragon cosmetics paused.</b> Dragon models, rendering and menu entries are disabled. The code is kept for a later restoration; other cosmetics are unaffected.</li>
+            <li><b>Dia SMP work.</b> Pathfinding, stuck recovery, hole and web escape, water decision checks, Auto Bubble Web, rotation smoothing and a debug panel are being tested.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section-head">
+        <div><span class="page-kicker">Published</span><h2>Release history</h2></div>
+        <p>These builds have a downloadable jar and a fixed SHA-256 on the download page.</p>
+      </div>
+      <div class="timeline">
+        <article class="release-entry">
+          <div class="release-head"><h2>1.0.10</h2><span class="release-date">12 Nov 2026</span></div>
+          <ul>
+            <li>Prism 2.0 with inline module settings, live search and keyboard navigation.</li>
+            <li>Six original animated themes with a theme editor and saved selection.</li>
+            <li>Remote admin console for releases, keys, testers, audit logs and download counts.</li>
+            <li>SHA-256 release manifests and HTTPS-only update links.</li>
+          </ul>
+        </article>
+        <article class="release-entry">
+          <div class="release-head"><h2>1.0.9</h2><span class="release-date">28 Oct 2026</span></div>
+          <ul>
+            <li>3D pathfinding and wind-charge escape work for the Dia SMP bot.</li>
+            <li>Combat tracker, HUD spacing and notification fixes.</li>
+            <li>Configuration migration for older client installs.</li>
+          </ul>
+        </article>
+        <article class="release-entry">
+          <div class="release-head"><h2>1.0.8</h2><span class="release-date">10 Oct 2026</span></div>
+          <ul>
+            <li>Config migration and crash fixes on world join.</li>
+            <li>Render optimisations for ESP and nametag passes.</li>
+            <li>Improved cape selection persistence.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-section" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+      <div><span class="page-kicker">Stay current</span><h2 style="font:600 clamp(1.6rem,3vw,2.4rem)/1.05 var(--display);letter-spacing:-.04em;margin-top:10px">Install the published build.</h2></div>
+      <a class="btn btn-primary btn-lg" href="download.html">Open downloads</a>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <span class="brand-text">asus<span>.</span>wtf</span>
+      <p>A Fabric client for Minecraft 1.21.11. Built for private worlds and servers that allow it.</p>
+      <span class="footer-status"><i></i> All systems operational</span>
+    </div>
+    <div class="footer-cols">
+      <div><h4>Client</h4><a href="features.html">Features</a><a href="index.html#themes">Themes</a><a href="index.html#modules">Modules</a><a href="download.html">Download</a></div>
+      <div><h4>Account</h4><a href="login.html">Sign in</a><a href="register.html">Create account</a><a href="dashboard/">Dashboard</a><a href="admin.html">Admin</a></div>
+      <div><h4>Community</h4><a href="https://discord.gg/Ua8qVQ2JU" target="_blank" rel="noopener">Discord</a><a href="changelog.html">Changelog</a><a href="index.html#faq">FAQ</a></div>
+      <div><h4>Needs</h4><a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric installer</a><a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a><a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener">Mod Menu</a></div>
+    </div>
+  </div>
+  <div class="footer-base">
+    <span>&copy; <span id="year">2026</span> asus.wtf &mdash; not affiliated with Mojang or Microsoft.</span>
+    <span>build 1.1.0 &middot; mc 1.21.11</span>
+  </div>
+</footer>
+
+<script src="assets/app.js?v=3"></script>
+<script src="assets/auth-core.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script type="module" src="assets/auth.js?v=2"></script>
+</body>
+</html>

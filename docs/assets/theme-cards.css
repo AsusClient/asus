@@ -1,0 +1,83 @@
+/* =========================================================================
+   Theme card previews for the ten 2026 themes
+   ========================================================================= */
+
+.t-midnight { background: radial-gradient(circle at 76% 20%, rgba(175,200,255,.24), transparent 22%), linear-gradient(170deg,#050a12,#08162a 58%,#040810); }
+.t-midnight .moon { position: absolute; width: 46px; height: 46px; border-radius: 50%; right: 22%; top: 18%; background: radial-gradient(circle at 36% 34%, #f1f6ff, #9db9de 68%, #4c6484); box-shadow: 0 0 34px rgba(175,200,255,.36); animation: moonPulse 7s ease-in-out infinite alternate; }
+.t-midnight .star, .t-cyberpunk .spark, .t-bloodmoon .blood-mote, .t-lavender .mote { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #eaf2ff; box-shadow: 0 0 7px #86b7ff; animation: star 3.5s ease-in-out infinite; }
+.t-midnight .s1 { left: 18%; top: 30%; }
+.t-midnight .s2 { left: 38%; top: 62%; animation-delay: -1.4s; }
+.t-midnight .s3 { left: 64%; top: 44%; animation-delay: -2.6s; }
+@keyframes moonPulse { to { box-shadow: 0 0 54px rgba(175,200,255,.52); transform: scale(1.05); } }
+@keyframes star { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
+
+.t-inferno { background: linear-gradient(175deg,#0b0302,#280906 54%,#080201); }
+.t-inferno .lava { position: absolute; left: -20%; right: -20%; bottom: -48px; height: 110px; border-radius: 50%; background: radial-gradient(ellipse at 50% 12%, #ffd08a, #ff5a2e 26%, #6e1004 64%, transparent 76%); filter: blur(2px); animation: lava 6s ease-in-out infinite alternate; }
+.t-inferno .ember { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #ffc15c; box-shadow: 0 0 9px #ff5a2e; left: 26%; top: 74%; animation: ember 4.4s linear infinite; }
+.t-inferno .e2 { left: 58%; animation-delay: -1.5s; }
+.t-inferno .e3 { left: 81%; animation-delay: -3s; }
+@keyframes lava { to { transform: translateY(-10px) scaleY(1.08); filter: blur(3px); } }
+@keyframes ember { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-80px) translateX(12px); opacity: 0; } }
+
+.t-cyberpunk { background: linear-gradient(180deg,#02040b,#071027 58%,#030611); }
+.t-cyberpunk .neon-grid { position: absolute; inset: 44% -30% -30%; background-image: linear-gradient(rgba(0,240,255,.30) 1px, transparent 1px), linear-gradient(90deg, rgba(255,43,214,.24) 1px, transparent 1px); background-size: 28px 22px; transform: perspective(120px) rotateX(38deg); mask-image: linear-gradient(#000, transparent); animation: gridMove 5s linear infinite; }
+.t-cyberpunk .neon-horizon { position: absolute; left: 0; right: 0; top: 48%; height: 1px; background: #00f0ff; box-shadow: 0 0 20px #00f0ff, 0 0 60px rgba(0,240,255,.4); }
+.t-cyberpunk .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0 4px, rgba(0,240,255,.055) 4px 5px); }
+.t-cyberpunk .sp1 { left: 20%; top: 24%; }
+.t-cyberpunk .sp2 { left: 78%; top: 34%; background: #ff2bd6; box-shadow: 0 0 8px #ff2bd6; animation-delay: -1.8s; }
+@keyframes gridMove { to { background-position: 0 22px, 28px 0; } }
+
+.t-emerald { background: radial-gradient(circle at 30% 68%, rgba(52,211,153,.18), transparent 32%), linear-gradient(160deg,#020a06,#082016 58%,#04100a); }
+.t-emerald .crystal { position: absolute; width: 9px; height: 34px; clip-path: polygon(50% 0,100% 30%,76% 100%,24% 100%,0 30%); background: linear-gradient(160deg,#d7ffe9,#34d399 48%,#0b6b45); left: 24%; top: 28%; opacity: .8; animation: shardFloat 6s ease-in-out infinite alternate; }
+.t-emerald .c2 { left: 56%; top: 48%; height: 44px; animation-delay: -2s; }
+.t-emerald .c3 { left: 78%; top: 20%; height: 25px; animation-delay: -4s; }
+.t-emerald .moss-glow { position: absolute; width: 120px; height: 70px; border-radius: 50%; background: rgba(52,211,153,.18); filter: blur(30px); left: 36%; bottom: 4%; }
+@keyframes shardFloat { to { transform: translateY(-14px) rotate(4deg); opacity: 1; } }
+
+.t-bloodmoon { background: radial-gradient(circle at 70% 28%, rgba(255,51,85,.22), transparent 26%), linear-gradient(170deg,#070102,#20050a 58%,#050102); }
+.t-bloodmoon .blood-moon { position: absolute; width: 52px; height: 52px; border-radius: 50%; right: 20%; top: 18%; background: radial-gradient(circle at 36% 34%, #ffb3bd, #ff3355 54%, #6e0016); box-shadow: 0 0 42px rgba(255,51,85,.46); animation: moonPulse 6s ease-in-out infinite alternate; }
+.t-bloodmoon .haze { position: absolute; left: -10%; right: -10%; bottom: 0; height: 60%; background: linear-gradient(transparent, rgba(80,0,16,.45)); filter: blur(8px); }
+.t-bloodmoon .bm1 { left: 26%; top: 38%; background: #ff8a9a; box-shadow: 0 0 8px #ff3355; }
+.t-bloodmoon .bm2 { left: 46%; top: 66%; animation-delay: -2s; }
+
+.t-lavender { background: radial-gradient(circle at 24% 40%, rgba(196,167,255,.20), transparent 32%), linear-gradient(165deg,#08050d,#180f26 56%,#0a0611); }
+.t-lavender .bloom { position: absolute; width: 76px; height: 76px; border-radius: 50%; background: radial-gradient(circle, rgba(240,230,255,.30), rgba(196,167,255,.12) 42%, transparent 68%); filter: blur(6px); animation: bloomPulse 7s ease-in-out infinite alternate; }
+.t-lavender .lb1 { left: 8%; top: 12%; }
+.t-lavender .lb2 { right: 8%; top: 38%; width: 100px; height: 100px; animation-delay: -2.4s; }
+.t-lavender .lb3 { left: 36%; bottom: -14%; width: 120px; height: 120px; animation-delay: -4.2s; }
+.t-lavender .lm1 { left: 34%; top: 26%; background: #fff; }
+.t-lavender .lm2 { left: 66%; top: 66%; animation-delay: -2s; }
+@keyframes bloomPulse { to { transform: scale(1.12); opacity: .8; } }
+
+.t-arctic { background: linear-gradient(165deg,#020709,#0a2533 54%,#041014); }
+.t-arctic .ice-band { position: absolute; left: -20%; right: -20%; height: 26px; border-radius: 50%; background: linear-gradient(90deg, transparent, rgba(139,233,255,.28), rgba(214,247,255,.16), transparent); filter: blur(5px); top: 36%; transform: rotate(-4deg); animation: iceDrift 8s ease-in-out infinite alternate; }
+.t-arctic .ib2 { top: 58%; transform: rotate(3deg); animation-delay: -3s; }
+.t-arctic .snow { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #d6f7ff; left: 24%; top: 10%; animation: snow 7s linear infinite; }
+.t-arctic .n2 { left: 58%; animation-delay: -2.4s; }
+.t-arctic .n3 { left: 80%; animation-delay: -4.2s; }
+@keyframes iceDrift { to { transform: translateY(8px) rotate(3deg); } }
+@keyframes snow { 0% { transform: translateY(-20px) translateX(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(210px) translateX(16px); opacity: 0; } }
+
+.t-sunset { background: linear-gradient(180deg,#160819,#31101c 48%,#4a1820 72%,#13060c); }
+.t-sunset .sun { position: absolute; width: 62px; height: 62px; border-radius: 50%; left: 66%; top: 36%; background: radial-gradient(circle at 40% 36%, #ffe4c2, #ff8a5c 48%, #ff4f72 74%, transparent 76%); filter: blur(.5px); box-shadow: 0 0 55px rgba(255,138,92,.46); animation: sunSink 9s ease-in-out infinite alternate; }
+.t-sunset .sunset-band { position: absolute; left: -10%; right: -10%; height: 20px; border-radius: 50%; background: linear-gradient(90deg, transparent, rgba(255,196,168,.20), rgba(255,93,143,.16), transparent); filter: blur(3px); top: 56%; }
+.t-sunset .sb2 { top: 70%; }
+.t-sunset .sb3 { top: 82%; }
+@keyframes sunSink { to { transform: translateY(10px) scale(1.04); } }
+
+.t-obsidian { background: linear-gradient(160deg,#000,#090910 54%,#030307); }
+.t-obsidian .fracture { position: absolute; width: 1px; height: 70%; left: 28%; top: 12%; background: linear-gradient(transparent, rgba(168,156,255,.55), transparent); transform: rotate(22deg); box-shadow: 0 0 8px rgba(168,156,255,.3); animation: fractureShift 7s ease-in-out infinite alternate; }
+.t-obsidian .fr2 { left: 68%; top: 22%; height: 56%; transform: rotate(-28deg); animation-delay: -2s; }
+.t-obsidian .obsidian-shard { position: absolute; width: 30px; height: 58px; left: 14%; top: 46%; clip-path: polygon(50% 0,100% 40%,66% 100%,20% 76%,0 28%); background: linear-gradient(150deg,#2b2638,#060609 55%,#191527); border: 1px solid rgba(216,208,255,.12); animation: shardFloat 8s ease-in-out infinite alternate; }
+.t-obsidian .os2 { left: 72%; top: 22%; width: 22px; height: 44px; animation-delay: -3s; }
+@keyframes fractureShift { to { transform: rotate(25deg) translateX(4px); opacity: .65; } }
+
+.t-amethyst { background: radial-gradient(circle at 52% 42%, rgba(192,132,252,.24), transparent 30%), linear-gradient(165deg,#05010a,#180a26 56%,#08030e); }
+.t-amethyst .amethyst-core { position: absolute; width: 120px; height: 120px; border-radius: 50%; left: 50%; top: 46%; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(237,214,255,.18), rgba(192,132,252,.16) 40%, transparent 68%); filter: blur(8px); animation: bloomPulse 6s ease-in-out infinite alternate; }
+.t-amethyst .amethyst-shard { position: absolute; width: 12px; height: 38px; clip-path: polygon(50% 0,100% 34%,74% 100%,24% 100%,0 34%); background: linear-gradient(160deg,#f0d9ff,#c084fc 46%,#6a20a8); left: 24%; top: 24%; animation: shardFloat 6.5s ease-in-out infinite alternate; }
+.t-amethyst .as2 { left: 62%; top: 56%; height: 28px; animation-delay: -2s; }
+.t-amethyst .as3 { left: 76%; top: 18%; height: 48px; animation-delay: -4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-sky *, .cape-cloth, .cape-fold { animation: none !important; }
+}

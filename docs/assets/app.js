@@ -228,6 +228,113 @@
     }
   });
 
+  /* --------------------------- theme switcher ---------------------- */
+
+  const THEME_NAMES = {
+    ocean: "Ocean",
+    magma: "Magma",
+    aurora: "Aurora",
+    sakura: "Sakura",
+    void: "Void",
+    glacier: "Glacier",
+    midnight: "Midnight",
+    inferno: "Inferno",
+    cyberpunk: "Cyberpunk",
+    emerald: "Emerald",
+    bloodmoon: "Bloodmoon",
+    lavender: "Lavender",
+    arctic: "Arctic",
+    sunset: "Sunset",
+    obsidian: "Obsidian",
+    "amethyst-night": "Amethyst Night",
+  };
+  const themeCards = $$(".theme-card");
+  const themeName = $("[data-theme-name]");
+
+  const applyTheme = (name) => {
+    if (!THEME_NAMES[name]) return;
+    document.documentElement.dataset.theme = name;
+    themeCards.forEach((card) => {
+      const on = card.dataset.theme === name;
+      card.classList.toggle("is-active", on);
+      card.setAttribute("aria-pressed", String(on));
+    });
+    if (themeName) themeName.textContent = THEME_NAMES[name];
+    try { localStorage.setItem("asus.site.theme", name); } catch {}
+  };
+
+  if (themeCards.length) {
+    let saved = "";
+    try { saved = localStorage.getItem("asus.site.theme") || ""; } catch {}
+    applyTheme(THEME_NAMES[saved] ? saved : "void");
+    themeCards.forEach((card) => card.addEventListener("click", () => applyTheme(card.dataset.theme)));
+  } else {
+    // Keep a theme chosen on the home page when moving to download, features or changelog.
+    let saved = "";
+    try { saved = localStorage.getItem("asus.site.theme") || ""; } catch {}
+    if (THEME_NAMES[saved]) document.documentElement.dataset.theme = saved;
+  }
+
+  /* ------------------------------ capes ---------------------------- */
+
+  const capeCards = $$(".cape-card");
+  const capeCloth = $("#capeCloth");
+  const capeName = $("#capePreviewName");
+  const capeEmblem = $(".cape-emblem");
+  capeCards.forEach((card) => {
+    const sw = $(".cape-swatch", card);
+    sw?.style.setProperty("--sw1", card.dataset.c1 || "#222");
+    sw?.style.setProperty("--sw2", card.dataset.c2 || "#555");
+    sw?.style.setProperty("--sw3", card.dataset.accent || "#fff");
+    card.addEventListener("click", () => {
+      capeCards.forEach((c) => c.classList.remove("is-active"));
+      card.classList.add("is-active");
+      if (capeCloth) {
+        capeCloth.style.setProperty("--cape1", card.dataset.c1 || "#222");
+        capeCloth.style.setProperty("--cape2", card.dataset.c2 || "#555");
+        capeCloth.style.setProperty("--cape-accent", card.dataset.accent || "#fff");
+        capeCloth.style.borderTopColor = card.dataset.accent || "#fff";
+      }
+      if (capeName) capeName.textContent = $("b", card)?.textContent || "Cape";
+      if (capeEmblem) capeEmblem.textContent = ($("b", card)?.textContent || "A").trim().charAt(0);
+    });
+  });
+
+  /* --------------------------- module tabs ------------------------- */
+
+  const moduleTabs = $$(".module-tab");
+  const moduleGroups = $$(".module-group");
+  moduleTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      moduleTabs.forEach((t) => {
+        const on = t === tab;
+        t.classList.toggle("is-on", on);
+        t.setAttribute("aria-selected", String(on));
+      });
+      moduleGroups.forEach((group) => group.classList.toggle("is-on", group.dataset.group === tab.dataset.cat));
+    });
+  });
+
+  /* --------------------------- release feed ------------------------ */
+
+  const releaseVersion = $("[data-release-version]");
+  if (releaseVersion) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    const endpoint = document.documentElement.dataset.releaseApi || "assets/releases.json";
+    fetch(endpoint, { headers: { Accept: "application/json" }, signal: controller.signal, cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const release = data && data.release;
+        if (!release || !release.version) return;
+        releaseVersion.textContent = String(release.version).replace(/[^0-9A-Za-z.+-]/g, "").slice(0, 24) || "1.1.0";
+        const hash = $("#downloadHash");
+        if (hash && /^[a-f0-9]{64}$/i.test(String(release.sha256 || ""))) hash.textContent = String(release.sha256).toLowerCase();
+      })
+      .catch(() => { /* static site: keep the bundled version */ })
+      .finally(() => clearTimeout(timer));
+  }
+
   /* ------------------------------ year ----------------------------- */
 
   const year = $("#year");
